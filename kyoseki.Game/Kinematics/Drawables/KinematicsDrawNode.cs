@@ -56,6 +56,17 @@ namespace kyoseki.Game.Kinematics.Drawables
             DrawQuad(texture, quad, colour);
         }
 
+        /// <summary>
+        /// Draws a square with a given size,
+        /// centered at a given point
+        /// </summary>
+        public void DrawPoint(Texture texture, Vector2 p, Vector2 size, ColourInfo colour)
+        {
+            var pQuad = p - size / 2;
+
+            DrawQuad(texture, new Quad(pQuad.X, pQuad.Y, size.X, size.Y), colour);
+        }
+
         private void drawSingleBone(Quad drawQuad, Bone bone)
         {
             var scale = drawQuad.Width / 240;
@@ -70,13 +81,9 @@ namespace kyoseki.Game.Kinematics.Drawables
             DrawLine(Texture.WhitePixel, p1, p2, 5, Colour4.Blue);
 
             var quadSize = new Vector2(7, 7);
-            var quadOffset = quadSize / 2;
-            
-            var p1Quad = p1 - quadOffset;
-            var p2Quad = p2 - quadOffset;
 
-            DrawQuad(Texture.WhitePixel, new Quad(p1Quad.X, p1Quad.Y, quadSize.X, quadSize.Y), Colour4.Red);
-            DrawQuad(Texture.WhitePixel, new Quad(p2Quad.X, p2Quad.Y, quadSize.X, quadSize.Y), Colour4.Red);
+            DrawPoint(Texture.WhitePixel, p1, quadSize, Colour4.Red);
+            DrawPoint(Texture.WhitePixel, p2, quadSize, Colour4.Red);
 
             DrawAxes(p1, scale * 3, bone.Rotation);
         } 
