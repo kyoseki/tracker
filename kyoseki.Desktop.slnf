@@ -1,0 +1,11 @@
+﻿{
+  "solution": {
+    "path": "kyoseki.sln",
+    "projects": [
+      "kyoseki.Desktop\\kyoseki.Desktop.csproj",
+      "kyoseki.Game\\kyoseki.Game.csproj",
+      "kyoseki.Game.Tests\\kyoseki.Game.Tests.csproj",
+      "kyoseki.Resources\\kyoseki.Resources.csproj"
+    ]
+  }
+}
