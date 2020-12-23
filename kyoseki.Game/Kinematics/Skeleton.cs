@@ -7,21 +7,19 @@ namespace kyoseki.Game.Kinematics
     {
         public Bone Root { get; set; }
 
-        public Bone GetBone(string name) => getBone(name, Root);
-
-        private Bone getBone(string name, Bone current)
+        public Bone GetBone(string name)
         {
-            if (current.Name != name)
+            Bone result = null;
+
+            Root.Traverse(bone =>
             {
-                if (current.HasChildren)
+                if (bone.Name == name)
                 {
-                    return current.Children.FirstOrDefault(bone => getBone(name, bone) != null);
+                    result = bone;
                 }
+            });
 
-                return null;
-            }
-
-            return current;
+            return result;
         }
 
         private static Bone upper = new Bone
