@@ -10,12 +10,22 @@ namespace kyoseki.Game.Kinematics
     {
         public string Name { get; set; }
 
-        public Bone Parent { get; set; }
+        /// <summary>
+        /// This bone's parent. Only gets set upon adding a bone as a child to another.
+        /// </summary>
+        public Bone Parent { get; private set; }
 
         public bool IsRoot => Parent == null;
 
+        /// <summary>
+        /// The fallback to the root position of this bone,
+        /// used if there are no parents to base position off of.
+        /// </summary>
         public Vector3 Position { get; set; } = new Vector3(0, 0, 0);
 
+        /// <summary>
+        /// The root point of this bone.
+        /// </summary>
         public Vector3 RootPoint
         {
             get
@@ -27,28 +37,43 @@ namespace kyoseki.Game.Kinematics
             }
         }
 
-        public Vector3 EndPoint => RootPoint + EndOffset;
+        /// <summary>
+        /// The end point of this bone.
+        /// </summary>
+        public Vector3 EndPoint => RootPoint + Vector3.Transform(BaseOrientation, Rotation);
 
-        public bool IsEnd => Children == null || Children.Length == 0;
-
+        /// <summary>
+        /// The "base orientation" of this bone -
+        /// a vector (including magnitude) representing the orientation of
+        /// this bone with zero rotation
+        /// </summary>
         public Vector3 BaseOrientation { get; set; }
 
         private Quaternion rotation = Quaternion.Identity;
 
+        /// <summary>
+        /// The rotation of this bone, around its root point.
+        /// </summary>
         public Quaternion Rotation
         {
             get => rotation * (Parent?.Rotation ?? Quaternion.Identity);
             set => rotation = value;
         }
 
+        /// <summary>
+        /// Where this bone should be anchored, relative to its parent.
+        /// </summary>
         public BoneAnchor Anchor { get; set; } = BoneAnchor.End;
-
-        public Vector3 EndOffset => Vector3.Transform(BaseOrientation, Rotation);
 
         public bool HasChildren => Children?.Length > 0;
 
         private Bone[] children;
 
+        /// <summary>
+        /// List of children to this bone.
+        /// All bones listed as children will have their <see cref="Parent"/> value set to this bone.
+        /// No adjustments are reversed if the child is removed.
+        /// </summary>
         public Bone[] Children
         {
             get => children;
@@ -58,11 +83,14 @@ namespace kyoseki.Game.Kinematics
                 foreach (var child in children)
                 {
                     child.Parent = this;
-                    child.Rotation *= Rotation;
                 }
             }
         }
 
+        /// <summary>
+        /// get: Return this bone's only child (if applicable)
+        /// set: Set the provided bone as this bone's only child
+        /// </summary>
         public Bone Child
         {
             get
@@ -80,6 +108,9 @@ namespace kyoseki.Game.Kinematics
             };
         }
 
+        /// <summary>
+        /// Appends a string to the beginning of this bone and all children.
+        /// </summary>
         public Bone ApplyPrefix(string prefix)
         {
             Traverse(bone =>
@@ -106,6 +137,11 @@ namespace kyoseki.Game.Kinematics
             }
         }
 
+        /// <summary>
+        /// Mirror the values of the provided axis.
+        /// Does not mirror ACROSS the axis - inverts the values instead
+        /// </summary>
+        /// <param name="axis">The value to mirror</param>
         public Bone Mirror(MirrorAxes axis)
         {
             Action<Bone> action = bone =>
