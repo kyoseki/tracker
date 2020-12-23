@@ -172,6 +172,8 @@ namespace kyoseki.Game.Kinematics
 
         private void traverse(Action<Bone> action, Bone current)
         {
+            action.Invoke(this);
+
             if (current.HasChildren)
             {
                 foreach (var child in current.Children)
@@ -179,8 +181,6 @@ namespace kyoseki.Game.Kinematics
                     child.Traverse(action);
                 }
             }
-
-            action.Invoke(this);
         }
 
         /// <summary>

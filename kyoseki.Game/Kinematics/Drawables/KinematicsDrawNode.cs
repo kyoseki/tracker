@@ -83,7 +83,8 @@ namespace kyoseki.Game.Kinematics.Drawables
             var quadSize = new Vector2(7, 7);
 
             DrawPoint(Texture.WhitePixel, p1, quadSize, Colour4.Red);
-            DrawPoint(Texture.WhitePixel, p2, quadSize, Colour4.Red);
+            if (!bone.HasChildren)
+                DrawPoint(Texture.WhitePixel, p2, quadSize, Colour4.Red);
 
             DrawAxes(p1, scale * 3, bone.Rotation);
         } 
