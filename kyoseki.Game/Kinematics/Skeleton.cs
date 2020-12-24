@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace kyoseki.Game.Kinematics
 {
@@ -20,6 +21,20 @@ namespace kyoseki.Game.Kinematics
 
             return result;
         }
+
+        public Bone[] Bones
+        {
+            get
+            {
+                List<Bone> bones = new List<Bone>();
+
+                Root.Traverse(bones.Add);
+
+                return bones.ToArray();
+            }
+        }
+
+        public int BoneCount => Bones.Length;
 
         private static Bone upper = new Bone
         {

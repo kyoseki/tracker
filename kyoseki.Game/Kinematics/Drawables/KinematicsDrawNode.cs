@@ -1,6 +1,7 @@
 ﻿using System;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
+using osu.Framework.Graphics.OpenGL.Vertices;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Graphics.Textures;
 using osuTK;
@@ -24,7 +25,7 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// <param name="origin">The origin point of these axes (where they intersect)</param>
         /// <param name="length">The length of each axis</param>
         /// <param name="rotation">A quaternion representing the rotation the axes should show</param>
-        public void DrawAxes(Vector2 origin, float length, System.Numerics.Quaternion rotation)
+        public void DrawAxes(Vector2 origin, float length, System.Numerics.Quaternion rotation, Action<TexturedVertex2D> vertexAction = null)
         {
             var x = new Vector3(1, 0, 0);
             var y = new Vector3(0, -1, 0);
@@ -34,15 +35,15 @@ namespace kyoseki.Game.Kinematics.Drawables
             var yRot = Vector3.Transform(y, rotation) * length;
             var zRot = Vector3.Transform(z, rotation) * length;
 
-            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(xRot.X, xRot.Y), 2, Colour4.Red);
-            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(yRot.X, yRot.Y), 2, Colour4.Green);
-            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(zRot.X, zRot.Y), 2, Colour4.Blue);
+            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(xRot.X, xRot.Y), 2, Colour4.Red, vertexAction);
+            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(yRot.X, yRot.Y), 2, Colour4.Green, vertexAction);
+            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(zRot.X, zRot.Y), 2, Colour4.Blue, vertexAction);
         }
 
         /// <summary>
         /// Draws a line
         /// </summary>
-        public void DrawLine(Texture texture, Vector2 p1, Vector2 p2, float width, ColourInfo colour)
+        public void DrawLine(Texture texture, Vector2 p1, Vector2 p2, float width, ColourInfo colour, Action<TexturedVertex2D> vertexAction = null)
         {
             var angle = Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
 
@@ -54,21 +55,21 @@ namespace kyoseki.Game.Kinematics.Drawables
 
             var quad = new Quad(p1 + vec1, p1 + vec2, p2 + vec1, p2 + vec2);
 
-            DrawQuad(texture, quad, colour);
+            DrawQuad(texture, quad, colour, null, vertexAction);
         }
 
         /// <summary>
         /// Draws a square with a given size,
         /// centered at a given point
         /// </summary>
-        public void DrawPoint(Texture texture, Vector2 p, Vector2 size, ColourInfo colour)
+        public void DrawPoint(Texture texture, Vector2 p, Vector2 size, ColourInfo colour, Action<TexturedVertex2D> vertexAction = null)
         {
             var pQuad = p - size / 2;
 
-            DrawQuad(texture, new Quad(pQuad.X, pQuad.Y, size.X, size.Y), colour);
+            DrawQuad(texture, new Quad(pQuad.X, pQuad.Y, size.X, size.Y), colour, null, vertexAction);
         }
 
-        private void drawSingleBone(Quad drawQuad, Bone bone)
+        private void drawSingleBone(Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
         {
             var scale = drawQuad.Width / 240;
             var origin = drawQuad.Centre;
@@ -79,13 +80,13 @@ namespace kyoseki.Game.Kinematics.Drawables
             var p1 = origin + rootScaled;
             var p2 = origin + endScaled;
 
-            DrawLine(Texture.WhitePixel, p1, p2, 5, Colour4.Blue);
+            DrawLine(Texture.WhitePixel, p1, p2, 5, Colour4.Blue, vertexAction);
 
             var quadSize = new Vector2(7, 7);
 
-            DrawPoint(Texture.WhitePixel, p1, quadSize, Colour4.Red);
+            DrawPoint(Texture.WhitePixel, p1, quadSize, Colour4.Red, vertexAction);
             if (!bone.HasChildren)
-                DrawPoint(Texture.WhitePixel, p2, quadSize, Colour4.Red);
+                DrawPoint(Texture.WhitePixel, p2, quadSize, Colour4.Red, vertexAction);
 
             DrawAxes(p1, scale * 3, bone.Rotation);
         }
@@ -95,11 +96,11 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// </summary>
         /// <param name="drawQuad">Draw quad of this Drawable</param>
         /// <param name="bone">Which bone to draw</param>
-        public void DrawBone(Quad drawQuad, Bone bone)
+        public void DrawBone(Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
         {
             bone.Traverse(bone =>
             {
-                drawSingleBone(drawQuad, bone);
+                drawSingleBone(drawQuad, bone, vertexAction);
             });
         }
     }
