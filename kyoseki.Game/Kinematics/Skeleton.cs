@@ -59,16 +59,21 @@ namespace kyoseki.Game.Kinematics
 
         private static Bone lower = new Bone
         {
-            Name = "Hip",
-            BaseOrientation = new Vector3(-5, 10, 0),
+            Name = "Pelvis",
+            BaseOrientation = new Vector3(-3, 0, 0),
             Child = new Bone
             {
-                Name = "Knee",
-                BaseOrientation = new Vector3(0, 15, 0),
+                Name = "Hip",
+                BaseOrientation = new Vector3(0, 10, 0),
                 Child = new Bone
                 {
-                    Name = "Ankle",
-                    BaseOrientation = new Vector3(0, 0, -8)
+                    Name = "Knee",
+                    BaseOrientation = new Vector3(0, 15, 0),
+                    Child = new Bone
+                    {
+                        Name = "Ankle",
+                        BaseOrientation = new Vector3(0, 0, -5)
+                    }
                 }
             }
         };
