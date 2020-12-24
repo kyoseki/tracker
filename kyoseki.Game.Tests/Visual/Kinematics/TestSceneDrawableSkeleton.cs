@@ -21,32 +21,35 @@ namespace kyoseki.Game.Tests.Visual.Kinematics
                 Anchor = Anchor.TopLeft
             });
 
-            var x = 0f;
-            var y = 0f;
-            var z = 0f;
-
-            Action updateRotation = () =>
+            foreach (var bone in skeleton.Bones)
             {
-                hips.Rotation = System.Numerics.Quaternion.CreateFromYawPitchRoll(y, x, z);
-            };
+                var x = 0f;
+                var y = 0f;
+                var z = 0f;
 
-            AddSliderStep("HIPS X", 0, (float)Math.PI, 0, value =>
-            {
-                x = value;
-                updateRotation();
-            });
+                Action updateRotation = () =>
+                {
+                    bone.Rotation = System.Numerics.Quaternion.CreateFromYawPitchRoll(y, x, z);
+                };
 
-            AddSliderStep("HIPS Y", 0, (float)Math.PI, 0, value =>
-            {
-                y = value;
-                updateRotation();
-            });
+                AddSliderStep($"{bone.Name} X", 0, (float)Math.PI * 2, 0, value =>
+                {
+                    x = value;
+                    updateRotation();
+                });
 
-            AddSliderStep("HIPS Z", 0, (float)Math.PI, 0, value =>
-            {
-                z = value;
-                updateRotation();
-            });
+                AddSliderStep($"{bone.Name} Y", 0, (float)Math.PI * 2, 0, value =>
+                {
+                    y = value;
+                    updateRotation();
+                });
+
+                AddSliderStep($"{bone.Name} Z", 0, (float)Math.PI * 2, 0, value =>
+                {
+                    z = value;
+                    updateRotation();
+                });
+            }
         }
     }
 }
