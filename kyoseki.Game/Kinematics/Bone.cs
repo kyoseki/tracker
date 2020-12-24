@@ -42,6 +42,10 @@ namespace kyoseki.Game.Kinematics
         /// </summary>
         public Vector3 EndPoint => RootPoint + Vector3.Transform(BaseOrientation, Rotation);
 
+        public Vector2 Root2D => new Vector2(RootPoint.X, RootPoint.Y);
+
+        public Vector2 End2D => new Vector2(EndPoint.X, EndPoint.Y);
+
         /// <summary>
         /// The "base orientation" of this bone -
         /// a vector (including magnitude) representing the orientation of
@@ -95,7 +99,7 @@ namespace kyoseki.Game.Kinematics
         {
             get
             {
-                if (Children.Length == 1)
+                if (Children?.Length == 1)
                 {
                     return Children[0];
                 }
@@ -144,7 +148,7 @@ namespace kyoseki.Game.Kinematics
         /// <param name="axis">The value to mirror</param>
         public Bone Mirror(MirrorAxes axis)
         {
-            Action<Bone> action = bone =>
+            Traverse(bone =>
             {
                 float x = bone.BaseOrientation.X;
                 float y = bone.BaseOrientation.Y;
@@ -164,9 +168,8 @@ namespace kyoseki.Game.Kinematics
                 }
 
                 bone.BaseOrientation = new Vector3(x, y, z);
-            };
+            });
 
-            Traverse(action);
             return this;
         }
 

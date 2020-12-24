@@ -1,5 +1,4 @@
 ﻿using osuTK;
-using System.Linq;
 
 namespace kyoseki.Game.Kinematics
 {
@@ -93,7 +92,7 @@ namespace kyoseki.Game.Kinematics
                     },
                     lower.Clone().ApplyPrefix("Left"),
                     lower.Clone().Mirror(MirrorAxes.X).ApplyPrefix("Right")
-                } 
+                }
             }
         };
     }

@@ -16,7 +16,7 @@ namespace kyoseki.Game.Kinematics.Drawables
             : base(source)
         {
         }
-      
+
         /// <summary>
         /// Draws a 3-axis diagram of a given rotation
         /// </summary>
@@ -72,11 +72,11 @@ namespace kyoseki.Game.Kinematics.Drawables
             var scale = drawQuad.Width / 240;
             var origin = drawQuad.Centre;
 
-            var rootScaled = bone.RootPoint * scale;
-            var endScaled = bone.EndPoint * scale;
+            var rootScaled = bone.Root2D * scale;
+            var endScaled = bone.End2D * scale;
 
-            var p1 = new Vector2(origin.X + rootScaled.X, origin.Y + rootScaled.Y);
-            var p2 = new Vector2(origin.X + endScaled.X, origin.Y + endScaled.Y);
+            var p1 = origin + rootScaled;
+            var p2 = origin + endScaled;
 
             DrawLine(Texture.WhitePixel, p1, p2, 5, Colour4.Blue);
 
@@ -87,7 +87,7 @@ namespace kyoseki.Game.Kinematics.Drawables
                 DrawPoint(Texture.WhitePixel, p2, quadSize, Colour4.Red);
 
             DrawAxes(p1, scale * 3, bone.Rotation);
-        } 
+        }
 
         /// <summary>
         /// Draws a bone - its root and end points, an axis diagram at the root, and a line connecting them
