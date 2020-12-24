@@ -63,7 +63,7 @@ namespace kyoseki.Game.Kinematics
         /// </summary>
         public Quaternion Rotation
         {
-            get => rotation * (Parent?.Rotation ?? Quaternion.Identity);
+            get => (Parent?.Rotation ?? Quaternion.Identity) * rotation;
             set => rotation = value;
         }
 
