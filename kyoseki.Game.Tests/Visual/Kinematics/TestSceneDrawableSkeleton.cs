@@ -27,7 +27,7 @@ namespace kyoseki.Game.Tests.Visual.Kinematics
 
             Action updateRotation = () =>
             {
-                hips.Rotation = Quaternion.FromEulerAngles(x, y, z);
+                hips.Rotation = System.Numerics.Quaternion.CreateFromYawPitchRoll(y, x, z);
             };
 
             AddSliderStep("HIPS X", 0, (float)Math.PI, 0, value =>

@@ -4,6 +4,7 @@ using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Graphics.Textures;
 using osuTK;
+using Vector3 = System.Numerics.Vector3; // feeling the pain yet?
 
 namespace kyoseki.Game.Kinematics.Drawables
 {
@@ -23,7 +24,7 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// <param name="origin">The origin point of these axes (where they intersect)</param>
         /// <param name="length">The length of each axis</param>
         /// <param name="rotation">A quaternion representing the rotation the axes should show</param>
-        public void DrawAxes(Vector2 origin, float length, Quaternion rotation)
+        public void DrawAxes(Vector2 origin, float length, System.Numerics.Quaternion rotation)
         {
             var x = new Vector3(1, 0, 0);
             var y = new Vector3(0, -1, 0);

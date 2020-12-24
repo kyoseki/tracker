@@ -1,4 +1,4 @@
-﻿using osuTK;
+﻿using System.Numerics;
 
 namespace kyoseki.Game.Kinematics
 {

@@ -1,11 +1,14 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using osuTK;
+using System.Numerics;
+using System.Linq;
 
 namespace kyoseki.Game.Kinematics
 {
-    [Serializable]
+    /// <summary>
+    /// A class representing basic information for joints in a skeleton.
+    /// 2D coordinates are provided using osuTK for compatability with osu!framework.
+    /// 3D vectors and quaternions are provided using System.Numerics as osuTK Quaternions are broken.
+    /// </summary>
     public class Bone
     {
         public string Name { get; set; }
@@ -42,9 +45,9 @@ namespace kyoseki.Game.Kinematics
         /// </summary>
         public Vector3 EndPoint => RootPoint + Vector3.Transform(BaseOrientation, Rotation);
 
-        public Vector2 Root2D => new Vector2(RootPoint.X, RootPoint.Y);
+        public osuTK.Vector2 Root2D => new osuTK.Vector2(RootPoint.X, RootPoint.Y);
 
-        public Vector2 End2D => new Vector2(EndPoint.X, EndPoint.Y);
+        public osuTK.Vector2 End2D => new osuTK.Vector2(EndPoint.X, EndPoint.Y);
 
         /// <summary>
         /// The "base orientation" of this bone -
@@ -83,6 +86,9 @@ namespace kyoseki.Game.Kinematics
             get => children;
             set
             {
+                if (value == null)
+                    return;
+
                 children = value;
                 foreach (var child in children)
                 {
@@ -126,19 +132,17 @@ namespace kyoseki.Game.Kinematics
         }
 
         /// <summary>
-        /// https://stackoverflow.com/questions/129389/how-do-you-do-a-deep-copy-of-an-object-in-net
-        /// Create a deep clone of this Bone
+        /// Create a clone of this Bone
         /// </summary>
         public Bone Clone()
         {
-            using (var ms = new MemoryStream())
+            return new Bone
             {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, this);
-                ms.Position = 0;
-
-                return (Bone)formatter.Deserialize(ms);
-            }
+                Name = Name,
+                BaseOrientation = BaseOrientation,
+                Parent = Parent,
+                Children = Children?.Select(c => c.Clone()).ToArray()
+            };
         }
 
         /// <summary>
