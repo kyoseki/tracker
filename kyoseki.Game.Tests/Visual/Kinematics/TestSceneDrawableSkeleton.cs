@@ -3,7 +3,6 @@ using kyoseki.Game.Kinematics;
 using kyoseki.Game.Kinematics.Drawables;
 using osu.Framework.Graphics;
 using osu.Framework.Testing;
-using osuTK;
 
 namespace kyoseki.Game.Tests.Visual.Kinematics
 {
@@ -27,10 +26,10 @@ namespace kyoseki.Game.Tests.Visual.Kinematics
                 var y = 0f;
                 var z = 0f;
 
-                Action updateRotation = () =>
+                void updateRotation()
                 {
                     bone.Rotation = System.Numerics.Quaternion.CreateFromYawPitchRoll(y, x, z);
-                };
+                }
 
                 AddSliderStep($"{bone.Name} X", 0, (float)Math.PI * 2, 0, value =>
                 {
