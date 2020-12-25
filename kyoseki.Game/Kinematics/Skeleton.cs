@@ -97,13 +97,10 @@ namespace kyoseki.Game.Kinematics
                             {
                                 Name = "Neck",
                                 BaseOrientation = new Vector3(0, -5, 0),
-                                Children = new Bone[]
+                                Child = new Bone
                                 {
-                                    new Bone
-                                    {
-                                        Name = "Head",
-                                        BaseOrientation = new Vector3(0, -10, 0)
-                                    }
+                                    Name = "Head",
+                                    BaseOrientation = new Vector3(0, -10, 0)
                                 }
                             },
                             upper.Clone().ApplyPrefix("Left"),
