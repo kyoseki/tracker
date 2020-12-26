@@ -124,6 +124,11 @@ namespace kyoseki.Game.Kinematics
         {
             get
             {
+                if (Children?.Length > 1)
+                {
+                    throw new InvalidOperationException($"Bone {Name} has multiple children, but an attempt was made to get a singular Child.");
+                }
+
                 if (Children?.Length == 1)
                 {
                     return Children[0];
@@ -131,10 +136,19 @@ namespace kyoseki.Game.Kinematics
 
                 return null;
             }
-            set => Children = new Bone[]
+            set
             {
-                value
-            };
+                if (value == null)
+                {
+                    Children = null;
+                    return;
+                }
+
+                Children = new Bone[]
+                {
+                    value
+                };
+            }
         }
 
         /// <summary>
