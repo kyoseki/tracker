@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Numerics;
 using System.Linq;
+using System.Numerics;
 
 namespace kyoseki.Game.Kinematics
 {
@@ -14,7 +14,7 @@ namespace kyoseki.Game.Kinematics
         public string Name { get; set; }
 
         /// <summary>
-        /// This bone's parent. Only gets set upon adding a bone as a child to another.
+        /// This bone's parent.
         /// </summary>
         public Bone Parent { get; private set; }
 
@@ -79,17 +79,36 @@ namespace kyoseki.Game.Kinematics
         /// <summary>
         /// List of children to this bone.
         /// All bones listed as children will have their <see cref="Parent"/> value set to this bone.
-        /// No adjustments are reversed if the child is removed.
         /// </summary>
         public Bone[] Children
         {
             get => children;
             set
             {
+                if (HasChildren)
+                {
+                    foreach (var child in children)
+                    {
+                        child.Parent = null;
+                    }
+                }
+
                 if (value == null)
+                {
+                    children = null;
                     return;
+                }
+
+                foreach (var child in value)
+                {
+                    if (!child.IsRoot)
+                    {
+                        throw new InvalidOperationException($"Bone {child.Name} already has a parent, and cannot be the child of multiple bones");
+                    }
+                }
 
                 children = value;
+
                 foreach (var child in children)
                 {
                     child.Parent = this;
@@ -140,7 +159,6 @@ namespace kyoseki.Game.Kinematics
             {
                 Name = Name,
                 BaseOrientation = BaseOrientation,
-                Parent = Parent,
                 Children = Children?.Select(c => c.Clone()).ToArray()
             };
         }
