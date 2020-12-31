@@ -29,6 +29,10 @@ namespace kyoseki.Game
         private void load()
         {
             Resources.AddStore(new DllResourceStore(typeof(kyosekiResources).Assembly));
+
+            AddFont(Resources, @"Fonts/Manrope");
+            AddFont(Resources, @"Fonts/Manrope-Bold");
+            AddFont(Resources, @"Fonts/JetbrainsMono");
         }
     }
 }
