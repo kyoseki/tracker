@@ -14,7 +14,7 @@ namespace kyoseki.Game.Tests.Visual.UI.SerialMonitor
                 RelativeSizeAxes = Axes.Both,
                 Children = new Drawable[]
                 {
-                    new Message(MessageDirection.Incoming, "Message from device"),
+                    new Message(MessageDirection.Incoming, "Message from device\n12345\nABCDE"),
                     new Message(MessageDirection.Outgoing, "Message to device")
                 }
             });

@@ -32,6 +32,8 @@ namespace kyoseki.Game.UI.SerialMonitor
             Content = content;
         }
 
+        private TextFlowContainer textFlow;
+
         [BackgroundDependencyLoader]
         private void load()
         {
@@ -50,7 +52,7 @@ namespace kyoseki.Game.UI.SerialMonitor
                         },
                         new SpriteText
                         {
-                            Font = new FontUsage(size: pill_font_size),
+                            Font = new FontUsage("Manrope", size: pill_font_size, weight: "Bold"),
                             Text = drawInfo.Abbreviation,
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
@@ -72,13 +74,15 @@ namespace kyoseki.Game.UI.SerialMonitor
                     {
                         Left = pill_width + 5
                     },
-                    Child = new SpriteText
+                    Child = textFlow = new TextFlowContainer
                     {
-                        Font = new FontUsage(size: content_font_size),
-                        Text = Content
+                        RelativeSizeAxes = Axes.X,
+                        AutoSizeAxes = Axes.Y
                     }
                 }
             };
+
+            textFlow.AddText(Content, t => t.Font = new FontUsage("JetbrainsMono", size: content_font_size));
         }
         private MessageDrawInfo getDrawInfo(MessageDirection direction)
         {
