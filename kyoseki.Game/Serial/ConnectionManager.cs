@@ -85,6 +85,11 @@ namespace kyoseki.Game.Serial
                             }
                             catch (TimeoutException _) { }
                             catch (OperationCanceledException _) { }
+                            catch (UnauthorizedAccessException _)
+                            {
+                                State.Value = ConnectionState.Resetting;
+                                Logger.Log($"Lost connection to {port.PortName}", LoggingTarget.Network);
+                            }
                         }
                         break;
                     case ConnectionState.Resetting:
