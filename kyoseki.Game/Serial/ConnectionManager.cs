@@ -16,7 +16,7 @@ namespace kyoseki.Game.Serial
 
         public Bindable<ConnectionState> State = new Bindable<ConnectionState>(ConnectionState.Resetting);
 
-        public event Action<string, string> MessageReceived;
+        public event Action<MessageInfo> MessageReceived;
 
         public ConnectionManager()
         {
@@ -52,7 +52,11 @@ namespace kyoseki.Game.Serial
                                 {
                                     var message = port.ReadLine().Replace(port.NewLine, string.Empty);
 
-                                    MessageReceived?.Invoke(port.PortName, message);
+                                    MessageReceived?.Invoke(new MessageInfo
+                                    {
+                                        Port = port.PortName,
+                                        Content = message
+                                    });
 
                                     iter++;
                                 }
@@ -102,6 +106,13 @@ namespace kyoseki.Game.Serial
 
             ports.ForEach(p => p.Dispose());
         }
+    }
+
+    public class MessageInfo
+    {
+        public string Port { get; set; }
+
+        public string Content { get; set; }
     }
 
     public enum ConnectionState

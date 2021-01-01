@@ -38,11 +38,11 @@ namespace kyoseki.Game.Kinematics.Drawables
             serialConnections.MessageReceived -= handleMessage;
         }
 
-        private void handleMessage(string port, string msg)
+        private void handleMessage(MessageInfo msg)
         {
-            if (port == this.port || this.port == null)
+            if (msg.Port == port || port == null)
             {
-                var segments = msg.Split(" ");
+                var segments = msg.Content.Split(" ");
 
                 if (segments.Length == 6)
                 {
@@ -62,7 +62,7 @@ namespace kyoseki.Game.Kinematics.Drawables
                             );
                     }
 
-                    this.port ??= port;
+                    port ??= port;
                 }
             }
         }
