@@ -12,12 +12,15 @@ namespace kyoseki.Game.Serial
     {
         private readonly CancellationTokenSource cancellationToken = new CancellationTokenSource();
 
+        public List<string> PortNames = new List<string>();
+
         private List<SerialPort> ports = new List<SerialPort>();
 
         public Bindable<ConnectionState> State = new Bindable<ConnectionState>(ConnectionState.Resetting);
 
         public event Action<MessageInfo> MessageReceived;
 
+        public event Action PortsUpdated;
         public ConnectionManager()
         {
             var thread = new Thread(run)
@@ -68,7 +71,17 @@ namespace kyoseki.Game.Serial
                         ports.ForEach(p => p.Dispose());
                         ports.Clear();
 
-                        foreach (var port in SerialPort.GetPortNames())
+                        var newPorts = SerialPort.GetPortNames();
+
+                        lock (PortNames)
+                        {
+                            PortNames.Clear();
+                            PortNames.AddRange(newPorts);
+
+                            PortsUpdated?.Invoke();
+                        }
+
+                        foreach (var port in newPorts)
                         {
                             Logger.Log($"Connecting to serial port {port}", LoggingTarget.Network);
 
