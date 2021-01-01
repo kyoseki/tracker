@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
 using System.Threading;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Logging;
+using osu.Framework.Threading;
 
 namespace kyoseki.Game.Serial
 {
@@ -21,6 +23,9 @@ namespace kyoseki.Game.Serial
         public event Action<MessageInfo> MessageReceived;
 
         public event Action PortsUpdated;
+
+        private Scheduler scheduler;
+
         public ConnectionManager()
         {
             var thread = new Thread(run)
@@ -32,8 +37,22 @@ namespace kyoseki.Game.Serial
             thread.Start();
         }
 
+        private void lookForPorts()
+        {
+            bool newPorts = !SerialPort.GetPortNames().All(p => PortNames.Contains(p));
+
+            if (newPorts)
+            {
+                Logger.Log("New serial ports detected");
+                State.Value = ConnectionState.Resetting;
+            }
+        }
+
         private void run()
         {
+            scheduler = new Scheduler();
+            scheduler.AddDelayed(lookForPorts, 2500, true);
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 switch (State.Value)
@@ -108,6 +127,8 @@ namespace kyoseki.Game.Serial
                         State.Value = ConnectionState.Ready;
                         break;
                 }
+
+                scheduler.Update();
             }
         }
 
