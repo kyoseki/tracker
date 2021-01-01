@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using kyoseki.Game.Serial;
-using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 
@@ -8,15 +6,15 @@ namespace kyoseki.Game.UI.SerialMonitor
 {
     public class SerialChannel : Container
     {
-        private ConnectionManager serialConnections;
+        private readonly BasicScrollContainer scroll;
 
-        private BasicScrollContainer scroll;
-        private FillFlowContainer<Message> messageFlow;
+        private readonly FillFlowContainer<Message> messageFlow;
 
-        [BackgroundDependencyLoader]
-        private void load(ConnectionManager serialConnections)
+        public readonly string Port;
+
+        public SerialChannel(string port)
         {
-            this.serialConnections = serialConnections;
+            Port = port;
 
             Child = scroll = new BasicScrollContainer
             {
@@ -29,28 +27,19 @@ namespace kyoseki.Game.UI.SerialMonitor
                     Direction = FillDirection.Vertical
                 }
             };
-
-            serialConnections.MessageReceived += handleMessage;
         }
 
-        private void handleMessage(MessageInfo msg) => Schedule(() =>
+        public void AddMessage(MessageDirection direction, string msg) => Schedule(() =>
         {
-            messageFlow.Add(new Message(MessageDirection.Incoming, $"[{msg.Port}] {msg.Content}"));
+            messageFlow.Add(new Message(direction, msg));
 
             if (messageFlow.Count > 150)
             {
                 messageFlow.RemoveRange(messageFlow.Children.Take(messageFlow.Count - 150));
             }
 
-            if (scroll.IsScrolledToEnd(messageFlow.DrawHeight / 4))
+            if (scroll.IsScrolledToEnd(messageFlow.DrawHeight / 6))
                 scroll.ScrollToEnd();
         });
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            serialConnections.MessageReceived -= handleMessage;
-        }
     }
 }
