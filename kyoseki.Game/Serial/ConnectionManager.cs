@@ -22,7 +22,7 @@ namespace kyoseki.Game.Serial
 
         public event Action<MessageInfo> MessageReceived;
 
-        public event Action PortsUpdated;
+        public event Action<string[], string[]> PortsUpdated;
 
         private Scheduler scheduler;
 
@@ -100,10 +100,13 @@ namespace kyoseki.Game.Serial
 
                         lock (PortNames)
                         {
+                            var added = newPorts.Where(p => !PortNames.Contains(p)).ToArray();
+                            var removed = PortNames.Where(p => !newPorts.Contains(p)).ToArray();
+
                             PortNames.Clear();
                             PortNames.AddRange(newPorts);
 
-                            PortsUpdated?.Invoke();
+                            PortsUpdated?.Invoke(added, removed);
                         }
 
                         foreach (var port in newPorts)
