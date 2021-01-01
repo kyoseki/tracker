@@ -1,4 +1,5 @@
 using kyoseki.Game.Kinematics.Drawables;
+using kyoseki.Game.UI.SerialMonitor;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -15,6 +16,10 @@ namespace kyoseki.Game
         {
             InternalChildren = new Drawable[]
             {
+                new SerialChannel
+                {
+                    RelativeSizeAxes = Axes.Both
+                },
                 new SensorView
                 {
                     RelativeSizeAxes = Axes.Both
