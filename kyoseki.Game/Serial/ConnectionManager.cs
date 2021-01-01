@@ -74,7 +74,15 @@ namespace kyoseki.Game.Serial
                                 ReadTimeout = 1
                             };
 
-                            s.Open();
+                            try
+                            {
+                                s.Open();
+                            }
+                            catch (UnauthorizedAccessException _)
+                            {
+                                Logger.Log($"Access to port {port} denied", LoggingTarget.Network);
+                                continue;
+                            }
                             s.BaseStream.Flush();
 
                             ports.Add(s);
