@@ -84,6 +84,7 @@ namespace kyoseki.Game.Serial
                                 }
                             }
                             catch (TimeoutException _) { }
+                            catch (OperationCanceledException _) { }
                         }
                         break;
                     case ConnectionState.Resetting:
