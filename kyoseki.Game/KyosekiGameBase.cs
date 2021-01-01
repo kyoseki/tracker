@@ -1,3 +1,4 @@
+using kyoseki.Game.Serial;
 using kyoseki.Resources;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -9,6 +10,10 @@ namespace kyoseki.Game
 {
     public class KyosekiGameBase : osu.Framework.Game
     {
+        protected ConnectionManager SerialConnections;
+
+        private DependencyContainer dependencies;
+
         // Anything in this class is shared between the test browser and the game implementation.
         // It allows for caching global dependencies that should be accessible to tests, or changing
         // the screen scaling for all components including the test browser and framework overlays.
@@ -25,6 +30,9 @@ namespace kyoseki.Game
             });
         }
 
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
+            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+
         [BackgroundDependencyLoader]
         private void load()
         {
@@ -33,6 +41,10 @@ namespace kyoseki.Game
             AddFont(Resources, @"Fonts/Manrope");
             AddFont(Resources, @"Fonts/Manrope-Bold");
             AddFont(Resources, @"Fonts/JetbrainsMono");
+
+            dependencies.CacheAs(SerialConnections = new ConnectionManager());
+
+            AddInternal(SerialConnections);
         }
     }
 }
