@@ -35,7 +35,8 @@ namespace kyoseki.Game.UI.Buttons
             {
                 Background = new Box
                 {
-                    RelativeSizeAxes = Axes.Both
+                    RelativeSizeAxes = Axes.Both,
+                    Colour = KyosekiColors.BUTTON_BACKGROUND
                 },
                 Content = new Container
                 {
@@ -48,7 +49,7 @@ namespace kyoseki.Game.UI.Buttons
                 {
                     Alpha = 0,
                     RelativeSizeAxes = Axes.Both,
-                    Colour = Colour4.White.Opacity(0.3f)
+                    Colour = Colour4.White.Opacity(0.1f)
                 }
             }));
         }
@@ -67,7 +68,7 @@ namespace kyoseki.Game.UI.Buttons
 
         protected override bool OnClick(ClickEvent e)
         {
-            Background.FlashColour(Colour4.White.Opacity(0.5f), 200);
+            Background.FlashColour(KyosekiColors.BUTTON_SELECTED, 200);
             return base.OnClick(e);
         }
     }

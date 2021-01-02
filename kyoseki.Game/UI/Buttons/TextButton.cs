@@ -26,7 +26,8 @@ namespace kyoseki.Game.UI.Buttons
             {
                 Truncate = true,
                 Anchor = Anchor.Centre,
-                Origin = Anchor.Centre
+                Origin = Anchor.Centre,
+                Colour = KyosekiColors.FOREGROUND
             };
         }
     }

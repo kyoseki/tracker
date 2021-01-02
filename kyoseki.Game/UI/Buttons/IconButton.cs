@@ -19,6 +19,12 @@ namespace kyoseki.Game.UI.Buttons
             set => spriteIcon.Colour = value;
         }
 
+        public Vector2 IconSize
+        {
+            get => spriteIcon.Size;
+            set => spriteIcon.Size = value;
+        }
+
         private SpriteIcon spriteIcon;
 
         public IconButton()
@@ -28,7 +34,8 @@ namespace kyoseki.Game.UI.Buttons
                 RelativeSizeAxes = Axes.Both,
                 Size = new Vector2(0.75f),
                 Anchor = Anchor.Centre,
-                Origin = Anchor.Centre
+                Origin = Anchor.Centre,
+                Colour = KyosekiColors.FOREGROUND
             };
         }
     }

@@ -17,9 +17,11 @@ namespace kyoseki.Game.UI.SerialMonitor
         private const int pill_height = pill_font_size + 5;
 
         public const int HEIGHT = pill_height;
+        public const int MARGIN = 5;
 
         private const int content_font_size = 12;
 
+        private CircularContainer pillContainer;
         private Box pill;
         private SpriteText pillText;
 
@@ -36,6 +38,7 @@ namespace kyoseki.Game.UI.SerialMonitor
 
                 var drawInfo = getDrawInfo(item.Direction);
 
+                pillContainer.FadeIn(200, Easing.InQuint);
                 pill.Colour = drawInfo.Colour;
                 pillText.Text = drawInfo.Abbreviation;
 
@@ -51,8 +54,9 @@ namespace kyoseki.Game.UI.SerialMonitor
 
             InternalChildren = new Drawable[]
             {
-                new CircularContainer
+                pillContainer = new CircularContainer
                 {
+                    Alpha = 0,
                     Size = new Vector2(pill_width, pill_height),
                     Masking = true,
                     Children = new Drawable[]

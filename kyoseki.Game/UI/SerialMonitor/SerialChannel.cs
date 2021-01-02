@@ -103,7 +103,7 @@ namespace kyoseki.Game.UI.SerialMonitor
             {
                 msg.ChannelYPosition = currentY;
 
-                currentY += Message.HEIGHT;
+                currentY += Message.HEIGHT + Message.MARGIN;
             }
 
             scroll.ScrollContent.Height = currentY;
@@ -127,16 +127,14 @@ namespace kyoseki.Game.UI.SerialMonitor
                     RelativeSizeAxes = Axes.Both,
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Margin = new MarginPadding(2),
                     Masking = true
                 };
 
             public ScrollToBottomButton()
             {
                 Icon = FontAwesome.Solid.ChevronDown;
-                IconColour = Colour4.Black;
-                BackgroundColour = Colour4.LightGray;
-                Size = new Vector2(50);
+                IconSize = new Vector2(0.6f);
+                Size = new Vector2(40);
             }
         }
 

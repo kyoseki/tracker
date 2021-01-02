@@ -23,8 +23,6 @@ namespace kyoseki.Game
                 },
                 new TextButton
                 {
-                    Colour = Colour4.LightGray,
-                    TextColour = Colour4.Black,
                     Size = new Vector2(100, 25),
                     Anchor = Anchor.TopLeft,
                     Origin = Anchor.TopLeft,

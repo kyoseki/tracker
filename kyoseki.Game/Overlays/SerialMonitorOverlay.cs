@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using kyoseki.Game.Serial;
+using kyoseki.Game.UI;
 using kyoseki.Game.UI.Buttons;
 using kyoseki.Game.UI.SerialMonitor;
 using osu.Framework.Allocation;
@@ -44,7 +45,7 @@ namespace kyoseki.Game.Overlays
             {
                 new Box
                 {
-                    Colour = Colour4.FromHex("5454547f"),
+                    Colour = KyosekiColors.BACKGROUND.Darken(0.2f).Opacity(0.5f),
                     RelativeSizeAxes = Axes.Both
                 },
                 new Container
@@ -59,7 +60,7 @@ namespace kyoseki.Game.Overlays
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = Colour4.FromHex("3838387f")
+                            Colour = KyosekiColors.BACKGROUND.Opacity(0.5f)
                         },
                         tabContent = new Container { RelativeSizeAxes = Axes.Both }
                     }
@@ -68,9 +69,8 @@ namespace kyoseki.Game.Overlays
                 new IconButton
                 {
                     Icon = FontAwesome.Solid.Times,
-                    Size = new Vector2(20),
-                    BackgroundColour = Colour4.LightGray,
-                    IconColour = Colour4.Black,
+                    IconSize = new Vector2(0.6f),
+                    Size = new Vector2(SerialTabControl.HEIGHT),
                     Action = () =>
                     {
                         Hide();

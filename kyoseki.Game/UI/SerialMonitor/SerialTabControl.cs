@@ -7,7 +7,9 @@ namespace kyoseki.Game.UI.SerialMonitor
 {
     public class SerialTabControl : TabControl<string>
     {
-        public const float HEIGHT = 30;
+        public const float HEIGHT = 25;
+
+        private const int fade_duration = 100;
 
         public SerialTabControl()
         {
@@ -33,38 +35,38 @@ namespace kyoseki.Game.UI.SerialMonitor
                 Anchor = Anchor.TopLeft;
                 Origin = Anchor.TopLeft;
 
-                Width = 100;
+                Width = 80;
 
                 InternalChildren = new Drawable[]
                 {
                     background = new Box
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Colour = Colour4.LightGray
+                        Colour = KyosekiColors.BUTTON_BACKGROUND
                     },
                     text = new SpriteText
                     {
+                        Font = new FontUsage(size: HEIGHT - 5),
                         Origin = Anchor.Centre,
                         Anchor = Anchor.Centre,
                         Text = value,
                         Padding = new MarginPadding(5),
-                        RelativeSizeAxes = Axes.Y,
                         Truncate = true,
-                        Colour = Colour4.Gray
+                        Colour = KyosekiColors.FOREGROUND
                     }
                 };
             }
 
             protected override void OnActivated()
             {
-                text.FadeColour(Colour4.White, 25, Easing.In);
-                background.FadeColour(Colour4.DarkGray, 25, Easing.In);
+                text.FadeColour(KyosekiColors.FOREGROUND_SELECTED, fade_duration, Easing.In);
+                background.FadeColour(KyosekiColors.BUTTON_SELECTED, fade_duration, Easing.In);
             }
 
             protected override void OnDeactivated()
             {
-                text.FadeColour(Colour4.Gray, 25, Easing.OutQuint);
-                background.FadeColour(Colour4.LightGray, 25, Easing.OutQuint);
+                text.FadeColour(KyosekiColors.FOREGROUND, fade_duration, Easing.OutQuint);
+                background.FadeColour(KyosekiColors.BUTTON_BACKGROUND, fade_duration, Easing.OutQuint);
             }
         }
     }
