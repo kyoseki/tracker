@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
+using kyoseki.Game.UI.SerialMonitor;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Logging;
@@ -77,7 +78,9 @@ namespace kyoseki.Game.Serial
                                     MessageReceived?.Invoke(new MessageInfo
                                     {
                                         Port = port.PortName,
-                                        Content = message
+                                        Content = message,
+                                        Direction = MessageDirection.Incoming,
+                                        Timestamp = DateTime.Now
                                     });
 
                                     iter++;
@@ -156,6 +159,10 @@ namespace kyoseki.Game.Serial
         public string Port { get; set; }
 
         public string Content { get; set; }
+
+        public MessageDirection Direction { get; set; }
+
+        public DateTime Timestamp { get; set; }
     }
 
     public enum ConnectionState
