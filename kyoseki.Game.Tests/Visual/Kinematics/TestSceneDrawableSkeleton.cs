@@ -12,7 +12,6 @@ namespace kyoseki.Game.Tests.Visual.Kinematics
         {
             var skeleton = Skeleton.DEFAULT_SKELETON;
 
-            var hips = skeleton.GetBone("Hips");
             Add(new DrawableSkeleton(Skeleton.DEFAULT_SKELETON)
             {
                 RelativeSizeAxes = Axes.Both,
