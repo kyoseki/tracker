@@ -1,4 +1,5 @@
-﻿using kyoseki.Game.UI.SerialMonitor;
+﻿using kyoseki.Game.Serial;
+using kyoseki.Game.UI.SerialMonitor;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Testing;
@@ -14,8 +15,22 @@ namespace kyoseki.Game.Tests.Visual.UI.SerialMonitor
                 RelativeSizeAxes = Axes.Both,
                 Children = new Drawable[]
                 {
-                    new Message(MessageDirection.Incoming, "Message from device\n12345\nABCDE"),
-                    new Message(MessageDirection.Outgoing, "Message to device")
+                    new Message
+                    {
+                        Item = new MessageInfo
+                        {
+                            Direction = MessageDirection.Incoming,
+                            Content = "Message from device"
+                        }
+                    },
+                    new Message
+                    {
+                        Item = new MessageInfo
+                        {
+                            Direction = MessageDirection.Outgoing,
+                            Content = "Message to device"
+                        }
+                    }
                 }
             });
         }
