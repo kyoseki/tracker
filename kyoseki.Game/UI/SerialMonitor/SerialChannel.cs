@@ -158,6 +158,13 @@ namespace kyoseki.Game.UI.SerialMonitor
                 base.OnUserScroll(value, animated, distanceDecay);
             }
 
+            protected override void Update()
+            {
+                UserScrolling.Value |= Scrollbar.IsDragged;
+
+                base.Update();
+            }
+
             public void ResetScroll() => UserScrolling.Value = false;
 
             private class ChannelScrollbar : ScrollbarContainer
