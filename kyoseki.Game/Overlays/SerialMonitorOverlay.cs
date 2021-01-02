@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using kyoseki.Game.Serial;
+using kyoseki.Game.UI.Buttons;
 using kyoseki.Game.UI.SerialMonitor;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -64,8 +65,12 @@ namespace kyoseki.Game.Overlays
                     }
                 },
                 tabControl = new SerialTabControl(),
-                new CloseButton
+                new IconButton
                 {
+                    Icon = FontAwesome.Solid.Times,
+                    Size = new Vector2(20),
+                    BackgroundColour = Colour4.LightGray,
+                    IconColour = Colour4.Black,
                     Action = () =>
                     {
                         Hide();

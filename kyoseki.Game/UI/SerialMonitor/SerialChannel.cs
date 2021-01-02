@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using kyoseki.Game.Serial;
+using kyoseki.Game.UI.Buttons;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Pooling;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics.UserInterface;
 using osuTK;
 
 namespace kyoseki.Game.UI.SerialMonitor
@@ -22,7 +22,7 @@ namespace kyoseki.Game.UI.SerialMonitor
 
         private readonly List<MessageInfo> messages = new List<MessageInfo>();
 
-        private BasicButton continueAutoscroll;
+        private ScrollToBottomButton continueAutoscroll;
 
         public SerialChannel(string port)
         {
@@ -36,18 +36,11 @@ namespace kyoseki.Game.UI.SerialMonitor
                     ScrollbarVisible = true,
                     RelativeSizeAxes = Axes.Both
                 },
-                continueAutoscroll = new BasicButton
+                continueAutoscroll = new ScrollToBottomButton
                 {
-                    Size = new Vector2(50),
                     Anchor = Anchor.BottomRight,
                     Origin = Anchor.BottomRight,
-                    Colour = Colour4.Gray,
                     Alpha = 0,
-                    Child = new SpriteIcon
-                    {
-                        Icon = FontAwesome.Solid.CaretDown,
-                        RelativeSizeAxes = Axes.Both
-                    },
                     Action = () =>
                     {
                         scroll.ResetScroll();
@@ -58,13 +51,9 @@ namespace kyoseki.Game.UI.SerialMonitor
             scroll.UserScrolling.ValueChanged += e =>
             {
                 if (e.NewValue)
-                {
                     continueAutoscroll.FadeIn(50, Easing.InQuint);
-                }
                 else
-                {
                     continueAutoscroll.FadeOut(50, Easing.OutQuint);
-                }
             };
         }
 
@@ -129,6 +118,27 @@ namespace kyoseki.Game.UI.SerialMonitor
                 scroll.ScrollToEnd();
             }
         });
+
+        private class ScrollToBottomButton : IconButton
+        {
+            protected override Container CreateContent() =>
+                new CircularContainer
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Margin = new MarginPadding(2),
+                    Masking = true
+                };
+
+            public ScrollToBottomButton()
+            {
+                Icon = FontAwesome.Solid.ChevronDown;
+                IconColour = Colour4.Black;
+                BackgroundColour = Colour4.LightGray;
+                Size = new Vector2(50);
+            }
+        }
 
         private class ChannelScrollContainer : ScrollContainer<Message>
         {

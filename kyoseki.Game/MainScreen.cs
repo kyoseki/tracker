@@ -1,10 +1,10 @@
 using kyoseki.Game.Kinematics.Drawables;
 using kyoseki.Game.Overlays;
-using kyoseki.Game.UI.SerialMonitor;
+using kyoseki.Game.UI.Buttons;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Screens;
+using osuTK;
 
 namespace kyoseki.Game
 {
@@ -21,17 +21,15 @@ namespace kyoseki.Game
                 {
                     RelativeSizeAxes = Axes.Both
                 },
+                new TextButton
                 {
-                new BasicButton
-                {
-                    AutoSizeAxes = Axes.Both,
+                    Colour = Colour4.LightGray,
+                    TextColour = Colour4.Black,
+                    Size = new Vector2(100, 25),
                     Anchor = Anchor.TopLeft,
                     Origin = Anchor.TopLeft,
                     Text = "Open Serial",
-                    Action = () =>
-                    {
-                        serial?.Show();
-                    }
+                    Action = () => serial?.Show()
                 },
                 serial = new SerialMonitorOverlay()
             };
