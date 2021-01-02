@@ -44,7 +44,7 @@ namespace kyoseki.Game.Serial
 
             if (newPorts)
             {
-                Logger.Log("New serial ports detected");
+                Logger.Log("New serial ports detected", LoggingTarget.Network);
                 State.Value = ConnectionState.Resetting;
             }
         }
