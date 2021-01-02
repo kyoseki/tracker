@@ -1,42 +1,54 @@
 ﻿using System;
-using osu.Framework.Allocation;
+using kyoseki.Game.Serial;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Pooling;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osuTK;
 
 namespace kyoseki.Game.UI.SerialMonitor
 {
-    public class Message : CompositeDrawable
+    public class Message : PoolableDrawable
     {
         private const int pill_font_size = 10;
         private const int pill_width = 30;
         private const int pill_height = pill_font_size + 5;
 
+        public const int HEIGHT = pill_height;
+
         private const int content_font_size = 12;
 
-        public readonly MessageDirection Direction;
+        private Box pill;
+        private SpriteText pillText;
 
-        public readonly string Content;
+        private TextFlowContainer textFlow;
 
-        private MessageDrawInfo drawInfo => getDrawInfo(Direction);
+        private MessageInfo item;
 
-        public Message(MessageDirection direction, string content)
+        public MessageInfo Item
+        {
+            get => item;
+            set
+            {
+                item = value;
+
+                var drawInfo = getDrawInfo(item.Direction);
+
+                pill.Colour = drawInfo.Colour;
+                pillText.Text = drawInfo.Abbreviation;
+
+                textFlow.Clear();
+                textFlow.AddText(item.Content, t => t.Font = new FontUsage("JetbrainsMono", size: content_font_size));
+            }
+        }
+
+        public Message()
         {
             RelativeSizeAxes = Axes.X;
             AutoSizeAxes = Axes.Y;
 
-            Direction = direction;
-            Content = content;
-        }
-
-        private TextFlowContainer textFlow;
-
-        [BackgroundDependencyLoader]
-        private void load()
-        {
             InternalChildren = new Drawable[]
             {
                 new CircularContainer
@@ -45,15 +57,13 @@ namespace kyoseki.Game.UI.SerialMonitor
                     Masking = true,
                     Children = new Drawable[]
                     {
-                        new Box
+                        pill = new Box
                         {
-                            RelativeSizeAxes = Axes.Both,
-                            Colour = drawInfo.Colour
+                            RelativeSizeAxes = Axes.Both
                         },
-                        new SpriteText
+                        pillText = new SpriteText
                         {
                             Font = new FontUsage("Manrope", size: pill_font_size, weight: "Bold"),
-                            Text = drawInfo.Abbreviation,
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
                             Padding = new MarginPadding
@@ -81,9 +91,8 @@ namespace kyoseki.Game.UI.SerialMonitor
                     }
                 }
             };
-
-            textFlow.AddText(Content, t => t.Font = new FontUsage("JetbrainsMono", size: content_font_size));
         }
+
         private MessageDrawInfo getDrawInfo(MessageDirection direction)
         {
             switch (direction)

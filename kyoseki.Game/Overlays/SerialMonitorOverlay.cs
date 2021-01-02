@@ -112,7 +112,7 @@ namespace kyoseki.Game.Overlays
         private void handleMessage(MessageInfo msg) => Schedule(() =>
         {
             var channel = loadedChannels.Find(c => c.Port == msg.Port);
-            channel.AddMessage(MessageDirection.Incoming, msg.Content);
+            channel.AddMessage(msg);
         });
 
         protected override void PopIn()

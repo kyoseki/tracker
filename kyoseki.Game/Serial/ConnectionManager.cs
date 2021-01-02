@@ -163,6 +163,8 @@ namespace kyoseki.Game.Serial
         public MessageDirection Direction { get; set; }
 
         public DateTime Timestamp { get; set; }
+
+        public float ChannelYPosition { get; set; }
     }
 
     public enum ConnectionState
