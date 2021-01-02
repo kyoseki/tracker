@@ -8,7 +8,18 @@
 #include <MPU6050_6Axis_MotionApps20.h>
 #include <Wire.h>
 
+#ifdef USE_INTERRUPT
 #define INTERRUPT_PIN 14
+
+uint8_t mpuIntStatus;
+uint16_t fifoCount;
+uint16_t packetSize;
+
+volatile bool mpuInterrupt = false;
+void ICACHE_RAM_ATTR dmpDataReady() {
+    mpuInterrupt = true;
+}
+#endif
 
 transmitterConfig config;
 
@@ -16,19 +27,11 @@ dataPacket data;
 
 MPU6050 mpu;
 
-uint8_t mpuIntStatus;
 uint8_t fifoBuffer[64];
-uint16_t fifoCount;
-uint16_t packetSize;
 
 Quaternion q;
 
 bool dmpReady = false;
-
-volatile bool mpuInterrupt = false;
-void ICACHE_RAM_ATTR dmpDataReady() {
-    mpuInterrupt = true;
-}
 
 void setup() {
     Serial.begin(115200);
@@ -74,7 +77,10 @@ void setup() {
 
     Serial.println("Initializing MPU...");
     mpu.initialize();
+
+    #ifdef USE_INTERRUPT
     pinMode(INTERRUPT_PIN, INPUT);
+    #endif
 
     Serial.print("Testing MPU connection... ");
     if (mpu.testConnection()) {
@@ -96,14 +102,18 @@ void setup() {
         Serial.println("Enabling DMP...");
         mpu.setDMPEnabled(true);
 
+        #ifdef USE_INTERRUPT
         Serial.print("Receiving interrupts from pin ");
         Serial.println(digitalPinToInterrupt(INTERRUPT_PIN));
         attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
         mpuIntStatus = mpu.getIntStatus();
+        #endif
 
         dmpReady = true;
 
+        #ifdef USE_INTERRUPT
         packetSize = mpu.dmpGetFIFOPacketSize();
+        #endif
     }
 
     WiFi.mode(WIFI_STA);
@@ -120,6 +130,7 @@ void setup() {
 void loop() {
     if (!dmpReady) return;
 
+    #ifdef USE_INTERRUPT
     if (!mpuInterrupt && fifoCount < packetSize) return;
 
     mpuInterrupt = false;
@@ -145,4 +156,15 @@ void loop() {
 
         esp_now_send(NULL, (uint8_t*)&data, sizeof(data));
     }
+    #else
+    if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
+        mpu.dmpGetQuaternion(&q, fifoBuffer);
+        data.x = q.x;
+        data.y = q.y;
+        data.z = q.z;
+        data.w = q.w;
+
+        esp_now_send(NULL, (uint8_t*)&data, sizeof(data));
+    }
+    #endif
 }
