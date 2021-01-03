@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Numerics;
 using kyoseki.Game.Serial;
-using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.OpenGL.Vertices;
@@ -13,59 +12,24 @@ namespace kyoseki.Game.Kinematics.Drawables
     {
         private Bindable<Quaternion> orientation = new Bindable<Quaternion>(Quaternion.Identity);
 
-        private string port;
+        private SensorLink link;
 
-        private int? bodyId;
-
-        private int? sensorId;
-
-        [Resolved]
-        private ConnectionManager serialConnections { get; set; }
-
-        protected override DrawNode CreateDrawNode() => new SensorViewDrawNode(this);
-
-        protected override void LoadComplete()
+        public SensorLink Link
         {
-            base.LoadComplete();
-
-            serialConnections.MessageReceived += handleMessage;
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            serialConnections.MessageReceived -= handleMessage;
-        }
-
-        private void handleMessage(MessageInfo msg)
-        {
-            if (msg.Port == port || port == null)
+            get => link;
+            set
             {
-                var segments = msg.Content.Split(" ");
-
-                if (segments.Length == 6)
+                if (value == null)
                 {
-                    var bodyId = int.Parse(segments[0]);
-                    var sensorId = int.Parse(segments[1]);
-
-                    this.bodyId ??= bodyId;
-                    this.sensorId ??= sensorId;
-
-                    if (bodyId == this.bodyId && sensorId == this.sensorId)
-                    {
-                        orientation.Value = new Quaternion(
-                            float.Parse(segments[3]),
-                            float.Parse(segments[4]),
-                            float.Parse(segments[5]),
-                            float.Parse(segments[2])
-                            );
-                    }
-
-                    port ??= port;
+                    link = null;
+                    orientation.UnbindBindings();
                 }
+                link = value;
+                orientation.BindTarget = link.CalibratedOrientation;
             }
         }
+
+        protected override DrawNode CreateDrawNode() => new SensorViewDrawNode(this);
 
         private class SensorViewDrawNode : KinematicsDrawNode
         {

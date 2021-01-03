@@ -12,6 +12,8 @@ namespace kyoseki.Game
     {
         protected ConnectionManager SerialConnections;
 
+        protected SensorLinkManager SensorLinks;
+
         private DependencyContainer dependencies;
 
         // Anything in this class is shared between the test browser and the game implementation.
@@ -43,8 +45,10 @@ namespace kyoseki.Game
             AddFont(Resources, @"Fonts/JetbrainsMono");
 
             dependencies.CacheAs(SerialConnections = new ConnectionManager());
-
             AddInternal(SerialConnections);
+
+            dependencies.CacheAs(SensorLinks = new SensorLinkManager());
+            AddInternal(SensorLinks);
         }
     }
 }
