@@ -11,13 +11,10 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics.UserInterface;
-using osu.Framework.Input.Events;
 using osuTK;
 
 namespace kyoseki.Game.Overlays
 {
-    public class SerialMonitorOverlay : FocusedOverlayContainer
     {
         private ConnectionManager serialConnections;
 
@@ -140,47 +137,6 @@ namespace kyoseki.Game.Overlays
 
             serialConnections.PortsUpdated -= handlePortsUpdated;
             serialConnections.MessageReceived -= handleMessage;
-        }
-
-        private class CloseButton : Button
-        {
-            private SpriteIcon icon;
-
-            public CloseButton()
-            {
-                AutoSizeAxes = Axes.Both;
-
-                Children = new Drawable[]
-                {
-                    new Box
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Colour = Colour4.Gray
-                    },
-                    icon = new SpriteIcon
-                    {
-                        Size = new Vector2(12),
-                        Icon = FontAwesome.Solid.Times,
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Margin = new MarginPadding(2)
-                    }
-                };
-            }
-
-            protected override bool OnHover(HoverEvent e)
-            {
-                icon.FadeColour(Colour4.LightGray, 50, Easing.InOutQuint);
-
-                return base.OnHover(e);
-            }
-
-            protected override void OnHoverLost(HoverLostEvent e)
-            {
-                icon.FadeColour(Colour4.White, 50, Easing.InOutQuint);
-
-                base.OnHoverLost(e);
-            }
         }
     }
 }
