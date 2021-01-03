@@ -43,7 +43,22 @@ namespace kyoseki.Game.Kinematics
         /// <summary>
         /// The end point of this bone.
         /// </summary>
-        public Vector3 EndPoint => RootPoint + Vector3.Transform(BaseOrientation, Rotation);
+        public Vector3 EndPoint => RootPoint + EndOffset;
+
+        /// <summary>
+        /// The end offset of this bone.
+        /// o!f renders Y from top to bottom, and all coordinates assume the opposite.
+        /// So, all Y offsets must be inverted
+        /// </summary>
+        public Vector3 EndOffset
+        {
+            get
+            {
+                var vec = Vector3.Transform(BaseOrientation, Rotation);
+                vec.Y *= -1;
+                return vec;
+            }
+        }
 
         public osuTK.Vector2 Root2D => new osuTK.Vector2(RootPoint.X, RootPoint.Y);
 

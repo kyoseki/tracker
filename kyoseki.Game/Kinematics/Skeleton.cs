@@ -64,11 +64,11 @@ namespace kyoseki.Game.Kinematics
             Child = new Bone
             {
                 Name = "Hip",
-                BaseOrientation = new Vector3(0, 10, 0),
+                BaseOrientation = new Vector3(0, -10, 0),
                 Child = new Bone
                 {
                     Name = "Knee",
-                    BaseOrientation = new Vector3(0, 15, 0),
+                    BaseOrientation = new Vector3(0, -15, 0),
                     Child = new Bone
                     {
                         Name = "Ankle",
@@ -83,24 +83,24 @@ namespace kyoseki.Game.Kinematics
             Root = new Bone
             {
                 Name = "Hips",
-                BaseOrientation = new Vector3(0, 4, 0),
+                BaseOrientation = new Vector3(0, -4, 0),
                 Children = new Bone[]
                 {
                     new Bone
                     {
                         Name = "Chest",
                         Anchor = BoneAnchor.Root,
-                        BaseOrientation = new Vector3(0, -20, 0),
+                        BaseOrientation = new Vector3(0, 20, 0),
                         Children = new Bone[]
                         {
                             new Bone
                             {
                                 Name = "Neck",
-                                BaseOrientation = new Vector3(0, -5, 0),
+                                BaseOrientation = new Vector3(0, 5, 0),
                                 Child = new Bone
                                 {
                                     Name = "Head",
-                                    BaseOrientation = new Vector3(0, -10, 0)
+                                    BaseOrientation = new Vector3(0, 10, 0)
                                 }
                             },
                             upper.Clone().ApplyPrefix("Left"),

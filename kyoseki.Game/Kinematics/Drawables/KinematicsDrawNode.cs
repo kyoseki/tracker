@@ -28,16 +28,17 @@ namespace kyoseki.Game.Kinematics.Drawables
         public void DrawAxes(Vector2 origin, float length, System.Numerics.Quaternion rotation, Action<TexturedVertex2D> vertexAction = null)
         {
             var x = new Vector3(1, 0, 0);
-            var y = new Vector3(0, -1, 0);
+            var y = new Vector3(0, 1, 0);
             var z = new Vector3(0, 0, 1);
 
             var xRot = Vector3.Transform(x, rotation) * length;
             var yRot = Vector3.Transform(y, rotation) * length;
             var zRot = Vector3.Transform(z, rotation) * length;
 
-            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(xRot.X, xRot.Y), 2, Colour4.Red, vertexAction);
-            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(yRot.X, yRot.Y), 2, Colour4.Green, vertexAction);
-            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(zRot.X, zRot.Y), 2, Colour4.Blue, vertexAction);
+            // Y offsets are all inverted due to conflicting coord systems
+            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(xRot.X, -xRot.Y), 2, Colour4.Red, vertexAction);
+            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(yRot.X, -yRot.Y), 2, Colour4.Green, vertexAction);
+            DrawLine(Texture.WhitePixel, origin, origin + new Vector2(zRot.X, -zRot.Y), 2, Colour4.Blue, vertexAction);
         }
 
         /// <summary>
