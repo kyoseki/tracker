@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Batches;
 using osu.Framework.Graphics.OpenGL.Vertices;
 using osu.Framework.Graphics.Primitives;
+using osu.Framework.Input.Events;
 
 namespace kyoseki.Game.Kinematics.Drawables
 {
@@ -10,12 +12,32 @@ namespace kyoseki.Game.Kinematics.Drawables
     {
         public readonly Skeleton Skeleton;
 
+        public float DrawScale => ScreenSpaceDrawQuad.Width / 240;
+
+        public event Action<Bone> BoneClicked;
+
         public DrawableSkeleton(Skeleton skeleton)
         {
             Skeleton = skeleton;
         }
 
         protected override DrawNode CreateDrawNode() => new SkeletonDrawNode(this);
+
+        protected override bool OnClick(ClickEvent e)
+        {
+            var relativePos = (e.ScreenSpaceMouseDownPosition - ScreenSpaceDrawQuad.Centre) / DrawScale;
+            var distances = Skeleton.Bones.Select(b => Vector2Extensions.Distance(b.Root2D, relativePos));
+            var close = Skeleton.Bones.Zip(distances, (bone, distance) => (bone, distance))
+                .Where(b => b.distance < MathF.Sqrt(2) * KinematicsDrawNode.BONE_NODE_SIZE)
+                .OrderBy(b => b.distance);
+
+            if (close.Count() > 0)
+            {
+                BoneClicked?.Invoke(close.First().bone);
+                return true;
+            }
+            return base.OnClick(e);
+        }
 
         private class SkeletonDrawNode : KinematicsDrawNode
         {
@@ -45,7 +67,7 @@ namespace kyoseki.Game.Kinematics.Drawables
             {
                 base.Draw(vertexAction);
 
-                DrawBone(drawQuad, skeleton.Root, vertexBatch.AddAction);
+                DrawBone(Source.DrawScale, drawQuad, skeleton.Root, vertexBatch.AddAction);
             }
         }
     }

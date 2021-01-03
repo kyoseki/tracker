@@ -19,6 +19,8 @@ namespace kyoseki.Game.Kinematics.Drawables
         {
         }
 
+        public const float BONE_NODE_SIZE = 1.4f;
+
         /// <summary>
         /// Draws a 3-axis diagram of a given rotation
         /// </summary>
@@ -70,9 +72,8 @@ namespace kyoseki.Game.Kinematics.Drawables
             DrawQuad(texture, new Quad(pQuad.X, pQuad.Y, size.X, size.Y), colour, null, vertexAction);
         }
 
-        private void drawSingleBone(Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
+        private void drawSingleBone(float scale, Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
         {
-            var scale = drawQuad.Width / 240;
             var origin = drawQuad.Centre;
 
             var rootScaled = bone.Root2D * scale;
@@ -83,7 +84,7 @@ namespace kyoseki.Game.Kinematics.Drawables
 
             DrawLine(Texture.WhitePixel, p1, p2, 5, Colour4.Blue, vertexAction);
 
-            var quadSize = new Vector2(7, 7);
+            var quadSize = new Vector2(BONE_NODE_SIZE) * scale;
 
             DrawPoint(Texture.WhitePixel, p1, quadSize, Colour4.Red, vertexAction);
             if (!bone.HasChildren)
@@ -97,11 +98,11 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// </summary>
         /// <param name="drawQuad">Draw quad of this Drawable</param>
         /// <param name="bone">Which bone to draw</param>
-        public void DrawBone(Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
+        public void DrawBone(float scale, Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
         {
             bone.Traverse(bone =>
             {
-                drawSingleBone(drawQuad, bone, vertexAction);
+                drawSingleBone(scale, drawQuad, bone, vertexAction);
             });
         }
     }
