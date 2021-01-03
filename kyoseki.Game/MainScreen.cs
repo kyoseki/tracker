@@ -15,7 +15,7 @@ namespace kyoseki.Game
     public class MainScreen : Screen
     {
         [BackgroundDependencyLoader]
-        private void load(SensorLinkManager sensorLinks)
+        private void load(SensorLinkManager sensorLinks, SerialMonitorOverlay serial)
         {
             Bindable<string> port = new Bindable<string>(string.Empty);
             Bindable<string> receiverId = new Bindable<string>(string.Empty);
@@ -45,8 +45,6 @@ namespace kyoseki.Game
             port.ValueChanged += updateLink;
             receiverId.ValueChanged += updateLink;
             sensorId.ValueChanged += updateLink;
-
-            SerialMonitorOverlay serial = null;
 
             InternalChildren = new Drawable[]
             {
@@ -97,8 +95,7 @@ namespace kyoseki.Game
                     Origin = Anchor.TopLeft,
                     Text = "Open Serial",
                     Action = () => serial?.Show()
-                },
-                serial = new SerialMonitorOverlay()
+                }
             };
         }
 
