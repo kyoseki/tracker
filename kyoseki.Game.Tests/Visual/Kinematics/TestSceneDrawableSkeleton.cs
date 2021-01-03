@@ -30,19 +30,19 @@ namespace kyoseki.Game.Tests.Visual.Kinematics
                     bone.Rotation = System.Numerics.Quaternion.CreateFromYawPitchRoll(y, x, z);
                 }
 
-                AddSliderStep($"{bone.Name} X", 0, (float)Math.PI * 2, 0, value =>
+                AddSliderStep($"{bone.Name} X", 0, MathF.PI * 2, 0, value =>
                 {
                     x = value;
                     updateRotation();
                 });
 
-                AddSliderStep($"{bone.Name} Y", 0, (float)Math.PI * 2, 0, value =>
+                AddSliderStep($"{bone.Name} Y", 0, MathF.PI * 2, 0, value =>
                 {
                     y = value;
                     updateRotation();
                 });
 
-                AddSliderStep($"{bone.Name} Z", 0, (float)Math.PI * 2, 0, value =>
+                AddSliderStep($"{bone.Name} Z", 0, MathF.PI * 2, 0, value =>
                 {
                     z = value;
                     updateRotation();

@@ -46,13 +46,13 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// </summary>
         public void DrawLine(Texture texture, Vector2 p1, Vector2 p2, float width, ColourInfo colour, Action<TexturedVertex2D> vertexAction = null)
         {
-            var angle = Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
+            var angle = MathF.Atan2(p2.Y - p1.Y, p2.X - p1.X);
 
-            var angle1 = angle + Math.PI / 2;
-            var angle2 = angle - Math.PI / 2;
+            var angle1 = angle + MathF.PI / 2;
+            var angle2 = angle - MathF.PI / 2;
 
-            var vec1 = new Vector2((float)Math.Cos(angle1), (float)Math.Sin(angle1)) * width / 2;
-            var vec2 = new Vector2((float)Math.Cos(angle2), (float)Math.Sin(angle2)) * width / 2;
+            var vec1 = new Vector2(MathF.Cos(angle1), MathF.Sin(angle1)) * width / 2;
+            var vec2 = new Vector2(MathF.Cos(angle2), MathF.Sin(angle2)) * width / 2;
 
             var quad = new Quad(p1 + vec1, p1 + vec2, p2 + vec1, p2 + vec2);
 
