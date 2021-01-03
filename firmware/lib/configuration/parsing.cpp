@@ -12,7 +12,7 @@
 
 #define CONFIG_PIN 16
 int checkBoot() {
-    pinMode(CONFIG_PIN, INPUT);
+    pinMode(CONFIG_PIN, INPUT_PULLDOWN_16);
 
     return digitalRead(CONFIG_PIN);
 }
