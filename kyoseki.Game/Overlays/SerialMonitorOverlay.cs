@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI;
-using kyoseki.Game.UI.Buttons;
 using kyoseki.Game.UI.SerialMonitor;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.Sprites;
-using osuTK;
 
 namespace kyoseki.Game.Overlays
 {
+    public class SerialMonitorOverlay : SlideInOverlay
     {
         private ConnectionManager serialConnections;
 
@@ -23,15 +21,6 @@ namespace kyoseki.Game.Overlays
         private List<SerialChannel> loadedChannels = new List<SerialChannel>();
 
         private Container tabContent;
-
-        public SerialMonitorOverlay()
-        {
-            RelativeSizeAxes = Axes.Both;
-            RelativePositionAxes = Axes.Y;
-
-            Anchor = Anchor.BottomCentre;
-            Origin = Anchor.BottomCentre;
-        }
 
         [BackgroundDependencyLoader]
         private void load(ConnectionManager serialConnections)
@@ -62,19 +51,7 @@ namespace kyoseki.Game.Overlays
                         tabContent = new Container { RelativeSizeAxes = Axes.Both }
                     }
                 },
-                tabControl = new SerialTabControl(),
-                new IconButton
-                {
-                    Icon = FontAwesome.Solid.Times,
-                    IconSize = new Vector2(0.6f),
-                    Size = new Vector2(SerialTabControl.HEIGHT),
-                    Action = () =>
-                    {
-                        Hide();
-                    },
-                    Origin = Anchor.TopRight,
-                    Anchor = Anchor.TopRight
-                }
+                tabControl = new SerialTabControl()
             };
 
             handlePortsUpdated(serialConnections.PortNames.ToArray(), Array.Empty<string>());
@@ -116,20 +93,6 @@ namespace kyoseki.Game.Overlays
             var channel = loadedChannels.Find(c => c.Port == msg.Port);
             channel.AddMessage(msg);
         });
-
-        protected override void PopIn()
-        {
-            this.MoveToY(0, 250, Easing.OutQuint);
-
-            base.PopIn();
-        }
-
-        protected override void PopOut()
-        {
-            this.MoveToY(2, 250, Easing.In);
-
-            base.PopOut();
-        }
 
         protected override void Dispose(bool isDisposing)
         {
