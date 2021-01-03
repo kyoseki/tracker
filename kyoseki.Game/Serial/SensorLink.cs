@@ -6,14 +6,34 @@ namespace kyoseki.Game.Serial
 {
     public class SensorLink
     {
+        /// <summary>
+        /// Represents the port, receiver, and sensor this SensorLink should get information from.
+        /// </summary>
         public readonly SensorLinkInfo Info;
 
+        /// <summary>
+        /// Represents the last raw rotation received.
+        /// </summary>
         private Quaternion lastOrientation;
 
+        /// <summary>
+        /// Represents the inverse of the rotation the sensor was at when
+        /// <see cref="Calibrate"/> was run.
+        /// Multiplying this orientation by the <see cref="lastOrientation"/> will produce rotations
+        /// relative to the one captured at calibration (i.e. the inverse of this orientation).
+        /// </summary>
         private Quaternion calibrationOrientation = Quaternion.Identity;
 
+        /// <summary>
+        /// The final orientation of this sensor, taking both the <see cref="Transform"/> and
+        /// <see cref="calibrationOrientation"/> into account.
+        /// </summary>
         public Bindable<Quaternion> CalibratedOrientation = new Bindable<Quaternion>();
 
+        /// <summary>
+        /// Additional transform to apply improper rotations to the final orientation.
+        /// By default, the Y and Z axes are swapped.
+        /// </summary>
         public Matrix4x4 Transform = new Matrix4x4(
                 1, 0, 0, 0,
                 0, 0, 1, 0,
@@ -33,6 +53,10 @@ namespace kyoseki.Game.Serial
 
         public void Calibrate() => calibrationOrientation = Quaternion.Inverse(lastOrientation);
 
+        /// <summary>
+        /// Used to check whether information received at a serial port should be sent
+        /// to this SensorLink.
+        /// </summary>
         public bool Represents(string port, int receiverId, int sensorId) =>
             Info.Port == port &&
             Info.ReceiverId == receiverId &&
