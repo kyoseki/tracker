@@ -27,7 +27,7 @@ namespace kyoseki.Game.Tests.Visual.Kinematics
 
                 void updateRotation()
                 {
-                    bone.Rotation = System.Numerics.Quaternion.CreateFromYawPitchRoll(y, x, z);
+                    bone.Rotation.Value = System.Numerics.Quaternion.CreateFromYawPitchRoll(y, x, z);
                 }
 
                 AddSliderStep($"{bone.Name} X", 0, MathF.PI * 2, 0, value =>

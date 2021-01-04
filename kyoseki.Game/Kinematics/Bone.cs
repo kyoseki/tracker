@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
+using osu.Framework.Bindables;
 
 namespace kyoseki.Game.Kinematics
 {
@@ -17,6 +18,11 @@ namespace kyoseki.Game.Kinematics
         /// This bone's parent.
         /// </summary>
         public Bone Parent { get; private set; }
+
+        /// <summary>
+        /// Whether this bone's rotation should be in addition to its parent's rotation
+        /// </summary>
+        public bool InheritRotation { get; set; }
 
         public bool IsRoot => Parent == null;
 
@@ -54,7 +60,7 @@ namespace kyoseki.Game.Kinematics
         {
             get
             {
-                var vec = Vector3.Transform(BaseOrientation, Rotation);
+                var vec = Vector3.Transform(BaseOrientation, FinalRotation);
                 vec.Y *= -1;
                 return vec;
             }
@@ -71,16 +77,13 @@ namespace kyoseki.Game.Kinematics
         /// </summary>
         public Vector3 BaseOrientation { get; set; }
 
-        private Quaternion rotation = Quaternion.Identity;
+        public readonly Bindable<Quaternion> Rotation = new Bindable<Quaternion>(Quaternion.Identity);
 
         /// <summary>
-        /// The rotation of this bone, around its root point.
+        /// The final rotation of this bone, to be used during rendering.
         /// </summary>
-        public Quaternion Rotation
-        {
-            get => (Parent?.Rotation ?? Quaternion.Identity) * rotation;
-            set => rotation = value;
-        }
+        public Quaternion FinalRotation =>
+            InheritRotation ? (Parent?.FinalRotation ?? Quaternion.Identity) * Rotation.Value : Rotation.Value;
 
         /// <summary>
         /// Where this bone should be anchored, relative to its parent.
