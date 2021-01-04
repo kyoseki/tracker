@@ -86,9 +86,9 @@ namespace kyoseki.Game.Serial
                                     iter++;
                                 }
                             }
-                            catch (TimeoutException _) { }
-                            catch (OperationCanceledException _) { }
-                            catch (UnauthorizedAccessException _)
+                            catch (TimeoutException) { }
+                            catch (OperationCanceledException) { }
+                            catch (UnauthorizedAccessException)
                             {
                                 State.Value = ConnectionState.Resetting;
                                 Logger.Log($"Lost connection to {port.PortName}", LoggingTarget.Network);
@@ -126,7 +126,7 @@ namespace kyoseki.Game.Serial
                             {
                                 s.Open();
                             }
-                            catch (UnauthorizedAccessException _)
+                            catch (UnauthorizedAccessException)
                             {
                                 Logger.Log($"Access to port {port} denied", LoggingTarget.Network);
                                 continue;
