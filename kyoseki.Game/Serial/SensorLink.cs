@@ -62,8 +62,8 @@ namespace kyoseki.Game.Serial
             Info.ReceiverId == receiverId &&
             Info.SensorId == sensorId;
 
-        public bool Represents(SensorLink link) =>
-            Represents(link.Info.Port, link.Info.ReceiverId, link.Info.SensorId);
+        public bool Represents(SensorLinkInfo info) =>
+            Represents(info.Port, info.ReceiverId, info.SensorId);
 
         public void Update(Quaternion quat)
         {

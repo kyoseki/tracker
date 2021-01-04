@@ -30,7 +30,7 @@ namespace kyoseki.Game.Serial
 
         public void Register(SensorLink link)
         {
-            if (links.Any(l => l.Represents(link)))
+            if (links.Any(l => l.Represents(link.Info)))
             {
                 throw new InvalidOperationException("A link for this exact sensor has already been registered.");
             }
