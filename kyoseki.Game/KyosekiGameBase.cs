@@ -12,7 +12,7 @@ namespace kyoseki.Game
     {
         protected ConnectionManager SerialConnections;
 
-        protected SensorLinkManager SensorLinks;
+        protected SkeletonLinkManager SkeletonLinks;
 
         private DependencyContainer dependencies;
 
@@ -47,8 +47,8 @@ namespace kyoseki.Game
             dependencies.CacheAs(SerialConnections = new ConnectionManager());
             AddInternal(SerialConnections);
 
-            dependencies.CacheAs(SensorLinks = new SensorLinkManager());
-            AddInternal(SensorLinks);
+            dependencies.CacheAs(SkeletonLinks = new SkeletonLinkManager());
+            AddInternal(SkeletonLinks);
         }
     }
 }

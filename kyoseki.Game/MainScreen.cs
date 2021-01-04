@@ -16,31 +16,27 @@ namespace kyoseki.Game
     public class MainScreen : Screen
     {
         [BackgroundDependencyLoader]
-        private void load(SensorLinkManager sensorLinks, SerialMonitorOverlay serial, SkeletonOverlay skeletons)
+        private void load(SkeletonLinkManager skeletonLinks, SerialMonitorOverlay serial, SkeletonOverlay skeletons)
         {
             Bindable<string> port = new Bindable<string>(string.Empty);
             Bindable<string> receiverId = new Bindable<string>(string.Empty);
             Bindable<string> sensorId = new Bindable<string>(string.Empty);
 
-            SensorLink link = null;
-            SensorView view = null;
+            SkeletonLink link = new SkeletonLink(string.Empty, 0);
+            skeletonLinks.Register(link);
+            var sensorLink = link.Register("RightElbow", 0);
 
             void updateLink<T>(ValueChangedEvent<T> _)
             {
-                if (port.Value == string.Empty || receiverId.Value == string.Empty || sensorId.Value == string.Empty)
+                if (receiverId.Value == string.Empty || sensorId.Value == string.Empty)
                 {
                     return;
                 }
 
-                sensorLinks.Unregister(link);
+                link.Port = port.Value;
+                link.ReceiverId = int.Parse(receiverId.Value);
 
-                link = new SensorLink(port.Value, int.Parse(receiverId.Value), int.Parse(sensorId.Value));
-                sensorLinks.Register(link);
-
-                if (view != null)
-                {
-                    view.Link = link;
-                }
+                link.UpdateLink("RightElbow", int.Parse(sensorId.Value));
             }
 
             port.ValueChanged += updateLink;
@@ -49,7 +45,7 @@ namespace kyoseki.Game
 
             InternalChildren = new Drawable[]
             {
-                view = new SensorView
+                new DrawableSkeleton(link.Skeleton)
                 {
                     RelativeSizeAxes = Axes.Both
                 },
@@ -85,7 +81,7 @@ namespace kyoseki.Game
                             Anchor = Anchor.TopRight,
                             Origin = Anchor.TopRight,
                             Text = "Calibrate",
-                            Action = () => link?.Calibrate()
+                            Action = () => sensorLink.Calibrate()
                         }
                     }
                 },

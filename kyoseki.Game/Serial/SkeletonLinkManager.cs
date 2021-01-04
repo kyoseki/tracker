@@ -7,12 +7,12 @@ using osu.Framework.Graphics;
 
 namespace kyoseki.Game.Serial
 {
-    public class SensorLinkManager : Component
+    public class SkeletonLinkManager : Component
     {
         [Resolved]
         private ConnectionManager serialConnections { get; set; }
 
-        private readonly List<SensorLink> links = new List<SensorLink>();
+        private readonly List<SkeletonLink> links = new List<SkeletonLink>();
 
         protected override void LoadComplete()
         {
@@ -21,23 +21,24 @@ namespace kyoseki.Game.Serial
             serialConnections.MessageReceived += handleMessage;
         }
 
+        public void Register(SkeletonLink link)
+        {
+            if (links.Any(l => l.Info == link.Info))
+            {
+                throw new InvalidOperationException("A link for this exact skeleton has already been registered.");
+            }
+
+            links.Add(link);
+        }
+
+        public void Unregister(SkeletonLink link) => links.Remove(link);
+
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);
 
             serialConnections.MessageReceived -= handleMessage;
         }
-
-        public void Register(SensorLink link)
-        {
-            if (links.Any(l => l.Represents(link.Info)))
-            {
-                throw new InvalidOperationException("A link for this exact sensor has already been registered.");
-            }
-            links.Add(link);
-        }
-
-        public void Unregister(SensorLink link) => links.Remove(link);
 
         private void handleMessage(MessageInfo msg)
         {
@@ -54,8 +55,8 @@ namespace kyoseki.Game.Serial
                 {
                     Quaternion quat = new Quaternion(x, y, z, w);
 
-                    var link = links.Find(l => l.Represents(msg.Port, receiverId, sensorId));
-                    link?.Update(quat);
+                    var link = links.Find(l => l.Port == msg.Port && l.ReceiverId == receiverId);
+                    link?.Update(new ReceiverMessage(sensorId, quat));
                 }
             }
         }
