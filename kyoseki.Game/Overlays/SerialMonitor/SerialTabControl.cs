@@ -1,9 +1,10 @@
-﻿using osu.Framework.Graphics;
+﻿using kyoseki.Game.UI;
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
 
-namespace kyoseki.Game.UI.SerialMonitor
+namespace kyoseki.Game.Overlays.SerialMonitor
 {
     public class SerialTabControl : TabControl<string>
     {

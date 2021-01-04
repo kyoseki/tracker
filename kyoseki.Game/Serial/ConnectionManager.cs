@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
-using kyoseki.Game.UI.SerialMonitor;
+using kyoseki.Game.Overlays.SerialMonitor;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Logging;

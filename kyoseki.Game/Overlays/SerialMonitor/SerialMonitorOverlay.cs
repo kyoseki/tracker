@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI;
-using kyoseki.Game.UI.SerialMonitor;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 
-namespace kyoseki.Game.Overlays
+namespace kyoseki.Game.Overlays.SerialMonitor
 {
     public class SerialMonitorOverlay : SlideInOverlay
     {

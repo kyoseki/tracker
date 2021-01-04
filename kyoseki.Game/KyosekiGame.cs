@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using kyoseki.Game.Overlays;
+using kyoseki.Game.Overlays.SerialMonitor;
+using kyoseki.Game.Overlays.Skeleton;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;

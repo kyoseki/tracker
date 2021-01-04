@@ -1,5 +1,6 @@
 using kyoseki.Game.Kinematics.Drawables;
-using kyoseki.Game.Overlays;
+using kyoseki.Game.Overlays.SerialMonitor;
+using kyoseki.Game.Overlays.Skeleton;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI.Buttons;
 using osu.Framework.Allocation;
