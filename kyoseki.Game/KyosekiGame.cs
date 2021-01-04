@@ -34,6 +34,7 @@ namespace kyoseki.Game
             base.LoadComplete();
 
             loadComponentSingleFile(new SerialMonitorOverlay(), overlayContainer.Add, true);
+            loadComponentSingleFile(new SkeletonOverlay(), overlayContainer.Add, true);
 
             screenStack.Push(new MainScreen());
         }

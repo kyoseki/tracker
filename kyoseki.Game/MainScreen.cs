@@ -15,7 +15,7 @@ namespace kyoseki.Game
     public class MainScreen : Screen
     {
         [BackgroundDependencyLoader]
-        private void load(SensorLinkManager sensorLinks, SerialMonitorOverlay serial)
+        private void load(SensorLinkManager sensorLinks, SerialMonitorOverlay serial, SkeletonOverlay skeletons)
         {
             Bindable<string> port = new Bindable<string>(string.Empty);
             Bindable<string> receiverId = new Bindable<string>(string.Empty);
@@ -95,6 +95,15 @@ namespace kyoseki.Game
                     Origin = Anchor.TopLeft,
                     Text = "Open Serial",
                     Action = () => serial?.Show()
+                },
+                new TextButton
+                {
+                    Position = new Vector2(100, 0),
+                    Size = new Vector2(125, 25),
+                    Anchor = Anchor.TopLeft,
+                    Origin = Anchor.TopLeft,
+                    Text = "Open Skeletons",
+                    Action = () => skeletons?.Show()
                 }
             };
         }
