@@ -78,7 +78,7 @@ namespace kyoseki.Game.Kinematics
             }
         };
 
-        public static Skeleton DEFAULT_SKELETON = new Skeleton
+        public static Skeleton DEFAULT_SKELETON => new Skeleton
         {
             Root = new Bone
             {

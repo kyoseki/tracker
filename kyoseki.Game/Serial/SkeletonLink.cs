@@ -17,6 +17,10 @@ namespace kyoseki.Game.Serial
         public SkeletonLinkInfo Info =>
             new SkeletonLinkInfo { Port = Port, ReceiverId = ReceiverId };
 
+        public SkeletonLink()
+        {
+        }
+
         public SkeletonLink(string port, int receiverId)
         {
             Port = port;
