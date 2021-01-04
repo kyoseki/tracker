@@ -12,7 +12,7 @@ namespace kyoseki.Game.Kinematics.Drawables
     {
         public readonly Skeleton Skeleton;
 
-        public float DrawScale => ScreenSpaceDrawQuad.Width / 240;
+        public float SkeletonDrawScale => ScreenSpaceDrawQuad.Width / 240;
 
         public event Action<Bone> BoneClicked;
 
@@ -25,7 +25,7 @@ namespace kyoseki.Game.Kinematics.Drawables
 
         protected override bool OnClick(ClickEvent e)
         {
-            var relativePos = (e.ScreenSpaceMouseDownPosition - ScreenSpaceDrawQuad.Centre) / DrawScale;
+            var relativePos = (e.ScreenSpaceMouseDownPosition - ScreenSpaceDrawQuad.Centre) / SkeletonDrawScale;
             var distances = Skeleton.Bones.Select(b => Vector2Extensions.Distance(b.Root2D, relativePos));
             var close = Skeleton.Bones.Zip(distances, (bone, distance) => (bone, distance))
                 .Where(b => b.distance < MathF.Sqrt(2) * KinematicsDrawNode.BONE_NODE_SIZE)
@@ -67,7 +67,7 @@ namespace kyoseki.Game.Kinematics.Drawables
             {
                 base.Draw(vertexAction);
 
-                DrawBone(Source.DrawScale, drawQuad, skeleton.Root, vertexBatch.AddAction);
+                DrawBone(Source.SkeletonDrawScale, drawQuad, skeleton.Root, vertexBatch.AddAction);
             }
         }
     }
