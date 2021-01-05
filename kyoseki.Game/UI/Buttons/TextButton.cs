@@ -1,6 +1,6 @@
-﻿using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics;
+﻿using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
+using osu.Framework.Graphics.Sprites;
 
 namespace kyoseki.Game.UI.Buttons
 {

@@ -1,5 +1,5 @@
-﻿using kyoseki.Game.UI.Buttons;
-using kyoseki.Game.Overlays.SerialMonitor;
+﻿using kyoseki.Game.Overlays.SerialMonitor;
+using kyoseki.Game.UI.Buttons;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;

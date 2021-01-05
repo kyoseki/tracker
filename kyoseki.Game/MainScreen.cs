@@ -1,13 +1,8 @@
-using kyoseki.Game.Kinematics.Drawables;
 using kyoseki.Game.Overlays.SerialMonitor;
 using kyoseki.Game.Overlays.Skeleton;
-using kyoseki.Game.Serial;
 using kyoseki.Game.UI.Buttons;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Screens;
 using osuTK;
 
@@ -16,7 +11,7 @@ namespace kyoseki.Game
     public class MainScreen : Screen
     {
         [BackgroundDependencyLoader]
-        private void load(SkeletonLinkManager skeletonLinks, SerialMonitorOverlay serial, SkeletonOverlay skeletons)
+        private void load(SerialMonitorOverlay serial, SkeletonOverlay skeletons)
         {
             InternalChildren = new Drawable[]
             {
@@ -39,6 +34,5 @@ namespace kyoseki.Game
                 }
             };
         }
-
     }
 }
