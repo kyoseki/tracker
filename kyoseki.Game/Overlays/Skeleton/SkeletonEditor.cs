@@ -73,7 +73,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                                     PlaceholderText = "Sensor ID",
                                     Size = new Vector2(250, 20),
                                     CommitOnFocusLost = true,
-                                    Current = { Disabled = true }
+                                    ReadOnly = true
                                 },
                                 new TextButton
                                 {
@@ -108,7 +108,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                 boneText.Text = bone.Name;
 
                 sensorIdInput.Text = Link.Get(bone.Name, true)?.SensorId.ToString() ?? string.Empty;
-                sensorIdInput.Current.Disabled = false;
+                sensorIdInput.ReadOnly = false;
             };
 
             sensorIdInput.OnCommit += (sender, newText) =>
