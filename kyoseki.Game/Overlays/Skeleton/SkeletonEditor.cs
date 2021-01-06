@@ -134,7 +134,7 @@ namespace kyoseki.Game.Overlays.Skeleton
 
         private class NumberTextBox : BasicTextBox
         {
-            protected override bool CanAddCharacter(char character) => int.TryParse(character.ToString(), out int _);
+            protected override bool CanAddCharacter(char character) => char.IsNumber(character);
         }
     }
 }
