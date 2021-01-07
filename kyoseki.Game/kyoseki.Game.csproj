@@ -6,7 +6,7 @@
     <ProjectReference Include="..\kyoseki.Resources\kyoseki.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ppy.osu.Framework" Version="2020.1229.0" />
+    <PackageReference Include="ppy.osu.Framework" Version="2021.106.0" />
     <PackageReference Include="System.IO.Ports" Version="5.0.0" />
   </ItemGroup>
 </Project>
