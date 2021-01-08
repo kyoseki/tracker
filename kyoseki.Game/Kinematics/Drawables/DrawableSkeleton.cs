@@ -15,7 +15,7 @@ namespace kyoseki.Game.Kinematics.Drawables
         public float SkeletonDrawScale =>
             Math.Max(ScreenSpaceDrawQuad.Width, ScreenSpaceDrawQuad.Height) / 200;
 
-        public event Action<Bone> BoneClicked;
+        public Action<Bone> BoneClicked;
 
         public DrawableSkeleton(Skeleton skeleton)
         {

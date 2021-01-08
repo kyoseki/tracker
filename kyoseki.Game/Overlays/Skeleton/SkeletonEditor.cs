@@ -35,7 +35,15 @@ namespace kyoseki.Game.Overlays.Skeleton
                 drawableSkeleton = new DrawableSkeleton(Link.Skeleton)
                 {
                     RelativeSizeAxes = Axes.Y,
-                    Width = skeleton_width
+                    Width = skeleton_width,
+                    BoneClicked = bone =>
+                    {
+                        currentBone = bone;
+                        boneText.Text = bone.Name;
+
+                        sensorIdInput.Text = Link.Get(bone.Name, true)?.SensorId.ToString() ?? string.Empty;
+                        sensorIdInput.ReadOnly = false;
+                    }
                 },
                 new Container
                 {
@@ -100,15 +108,6 @@ namespace kyoseki.Game.Overlays.Skeleton
                 if (sender.Text == string.Empty) return;
 
                 Link.ReceiverId = int.Parse(sender.Text);
-            };
-
-            drawableSkeleton.BoneClicked += bone =>
-            {
-                currentBone = bone;
-                boneText.Text = bone.Name;
-
-                sensorIdInput.Text = Link.Get(bone.Name, true)?.SensorId.ToString() ?? string.Empty;
-                sensorIdInput.ReadOnly = false;
             };
 
             sensorIdInput.OnCommit += (sender, newText) =>
