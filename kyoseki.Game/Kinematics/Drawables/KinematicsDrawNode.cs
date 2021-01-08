@@ -90,7 +90,7 @@ namespace kyoseki.Game.Kinematics.Drawables
             if (!bone.HasChildren)
                 DrawPoint(Texture.WhitePixel, p2, quadSize, Colour4.Red, vertexAction);
 
-            DrawAxes(p1, scale * 3, bone.FinalRotation);
+            DrawAxes(p1, scale * 3, bone.WorldRotation);
         }
 
         /// <summary>

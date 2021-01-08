@@ -51,7 +51,10 @@ namespace kyoseki.Game.Serial
             var link = new SensorLink(boneName, sensorId);
 
             sensors.Add(link);
-            bone.Rotation.BindTo(link.CalibratedOrientation);
+            link.CalibratedOrientation.ValueChanged += e =>
+            {
+                bone.WorldRotation = e.NewValue;
+            };
 
             return link;
         }
@@ -66,8 +69,8 @@ namespace kyoseki.Game.Serial
             var bone = Skeleton.GetBone(boneName);
             var link = Get(boneName);
 
+            link.CalibratedOrientation.UnbindEvents();
             sensors.Remove(link);
-            bone.Rotation.UnbindBindings();
         }
 
         public bool Represents(string port, int receiverId) =>

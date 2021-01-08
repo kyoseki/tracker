@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
-using osu.Framework.Bindables;
 
 namespace kyoseki.Game.Kinematics
 {
@@ -18,11 +17,6 @@ namespace kyoseki.Game.Kinematics
         /// This bone's parent.
         /// </summary>
         public Bone Parent { get; private set; }
-
-        /// <summary>
-        /// Whether this bone's rotation should be in addition to its parent's rotation
-        /// </summary>
-        public bool InheritRotation { get; set; }
 
         public bool IsRoot => Parent == null;
 
@@ -60,7 +54,7 @@ namespace kyoseki.Game.Kinematics
         {
             get
             {
-                var vec = Vector3.Transform(BaseOrientation, FinalRotation);
+                var vec = Vector3.Transform(BaseOrientation, WorldRotation);
                 vec.Y *= -1;
                 return vec;
             }
@@ -77,13 +71,24 @@ namespace kyoseki.Game.Kinematics
         /// </summary>
         public Vector3 BaseOrientation { get; set; }
 
-        public readonly Bindable<Quaternion> Rotation = new Bindable<Quaternion>(Quaternion.Identity);
+        /// <summary>
+        /// Rotation of the parent in world space
+        /// </summary>
+        private Quaternion parentRotation => Parent?.WorldRotation ?? Quaternion.Identity;
 
         /// <summary>
-        /// The final rotation of this bone, to be used during rendering.
+        /// Rotation of this bone in world space
         /// </summary>
-        public Quaternion FinalRotation =>
-            InheritRotation ? (Parent?.FinalRotation ?? Quaternion.Identity) * Rotation.Value : Rotation.Value;
+        public Quaternion WorldRotation
+        {
+            get => parentRotation * LocalRotation;
+            set => LocalRotation = Quaternion.Inverse(parentRotation) * value;
+        }
+
+        /// <summary>
+        /// Rotation of this bone relative to its parent
+        /// </summary>
+        public Quaternion LocalRotation { get; set; } = Quaternion.Identity;
 
         /// <summary>
         /// Where this bone should be anchored, relative to its parent.
