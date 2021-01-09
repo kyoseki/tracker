@@ -17,7 +17,7 @@ namespace kyoseki.Game.Serial
 
         public List<string> PortNames = new List<string>();
 
-        private List<SerialPort> ports = new List<SerialPort>();
+        private List<ISerialPort> ports = new List<ISerialPort>();
 
         public Bindable<ConnectionState> State = new Bindable<ConnectionState>(ConnectionState.Resetting);
 
@@ -59,81 +59,68 @@ namespace kyoseki.Game.Serial
                 switch (State.Value)
                 {
                     case ConnectionState.Ready:
-                        foreach (var port in ports)
+                        var toQuery = ports.Where(p => p.State == SerialPortState.Open);
+                        foreach (var port in toQuery)
                         {
-                            if (!port.IsOpen)
-                            {
-                                State.Value = ConnectionState.Resetting;
-                                continue;
-                            }
                             try
                             {
-                                bool reachedEnd = false;
-                                int iter = 0;
-
-                                while (!reachedEnd)
+                                while (true)
                                 {
-                                    var message = port.ReadLine().Replace(port.NewLine, string.Empty);
+                                    var message = port.ReadLine().Replace(port.NewLineRead, string.Empty);
 
                                     MessageReceived?.Invoke(new MessageInfo
                                     {
-                                        Port = port.PortName,
+                                        Port = port.Name,
                                         Content = message,
                                         Direction = MessageDirection.Incoming,
                                         Timestamp = DateTime.Now
                                     });
-
-                                    iter++;
                                 }
                             }
                             catch (TimeoutException) { }
                             catch (OperationCanceledException) { }
-                            catch (UnauthorizedAccessException)
-                            {
-                                State.Value = ConnectionState.Resetting;
-                                Logger.Log($"Lost connection to {port.PortName}", LoggingTarget.Network);
-                            }
+                            catch (UnauthorizedAccessException) { }
+                            catch (InvalidOperationException) { }
                         }
                         break;
                     case ConnectionState.Resetting:
-                        ports.ForEach(p => p.Dispose());
-                        ports.Clear();
-
                         var newPorts = SerialPort.GetPortNames();
+
+                        // Ports that were physically connected
+                        var added = newPorts.Where(p => !PortNames.Contains(p)).ToArray();
+                        // Ports that were physically disconnected
+                        var removed = PortNames.Where(p => !newPorts.Contains(p)).ToArray();
+
+                        // Ports that were physically connected AND
+                        // have never been connected before since the program started
+                        var toCreate = added.Where(p => !ports.Any(po => po.Name == p));
 
                         lock (PortNames)
                         {
-                            var added = newPorts.Where(p => !PortNames.Contains(p)).ToArray();
-                            var removed = PortNames.Where(p => !newPorts.Contains(p)).ToArray();
-
                             PortNames.Clear();
                             PortNames.AddRange(newPorts);
 
                             PortsUpdated?.Invoke(added, removed);
                         }
 
-                        foreach (var port in newPorts)
+                        foreach (var port in toCreate)
                         {
-                            Logger.Log($"Connecting to serial port {port}", LoggingTarget.Network);
-
-                            SerialPort s = new SerialPort(port, 115200)
+                            SystemSerialPort s = new SystemSerialPort(port, 115200)
                             {
-                                NewLine = "\r\n",
-                                ReadTimeout = 1
-                            };
-
-                            try
-                            {
-                                s.Open();
-                            }
-                            catch (UnauthorizedAccessException)
-                            {
-                                Logger.Log($"Access to port {port} denied", LoggingTarget.Network);
-                                continue;
-                            }
-                            s.BaseStream.Flush();
+                                NewLineRead = "\r\n",
+                                NewLineWrite = "\n",
+                                ReadTimeout = 1,
+                                ConnectionLost = () => State.Value = ConnectionState.Resetting
+                        };
 
                             ports.Add(s);
+                        }
+
+                        foreach (var port in ports)
+                        {
+                            if (port.State == SerialPortState.Closed ||
+                                (port.State == SerialPortState.Disconnected && added.Contains(port.Name)))
+                                port.Open();
                         }
 
                         State.Value = ConnectionState.Ready;
