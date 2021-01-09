@@ -13,37 +13,43 @@ namespace kyoseki.Game.Tests.Visual.UI
 
         public TestSceneKyosekiTextBox()
         {
+            FillFlowContainer textBoxes;
+
             Add(new TooltipContainer
             {
                 RelativeSizeAxes = Axes.Both,
-                Child = new FillFlowContainer
+                Child = textBoxes = new FillFlowContainer
                 {
                     Direction = FillDirection.Vertical,
-                    RelativeSizeAxes = Axes.Both,
-                    Children = new Drawable[]
+                    RelativeSizeAxes = Axes.Both
+                }
+            });
+
+            textBoxes.AddRange(new Drawable[]
+            {
+                textBox = new KyosekiTextBox
+                {
+                    RelativeSizeAxes = Axes.X,
+                    PlaceholderText = "Type something here",
+                    TabbableContentContainer = textBoxes
+                },
+                new TestATextBox
+                {
+                    RelativeSizeAxes = Axes.X,
+                    PlaceholderText = "Type a here",
+                    TabbableContentContainer = textBoxes
+                },
+                new ButtonTextBox
+                {
+                    RelativeSizeAxes = Axes.X,
+                    PlaceholderText = "I have buttons",
+                    Buttons = new ButtonInfo[]
                     {
-                        textBox = new KyosekiTextBox
-                        {
-                            RelativeSizeAxes = Axes.X,
-                            PlaceholderText = "Type something here"
-                        },
-                        new TestATextBox
-                        {
-                            RelativeSizeAxes = Axes.X,
-                            PlaceholderText = "Type a here"
-                        },
-                        new ButtonTextBox
-                        {
-                            RelativeSizeAxes = Axes.X,
-                            PlaceholderText = "I have buttons",
-                            Buttons = new ButtonInfo[]
-                            {
-                                new ButtonInfo(FontAwesome.Solid.Trash, "Delete"),
-                                new ButtonInfo(FontAwesome.Solid.Undo, "Undo"),
-                                new ButtonInfo(FontAwesome.Brands.Twitter, "Cancer")
-                            }
-                        }
-                    }
+                        new ButtonInfo(FontAwesome.Solid.Trash, "Delete"),
+                        new ButtonInfo(FontAwesome.Solid.Undo, "Undo"),
+                        new ButtonInfo(FontAwesome.Brands.Twitter, "Cancer")
+                    },
+                    TabbableContentContainer = textBoxes
                 }
             });
 
