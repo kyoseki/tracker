@@ -4,7 +4,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Testing;
 
-namespace kyoseki.Game.Tests.Visual.Overlays.SerialMonitor
+namespace kyoseki.Game.Tests.Visual.Overlays
 {
     public class TestSceneMessage : TestScene
     {
