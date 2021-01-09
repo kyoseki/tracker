@@ -42,8 +42,7 @@ namespace kyoseki.Game.UI.Buttons
                 {
                     RelativeSizeAxes = Axes.Both,
                     Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Padding = new MarginPadding(2)
+                    Origin = Anchor.Centre
                 },
                 Hover = new Box
                 {
