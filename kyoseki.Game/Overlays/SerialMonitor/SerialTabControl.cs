@@ -8,7 +8,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 {
     public class SerialTabControl : TabControl<string>
     {
-        public const float HEIGHT = 25;
+        public const float HEIGHT = 30;
 
         private const int fade_duration = 100;
 
@@ -47,7 +47,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                     },
                     text = new SpriteText
                     {
-                        Font = new FontUsage(size: HEIGHT - 5),
+                        Font = new FontUsage(size: 20),
                         Origin = Anchor.Centre,
                         Anchor = Anchor.Centre,
                         Text = value,

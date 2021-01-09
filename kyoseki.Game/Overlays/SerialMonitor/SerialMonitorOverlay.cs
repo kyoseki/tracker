@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using kyoseki.Game.Serial;
-using kyoseki.Game.UI;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
 
 namespace kyoseki.Game.Overlays.SerialMonitor
 {
     public class SerialMonitorOverlay : SlideInOverlay
     {
+        protected override string Title => "Serial Monitor";
+
         private ConnectionManager serialConnections;
 
         private SerialTabControl tabControl;
@@ -26,13 +26,8 @@ namespace kyoseki.Game.Overlays.SerialMonitor
         {
             this.serialConnections = serialConnections;
 
-            Children = new Drawable[]
+            AddRange(new Drawable[]
             {
-                new Box
-                {
-                    Colour = KyosekiColors.BACKGROUND.Darken(0.2f).Opacity(0.5f),
-                    RelativeSizeAxes = Axes.Both
-                },
                 new Container
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -42,16 +37,11 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                     },
                     Children = new Drawable[]
                     {
-                        new Box
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Colour = KyosekiColors.BACKGROUND.Opacity(0.5f)
-                        },
                         tabContent = new Container { RelativeSizeAxes = Axes.Both }
                     }
                 },
                 tabControl = new SerialTabControl()
-            };
+            });
 
             handlePortsUpdated(serialConnections.PortNames.ToArray(), Array.Empty<string>());
 
