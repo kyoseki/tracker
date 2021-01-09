@@ -25,18 +25,20 @@ namespace kyoseki.Game.UI.Buttons
             set => spriteIcon.Size = value;
         }
 
+        protected virtual SpriteIcon CreateIcon() => new SpriteIcon
+        {
+            RelativeSizeAxes = Axes.Both,
+            Size = new Vector2(0.75f),
+            Anchor = Anchor.Centre,
+            Origin = Anchor.Centre,
+            Colour = KyosekiColors.FOREGROUND
+        };
+
         private SpriteIcon spriteIcon;
 
         public IconButton()
         {
-            Child = spriteIcon = new SpriteIcon
-            {
-                RelativeSizeAxes = Axes.Both,
-                Size = new Vector2(0.75f),
-                Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
-                Colour = KyosekiColors.FOREGROUND
-            };
+            Child = spriteIcon = CreateIcon();
         }
     }
 }
