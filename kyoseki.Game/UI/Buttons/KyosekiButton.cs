@@ -57,7 +57,7 @@ namespace kyoseki.Game.UI.Buttons
         protected override bool OnHover(HoverEvent e)
         {
             Hover.FadeIn(200, Easing.In);
-            return base.OnHover(e);
+            return true;
         }
 
         protected override void OnHoverLost(HoverLostEvent e)
