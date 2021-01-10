@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -21,9 +22,13 @@ namespace kyoseki.Game.Serial
 
         public Bindable<ConnectionState> State = new Bindable<ConnectionState>(ConnectionState.Resetting);
 
+        private readonly ConcurrentQueue<MessageInfo> messageQueue = new ConcurrentQueue<MessageInfo>();
+
         public event Action<MessageInfo> MessageReceived;
 
         public event Action<string[], string[]> PortsUpdated;
+
+        public event Action<MessageInfo> MessageSent;
 
         private Scheduler scheduler;
 
@@ -37,6 +42,11 @@ namespace kyoseki.Game.Serial
 
             thread.Start();
         }
+
+        public ISerialPort Get(string name) => ports.Find(p => p.Name == name);
+
+        public void SendMessage(string port, string content) =>
+            messageQueue.Enqueue(new MessageInfo { Port = port, Content = content, Direction = MessageDirection.Outgoing });
 
         private void lookForPorts()
         {
@@ -84,6 +94,23 @@ namespace kyoseki.Game.Serial
                                       e is InvalidOperationException)
                             {
                                 State.Value = ConnectionState.Resetting;
+                            }
+                        }
+
+                        while (messageQueue.TryDequeue(out MessageInfo msg))
+                        {
+                            var targetPort = ports.Find(p => p.Name == msg.Port);
+                            if (targetPort?.State?.Value == SerialPortState.Open)
+                            {
+                                targetPort.WriteLine(msg.Content);
+                                MessageSent?.Invoke(msg);
+                            }
+                            else
+                            {
+                                scheduler.AddDelayed(() =>
+                                {
+                                    messageQueue.Enqueue(msg);
+                                }, 1000);
                             }
                         }
                         break;

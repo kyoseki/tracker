@@ -47,12 +47,13 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
             serialConnections.PortsUpdated += handlePortsUpdated;
             serialConnections.MessageReceived += handleMessage;
+            serialConnections.MessageSent += handleMessage;
             tabControl.Current.ValueChanged += handleTabChanged;
         }
 
         private void handleTabChanged(ValueChangedEvent<string> e)
         {
-            var tab = loadedChannels.Find(c => c.Port == e.NewValue);
+            var tab = loadedChannels.Find(c => c.PortName == e.NewValue);
             tabContent.FadeOut(500, Easing.OutQuint);
             LoadComponentAsync(tab, t =>
             {
@@ -66,12 +67,14 @@ namespace kyoseki.Game.Overlays.SerialMonitor
         {
             foreach (var port in added)
             {
-                if (!loadedChannels.Any(c => c.Port == port))
+                if (!loadedChannels.Any(c => c.PortName == port))
                 {
                     tabControl.AddItem(port);
-                    loadedChannels.Add(new SerialChannel(port)
+                    loadedChannels.Add(new SerialChannel(serialConnections.Get(port))
                     {
-                        RelativeSizeAxes = Axes.Both
+                        RelativeSizeAxes = Axes.Both,
+                        PortState = { BindTarget = serialConnections.Get(port).State },
+                        SendMessage = serialConnections.SendMessage
                     });
                 }
             }
@@ -79,7 +82,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
         private void handleMessage(MessageInfo msg) => Schedule(() =>
         {
-            var channel = loadedChannels.Find(c => c.Port == msg.Port);
+            var channel = loadedChannels.Find(c => c.PortName == msg.Port);
             channel.AddMessage(msg);
         });
 
@@ -89,6 +92,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
             serialConnections.PortsUpdated -= handlePortsUpdated;
             serialConnections.MessageReceived -= handleMessage;
+            serialConnections.MessageSent -= handleMessage;
         }
     }
 }

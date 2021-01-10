@@ -75,6 +75,8 @@ namespace kyoseki.Game.UI.Input
             };
         }
 
+        public new void Commit() => base.Commit();
+
         protected virtual void UpdateState(bool readOnly)
         {
             if (readOnly)

@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI.Buttons;
+using kyoseki.Game.UI.Input;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Cursor;
 using osu.Framework.Graphics.Pooling;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
@@ -18,32 +21,67 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
         private readonly DrawablePool<Message> messagePool = new DrawablePool<Message>(150);
 
-        public readonly string Port;
+        private readonly ISerialPort port;
+
+        public readonly string PortName;
 
         private readonly List<MessageInfo> messages = new List<MessageInfo>();
 
         private ScrollToBottomButton continueAutoscroll;
 
-        public SerialChannel(string port)
-        {
-            Port = port;
+        private ButtonTextBox textBox;
 
-            Children = new Drawable[]
+        public readonly Bindable<SerialPortState> PortState = new Bindable<SerialPortState>();
+
+        private ButtonInfo[] portOpenButtons => new ButtonInfo[]
+        {
+            new ButtonInfo(FontAwesome.Solid.ArrowRight, "Send Message", () => textBox.Commit()),
+            new ButtonInfo(FontAwesome.Solid.Plug, "Release Port", () => port.Release()),
+            new ButtonInfo(FontAwesome.Solid.Trash, "Clear Messages", clearMessages)
+        };
+
+        private ButtonInfo[] portReconnectButtons => new ButtonInfo[]
+        {
+            new ButtonInfo(FontAwesome.Solid.Undo, "Reconnect", () => port.Open())
+        };
+
+        public Action<string, string> SendMessage;
+
+        public SerialChannel(ISerialPort port)
+        {
+            PortName = port.Name;
+            this.port = port;
+
+            Child = new TooltipContainer
             {
-                messagePool,
-                scroll = new ChannelScrollContainer
+                RelativeSizeAxes = Axes.Both,
+                Children = new Drawable[]
                 {
-                    ScrollbarVisible = true,
-                    RelativeSizeAxes = Axes.Both
-                },
-                continueAutoscroll = new ScrollToBottomButton
-                {
-                    Anchor = Anchor.BottomRight,
-                    Origin = Anchor.BottomRight,
-                    Alpha = 0,
-                    Action = () =>
+                    messagePool,
+                    scroll = new ChannelScrollContainer
                     {
-                        scroll.ResetScroll();
+                        ScrollbarVisible = true,
+                        RelativeSizeAxes = Axes.Both,
+                        Padding = new MarginPadding { Bottom = KyosekiTextBox.HEIGHT }
+                    },
+                    textBox = new ButtonTextBox
+                    {
+                        RelativeSizeAxes = Axes.X,
+                        Anchor = Anchor.BottomCentre,
+                        Origin = Anchor.BottomCentre,
+                        PlaceholderText = "Enter message to device...",
+                        ReleaseFocusOnCommit = false
+                    },
+                    continueAutoscroll = new ScrollToBottomButton
+                    {
+                        Anchor = Anchor.BottomRight,
+                        Origin = Anchor.BottomRight,
+                        Alpha = 0,
+                        Action = () =>
+                        {
+                            scroll.ResetScroll();
+                        },
+                        Y = DrawHeight - KyosekiTextBox.HEIGHT
                     }
                 }
             };
@@ -55,6 +93,52 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                 else
                     continueAutoscroll.FadeOut(50, Easing.OutQuint);
             };
+
+            PortState.ValueChanged += e => updateState(e.NewValue);
+            updateState(port.State.Value);
+
+            textBox.OnCommit += (_, __) =>
+            {
+                SendMessage?.Invoke(PortName, textBox.Text);
+                textBox.Text = string.Empty;
+            };
+        }
+
+        private void updateState(SerialPortState state) => Schedule(() =>
+        {
+            switch (state)
+            {
+                case SerialPortState.Open:
+                    textBox.Buttons = portOpenButtons;
+                    textBox.PlaceholderText = "Enter message to device...";
+                    textBox.ReadOnly.Value = false;
+                    break;
+                case SerialPortState.AccessDenied:
+                    textBox.Buttons = portReconnectButtons;
+                    textBox.PlaceholderText = "Access to this device was denied";
+                    textBox.ReadOnly.Value = true;
+                    break;
+                case SerialPortState.Released:
+                    textBox.Buttons = portReconnectButtons;
+                    textBox.PlaceholderText = "Device was released to another program";
+                    textBox.ReadOnly.Value = true;
+                    break;
+                default:
+                    textBox.Buttons = Array.Empty<ButtonInfo>();
+                    textBox.PlaceholderText = "Device was disconnected";
+                    textBox.ReadOnly.Value = true;
+                    break;
+            }
+        });
+
+        private void clearMessages()
+        {
+            foreach (var msg in scroll.Children)
+            {
+                msg.FadeOut(100, Easing.OutQuad).Expire();
+            }
+
+            messages.Clear();
         }
 
         protected override void Update()
@@ -88,6 +172,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                 var msg = messagePool.Get(p => p.Item = item);
 
                 msg.Y = item.ChannelYPosition;
+                msg.Show();
                 scroll.Add(msg);
             }
         }
