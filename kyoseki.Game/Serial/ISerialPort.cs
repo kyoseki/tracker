@@ -26,7 +26,5 @@ namespace kyoseki.Game.Serial
         void Close();
 
         void Release();
-
-        Action ConnectionLost { get; set; }
     }
 }

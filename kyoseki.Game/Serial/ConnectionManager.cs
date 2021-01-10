@@ -79,8 +79,12 @@ namespace kyoseki.Game.Serial
                             }
                             catch (TimeoutException) { }
                             catch (OperationCanceledException) { }
-                            catch (UnauthorizedAccessException) { }
-                            catch (InvalidOperationException) { }
+                            catch (Exception e)
+                                when (e is UnauthorizedAccessException ||
+                                      e is InvalidOperationException)
+                            {
+                                State.Value = ConnectionState.Resetting;
+                            }
                         }
                         break;
                     case ConnectionState.Resetting:
@@ -109,8 +113,7 @@ namespace kyoseki.Game.Serial
                             {
                                 NewLineRead = "\r\n",
                                 NewLineWrite = "\n",
-                                ReadTimeout = 1,
-                                ConnectionLost = () => State.Value = ConnectionState.Resetting
+                                ReadTimeout = 1
                         };
 
                             ports.Add(s);

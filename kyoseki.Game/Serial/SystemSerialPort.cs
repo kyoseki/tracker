@@ -18,8 +18,6 @@ namespace kyoseki.Game.Serial
             set => base.NewLine = value;
         }
 
-        public Action ConnectionLost { get; set; }
-
         public string NewLineWrite { get; set; }
 
         public Bindable<SerialPortState> State { get; private set; } = new Bindable<SerialPortState>(SerialPortState.Closed);
@@ -90,8 +88,6 @@ namespace kyoseki.Game.Serial
         {
             Logger.Log($"Lost connection to {Name}", LoggingTarget.Network);
             State.Value = SerialPortState.Disconnected;
-
-            ConnectionLost?.Invoke();
         }
     }
 }
