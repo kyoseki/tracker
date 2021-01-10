@@ -19,7 +19,9 @@ namespace kyoseki.Game.Overlays.SerialMonitor
         public const int HEIGHT = pill_height;
         public const int MARGIN = 5;
 
-        private const int content_font_size = 12;
+        public const int CONTENT_FONT_SIZE = 12;
+
+        public const int CONTENT_LINE_SPACING = 0;
 
         private CircularContainer pillContainer;
         private Box pill;
@@ -43,7 +45,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                 pillText.Text = drawInfo.Abbreviation;
 
                 textFlow.Clear();
-                textFlow.AddText(item.Content, t => t.Font = new FontUsage("JetbrainsMono", size: content_font_size));
+                textFlow.AddText(item.Content, t => t.Font = new FontUsage("JetbrainsMono", size: CONTENT_FONT_SIZE));
             }
         }
 
@@ -91,7 +93,8 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                     Child = textFlow = new TextFlowContainer
                     {
                         RelativeSizeAxes = Axes.X,
-                        AutoSizeAxes = Axes.Y
+                        AutoSizeAxes = Axes.Y,
+                        LineSpacing = CONTENT_LINE_SPACING
                     }
                 }
             };

@@ -68,10 +68,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             var topBound = scroll.Current - 100;
             var bottomBound = scroll.Current + DrawHeight + 100;
 
-            var firstIdx = messages.IndexOf(messages.First(m => m.ChannelYPosition >= topBound));
-            var lastIdx = messages.IndexOf(messages.Last(m => m.ChannelYPosition <= bottomBound));
-
-            var toDisplay = messages.GetRange(firstIdx, lastIdx - firstIdx + 1);
+            var toDisplay = messages.Where(m => m.ChannelYPosition >= topBound && m.ChannelYPosition <= bottomBound).ToList();
 
             foreach (var msg in scroll.Children)
             {
@@ -103,7 +100,10 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             {
                 msg.ChannelYPosition = currentY;
 
-                currentY += Message.HEIGHT + Message.MARGIN;
+                var additionalLines = msg.Content.Split("\n").Count() - 1;
+                var additionalHeight = Math.Max(0, additionalLines * (Message.CONTENT_FONT_SIZE + Message.CONTENT_LINE_SPACING));
+
+                currentY += Message.HEIGHT + Message.MARGIN + additionalHeight;
             }
 
             scroll.ScrollContent.Height = currentY;
