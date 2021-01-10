@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.IO.Ports;
 using osu.Framework.Bindables;
 using osu.Framework.Logging;
@@ -43,6 +44,11 @@ namespace kyoseki.Game.Serial
             {
                 Logger.Log($"Access to port {Name} denied", LoggingTarget.Network);
                 State.Value = SerialPortState.AccessDenied;
+            }
+            catch (FileNotFoundException)
+            {
+                Logger.Log($"Port is {Name} is not connected", LoggingTarget.Network);
+                State.Value = SerialPortState.Disconnected;
             }
         }
 
