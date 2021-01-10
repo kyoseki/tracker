@@ -1,4 +1,5 @@
 using System;
+using osu.Framework.Bindables;
 
 namespace kyoseki.Game.Serial
 {
@@ -8,7 +9,7 @@ namespace kyoseki.Game.Serial
 
         int Baud { get; }
 
-        SerialPortState State { get; }
+        Bindable<SerialPortState> State { get; }
 
         string NewLineRead { get; }
 

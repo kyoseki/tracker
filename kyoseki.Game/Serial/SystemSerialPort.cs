@@ -1,5 +1,6 @@
 using System;
 using System.IO.Ports;
+using osu.Framework.Bindables;
 using osu.Framework.Logging;
 
 namespace kyoseki.Game.Serial
@@ -20,7 +21,7 @@ namespace kyoseki.Game.Serial
 
         public string NewLineWrite { get; set; }
 
-        public SerialPortState State { get; private set; } = SerialPortState.Closed;
+        public Bindable<SerialPortState> State { get; private set; } = new Bindable<SerialPortState>(SerialPortState.Closed);
 
         public SystemSerialPort(string name, int baud)
             : base(name, baud)
@@ -36,12 +37,12 @@ namespace kyoseki.Game.Serial
                 Logger.Log($"Connecting to serial port {Name}", LoggingTarget.Network);
 
                 base.Open();
-                State = SerialPortState.Open;
+                State.Value = SerialPortState.Open;
             }
             catch (UnauthorizedAccessException)
             {
                 Logger.Log($"Access to port {Name} denied", LoggingTarget.Network);
-                State = SerialPortState.AccessDenied;
+                State.Value = SerialPortState.AccessDenied;
             }
         }
 
@@ -49,13 +50,13 @@ namespace kyoseki.Game.Serial
         {
             base.Close();
 
-            if (State == SerialPortState.Open)
-                State = SerialPortState.Closed;
+            if (State.Value == SerialPortState.Open)
+                State.Value = SerialPortState.Closed;
         }
 
         public void Release()
         {
-            State = SerialPortState.Released;
+            State.Value = SerialPortState.Released;
             Close();
         }
 
@@ -82,7 +83,7 @@ namespace kyoseki.Game.Serial
         private void handleDisconnected()
         {
             Logger.Log($"Lost connection to {Name}", LoggingTarget.Network);
-            State = SerialPortState.Disconnected;
+            State.Value = SerialPortState.Disconnected;
 
             ConnectionLost?.Invoke();
         }

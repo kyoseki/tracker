@@ -59,7 +59,7 @@ namespace kyoseki.Game.Serial
                 switch (State.Value)
                 {
                     case ConnectionState.Ready:
-                        var toQuery = ports.Where(p => p.State == SerialPortState.Open);
+                        var toQuery = ports.Where(p => p.State.Value == SerialPortState.Open);
                         foreach (var port in toQuery)
                         {
                             try
@@ -118,8 +118,8 @@ namespace kyoseki.Game.Serial
 
                         foreach (var port in ports)
                         {
-                            if (port.State == SerialPortState.Closed ||
-                                (port.State == SerialPortState.Disconnected && added.Contains(port.Name)))
+                            if (port.State.Value == SerialPortState.Closed ||
+                                (port.State.Value == SerialPortState.Disconnected && added.Contains(port.Name)))
                                 port.Open();
                         }
 
