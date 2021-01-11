@@ -1,3 +1,4 @@
+using kyoseki.Game.Input.Bindings;
 using kyoseki.Game.Serial;
 using kyoseki.Resources;
 using osu.Framework.Allocation;
@@ -25,10 +26,14 @@ namespace kyoseki.Game
         protected KyosekiGameBase()
         {
             // Ensure game and tests scale with window size and screen DPI.
-            base.Content.Add(Content = new DrawSizePreservingFillContainer
+            base.Content.Add(new DrawSizePreservingFillContainer
             {
                 // You may want to change TargetDrawSize to your "default" resolution, which will decide how things scale and position when using absolute coordinates.
-                TargetDrawSize = new Vector2(1366, 768)
+                TargetDrawSize = new Vector2(1366, 768),
+                Child = Content = new GlobalActionContainer
+                {
+                    RelativeSizeAxes = Axes.Both
+                }
             });
         }
 

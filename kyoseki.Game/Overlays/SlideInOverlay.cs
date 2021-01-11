@@ -1,14 +1,16 @@
-﻿using kyoseki.Game.UI;
+﻿using kyoseki.Game.Input.Bindings;
+using kyoseki.Game.UI;
 using kyoseki.Game.UI.Buttons;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Input.Bindings;
 using osuTK;
 
 namespace kyoseki.Game.Overlays
 {
-    public abstract class SlideInOverlay : FocusedOverlayContainer
+    public abstract class SlideInOverlay : FocusedOverlayContainer, IKeyBindingHandler<GlobalAction>
     {
         protected virtual string Title { get; }
 
@@ -85,6 +87,22 @@ namespace kyoseki.Game.Overlays
             this.MoveToY(2, 250, Easing.In);
 
             base.PopOut();
+        }
+
+        public bool OnPressed(GlobalAction action)
+        {
+            switch (action)
+            {
+                case GlobalAction.Back:
+                    Hide();
+                    return true;
+            }
+
+            return false;
+        }
+
+        public void OnReleased(GlobalAction action)
+        {
         }
     }
 }
