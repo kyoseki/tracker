@@ -7,11 +7,20 @@ namespace kyoseki.Game.UI
 {
     public class KyosekiScrollContainer : KyosekiScrollContainer<Drawable>
     {
+        public KyosekiScrollContainer(Direction direction = Direction.Vertical)
+            : base(direction)
+        {
+        }
     }
 
     public class KyosekiScrollContainer<T> : ScrollContainer<T>
         where T : Drawable
     {
+        public KyosekiScrollContainer(Direction direction = Direction.Vertical)
+            : base(direction)
+        {
+        }
+
         protected override ScrollbarContainer CreateScrollbar(Direction direction) =>
             new KyosekiScrollbar(direction);
         private class KyosekiScrollbar : ScrollbarContainer
