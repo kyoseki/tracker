@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using kyoseki.Game.Overlays.SerialMonitor;
 using kyoseki.Game.Overlays.Skeleton;
+using kyoseki.Game.Serial;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -28,11 +29,14 @@ namespace kyoseki.Game
             };
         }
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
-            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+            dependencies = new SerialDependencies(base.CreateChildDependencies(parent));
 
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
+            AddInternal(dependencies.Get<ConnectionManager>());
+            AddInternal(dependencies.Get<SkeletonLinkManager>());
 
             loadComponentSingleFile(new SerialMonitorOverlay(), overlayContainer.Add, true);
             loadComponentSingleFile(new SkeletonOverlay(), overlayContainer.Add, true);
