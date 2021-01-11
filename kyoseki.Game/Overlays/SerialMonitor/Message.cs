@@ -1,5 +1,6 @@
 ﻿using System;
 using kyoseki.Game.Serial;
+using kyoseki.Game.UI;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
@@ -45,7 +46,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                 pillText.Text = drawInfo.Abbreviation;
 
                 textFlow.Clear();
-                textFlow.AddText(item.Content, t => t.Font = new FontUsage("JetbrainsMono", size: CONTENT_FONT_SIZE));
+                textFlow.AddText(item.Content, t => t.Font = KyosekiFont.Mono.With(size: CONTENT_FONT_SIZE));
             }
         }
 
@@ -69,7 +70,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                         },
                         pillText = new SpriteText
                         {
-                            Font = new FontUsage("Manrope", size: pill_font_size, weight: "Bold"),
+                            Font = KyosekiFont.Bold.With(size: pill_font_size),
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
                             Padding = new MarginPadding

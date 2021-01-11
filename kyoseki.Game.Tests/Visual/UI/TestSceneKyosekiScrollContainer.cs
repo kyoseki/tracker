@@ -27,7 +27,7 @@ namespace kyoseki.Game.Tests.Visual.UI
                 scroll.Add(new SpriteText
                 {
                     RelativeSizeAxes = Axes.X,
-                    Font = new FontUsage(size: item_height),
+                    Font = KyosekiFont.GetFont(size: item_height),
                     Text = "hello there!",
                     Y = y
                 });

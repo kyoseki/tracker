@@ -45,7 +45,7 @@ namespace kyoseki.Game.UI.Input
 
         protected virtual Colour4 SelectionColour => KyosekiColors.TEXT_SELECTED;
 
-        private readonly FontUsage font = new FontUsage("Manrope");
+        private readonly FontUsage font = KyosekiFont.GetFont();
 
         public new BindableBool ReadOnly = new BindableBool();
 
@@ -98,7 +98,7 @@ namespace kyoseki.Game.UI.Input
         protected override SpriteText CreatePlaceholder() => new BasicTextBox.FadingPlaceholderText
         {
             Colour = Colour4.White,
-            Font = font.With(weight: "Bold"),
+            Font = font.With(weight: FontWeight.Bold),
             Anchor = Anchor.CentreLeft,
             Origin = Anchor.CentreLeft,
             X = CaretWidth

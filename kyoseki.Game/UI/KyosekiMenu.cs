@@ -94,7 +94,7 @@ namespace kyoseki.Game.UI
                         Anchor = Anchor.CentreLeft,
                         Origin = Anchor.CentreLeft,
                         Margin = new MarginPadding { Horizontal = margin_horizontal, Vertical = margin_vertical },
-                        Font = new FontUsage("Manrope", size: 15),
+                        Font = KyosekiFont.GetFont(size: 15),
                         X = -1
                     };
                 }

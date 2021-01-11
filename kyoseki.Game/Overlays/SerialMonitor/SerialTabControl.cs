@@ -47,7 +47,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                     },
                     text = new SpriteText
                     {
-                        Font = new FontUsage(size: 20),
+                        Font = KyosekiFont.GetFont(size: 20),
                         Origin = Anchor.Centre,
                         Anchor = Anchor.Centre,
                         Text = value,

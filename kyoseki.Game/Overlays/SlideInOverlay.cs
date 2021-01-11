@@ -41,7 +41,7 @@ namespace kyoseki.Game.Overlays
                         },
                         new SpriteText
                         {
-                            Font = new FontUsage("Manrope", 28, "Bold"),
+                            Font = KyosekiFont.Bold.With(size: 28),
                             Padding = new MarginPadding { Left = 18 },
                             RelativeSizeAxes = Axes.X,
                             Anchor = Anchor.CentreLeft,

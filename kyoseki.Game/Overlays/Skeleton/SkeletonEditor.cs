@@ -1,6 +1,7 @@
 ﻿using kyoseki.Game.Kinematics;
 using kyoseki.Game.Kinematics.Drawables;
 using kyoseki.Game.Serial;
+using kyoseki.Game.UI;
 using kyoseki.Game.UI.Buttons;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -74,7 +75,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                                 boneText = new SpriteText
                                 {
                                     Text = "Select a bone",
-                                    Font = new FontUsage(size: 24, weight: "Bold")
+                                    Font = KyosekiFont.Bold.With(size: 24)
                                 },
                                 sensorIdInput = new NumberTextBox
                                 {
