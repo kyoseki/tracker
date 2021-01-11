@@ -58,11 +58,29 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                 Children = new Drawable[]
                 {
                     messagePool,
-                    scroll = new ChannelScrollContainer
+                    new Container
                     {
-                        ScrollbarVisible = true,
                         RelativeSizeAxes = Axes.Both,
-                        Padding = new MarginPadding { Bottom = KyosekiTextBox.HEIGHT }
+                        Padding = new MarginPadding { Bottom = KyosekiTextBox.HEIGHT },
+                        Children = new Drawable[]
+                        {
+                            scroll = new ChannelScrollContainer
+                            {
+                                ScrollbarVisible = true,
+                                RelativeSizeAxes = Axes.Both,
+                            },
+                            continueAutoscroll = new ScrollToBottomButton
+                            {
+                                Anchor = Anchor.BottomRight,
+                                Origin = Anchor.BottomRight,
+                                Alpha = 0,
+                                Action = () =>
+                                {
+                                    scroll.ResetScroll();
+                                    scroll.ScrollToEnd();
+                                }
+                            }
+                        }
                     },
                     textBox = new ButtonTextBox
                     {
@@ -71,17 +89,6 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                         Origin = Anchor.BottomCentre,
                         PlaceholderText = "Enter message to device...",
                         ReleaseFocusOnCommit = false
-                    },
-                    continueAutoscroll = new ScrollToBottomButton
-                    {
-                        Anchor = Anchor.BottomRight,
-                        Origin = Anchor.BottomRight,
-                        Alpha = 0,
-                        Action = () =>
-                        {
-                            scroll.ResetScroll();
-                        },
-                        Y = DrawHeight - KyosekiTextBox.HEIGHT
                     }
                 }
             };
