@@ -72,7 +72,7 @@ namespace kyoseki.Game.Kinematics
                     Child = new Bone
                     {
                         Name = "Ankle",
-                        BaseOrientation = new Vector3(0, 0, -5)
+                        BaseOrientation = new Vector3(0, 0, 5)
                     }
                 }
             }
