@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using kyoseki.Game.Serial;
+using kyoseki.Game.UI;
 using kyoseki.Game.UI.Buttons;
 using kyoseki.Game.UI.Input;
 using osu.Framework.Bindables;
@@ -9,7 +10,6 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
 using osu.Framework.Graphics.Pooling;
-using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osuTK;
 
@@ -223,7 +223,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             }
         }
 
-        private class ChannelScrollContainer : ScrollContainer<Message>
+        private class ChannelScrollContainer : KyosekiScrollContainer<Message>
         {
             public BindableBool UserScrolling { get; private set; } = new BindableBool(false);
 
@@ -231,8 +231,6 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             {
                 ScrollContent.AutoSizeAxes = Axes.None;
             }
-
-            protected override ScrollbarContainer CreateScrollbar(Direction direction) => new ChannelScrollbar(direction);
 
             protected override void OnUserScroll(float value, bool animated = true, double? distanceDecay = null)
             {
@@ -249,30 +247,6 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             }
 
             public void ResetScroll() => UserScrolling.Value = false;
-
-            private class ChannelScrollbar : ScrollbarContainer
-            {
-                private const float dim_size = 8;
-
-                public ChannelScrollbar(Direction direction)
-                    : base(direction)
-                {
-                    Child = new Box
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Colour = Colour4.Gray
-                    };
-                }
-
-                public override void ResizeTo(float val, int duration = 0, Easing easing = Easing.None)
-                {
-                    Vector2 size = new Vector2(dim_size)
-                    {
-                        [(int)ScrollDirection] = val
-                    };
-                    this.ResizeTo(size, duration, easing);
-                }
-            }
         }
     }
 }
