@@ -1,7 +1,5 @@
-using System;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
 using osuTK;
 
@@ -9,7 +7,7 @@ namespace kyoseki.Game.UI
 {
     public class KyosekiMenu : Menu
     {
-        private const int fade_duration = 250;
+        public const int FADE_DURATION = 250;
 
         public KyosekiMenu(Direction direction, bool topLevelMenu = false)
             : base(direction, topLevelMenu)
@@ -25,7 +23,7 @@ namespace kyoseki.Game.UI
 
         protected override void AnimateOpen()
         {
-            this.FadeIn(fade_duration, Easing.InQuint);
+            this.FadeIn(FADE_DURATION, Easing.InQuint);
 
             for (int i = 0; i < Children.Count; i++)
             {
@@ -33,7 +31,7 @@ namespace kyoseki.Game.UI
             }
         }
 
-        protected override void AnimateClose() => this.FadeOut(fade_duration, Easing.OutQuad);
+        protected override void AnimateClose() => this.FadeOut(FADE_DURATION, Easing.OutQuad);
 
         protected override void UpdateSize(Vector2 newSize)
         {
@@ -62,58 +60,9 @@ namespace kyoseki.Game.UI
                 BackgroundColourHover = KyosekiColors.BUTTON_SELECTED.Opacity(0.5f);
             }
 
-            protected override Drawable CreateContent() => new TextContainer();
+            protected override Drawable CreateContent() => new MenuTextContainer();
 
-            public void Show(int idx) => ((TextContainer)Content).Show(idx);
-
-            private class TextContainer : Container, IHasText
-            {
-                private const int margin_horizontal = 7;
-
-                private const int margin_vertical = 3;
-
-                public string Text
-                {
-                    get => text.Text;
-                    set => text.Text = value;
-                }
-
-                private readonly SpriteText text;
-
-                public TextContainer()
-                {
-                    Anchor = Anchor.CentreLeft;
-                    Origin = Anchor.CentreLeft;
-
-                    Masking = true;
-
-                    AutoSizeAxes = Axes.Y;
-                    Child = text = new SpriteText
-                    {
-                        RelativePositionAxes = Axes.X,
-                        Anchor = Anchor.CentreLeft,
-                        Origin = Anchor.CentreLeft,
-                        Margin = new MarginPadding { Horizontal = margin_horizontal, Vertical = margin_vertical },
-                        Font = KyosekiFont.GetFont(size: 15),
-                        X = -1
-                    };
-                }
-
-                protected override void LoadComplete()
-                {
-                    base.LoadComplete();
-
-                    Width = text.DrawWidth + margin_horizontal * 2;
-                }
-
-                public void Show(int idx)
-                {
-                    var addDelay = Math.Min(160, 20 * idx);
-
-                    text.X = -1;
-                    text.Delay(fade_duration / 1.25 + addDelay).MoveToX(0, 200, Easing.OutExpo);
-                }
-            }
+            public void Show(int idx) => ((MenuTextContainer)Content).Show(idx);
         }
     }
 }
