@@ -33,7 +33,7 @@ namespace kyoseki.Game
         [BackgroundDependencyLoader]
         private void load()
         {
-            Resources.AddStore(new DllResourceStore(typeof(kyosekiResources).Assembly));
+            Resources.AddStore(new DllResourceStore(typeof(KyosekiResources).Assembly));
 
             AddFont(Resources, @"Fonts/Manrope");
             AddFont(Resources, @"Fonts/Manrope-Bold");

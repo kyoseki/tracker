@@ -17,7 +17,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
         private SerialTabControl tabControl;
 
-        private List<SerialChannel> loadedChannels = new List<SerialChannel>();
+        private readonly List<SerialChannel> loadedChannels = new List<SerialChannel>();
 
         private Container tabContent;
 
@@ -67,7 +67,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
         {
             foreach (var port in added)
             {
-                if (!loadedChannels.Any(c => c.PortName == port))
+                if (loadedChannels.All(c => c.PortName != port))
                 {
                     tabControl.AddItem(port);
                     loadedChannels.Add(new SerialChannel(serialConnections.Get(port))

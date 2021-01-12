@@ -36,7 +36,7 @@ namespace kyoseki.Game.Kinematics
 
         public int BoneCount => Bones.Length;
 
-        private static Bone upper = new Bone
+        private static readonly Bone upper = new Bone
         {
             Name = "Collar",
             BaseOrientation = new Vector3(-5, 0, 0),
@@ -57,7 +57,7 @@ namespace kyoseki.Game.Kinematics
             }
         };
 
-        private static Bone lower = new Bone
+        private static readonly Bone lower = new Bone
         {
             Name = "Pelvis",
             BaseOrientation = new Vector3(-3, 0, 0),
@@ -78,20 +78,20 @@ namespace kyoseki.Game.Kinematics
             }
         };
 
-        public static Skeleton DEFAULT_SKELETON => new Skeleton
+        public static Skeleton Default => new Skeleton
         {
             Root = new Bone
             {
                 Name = "Hips",
                 BaseOrientation = new Vector3(0, -4, 0),
-                Children = new Bone[]
+                Children = new[]
                 {
                     new Bone
                     {
                         Name = "Chest",
                         Anchor = BoneAnchor.Root,
                         BaseOrientation = new Vector3(0, 20, 0),
-                        Children = new Bone[]
+                        Children = new[]
                         {
                             new Bone
                             {

@@ -12,7 +12,7 @@ namespace kyoseki.Game.UI
         public static FontUsage GetFont(Typeface typeface = Typeface.Manrope, float size = 16, FontWeight weight = FontWeight.Regular, bool italics = false, bool fixedWidth = false) =>
             new FontUsage(GetFamilyString(typeface), size, GetWeightString(typeface, weight), getItalics(italics), fixedWidth);
 
-        public static bool getItalics(in bool italicsRequested)
+        private static bool getItalics(in bool italicsRequested)
         {
             return false;
         }
@@ -35,7 +35,7 @@ namespace kyoseki.Game.UI
             if (weight == FontWeight.Regular)
                 return string.Empty;
 
-            if (typeface == Typeface.JetbrainsMono && weight != FontWeight.Regular)
+            if (typeface == Typeface.JetbrainsMono)
                 weight = FontWeight.Regular;
 
             return weight.ToString();

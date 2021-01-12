@@ -16,6 +16,7 @@ namespace kyoseki.Game.UI.Input
         private readonly Container buttonContainer;
 
         private ButtonInfo[] buttons;
+
         public ButtonInfo[] Buttons
         {
             get => buttons;
@@ -24,7 +25,7 @@ namespace kyoseki.Game.UI.Input
                 buttons = value;
 
                 buttonContainer.Clear();
-                buttons.Reverse().ForEach(b => AddButton(b));
+                buttons.Reverse().ForEach(AddButton);
             }
         }
 
@@ -49,9 +50,9 @@ namespace kyoseki.Game.UI.Input
             {
                 Anchor = Anchor.CentreRight,
                 Origin = Anchor.CentreRight,
-                Size = new Vector2(KyosekiTextBox.HEIGHT * (buttons.Count() - buttonCount), KyosekiTextBox.HEIGHT),
+                Size = new Vector2(KyosekiTextBox.HEIGHT * (buttons.Length - buttonCount), KyosekiTextBox.HEIGHT),
                 Icon = info.Icon,
-                BackgroundColour = KyosekiColors.BUTTON_BACKGROUND.Lighten((buttons.Count() - buttonCount) * 0.25f),
+                BackgroundColour = KyosekiColors.ButtonBackground.Lighten((buttons.Length - buttonCount) * 0.25f),
                 Action = info.Action,
                 TooltipText = info.Tooltip
             });
@@ -63,10 +64,7 @@ namespace kyoseki.Game.UI.Input
 
             if (transform == null)
             {
-                if (TextFlow.DrawWidth > DrawWidth - buttonContainer.DrawWidth - LeftRightPadding)
-                    transform = buttonContainer.FadeOut(100, Easing.OutQuad);
-                else
-                    transform = buttonContainer.FadeIn(100, Easing.In);
+                transform = TextFlow.DrawWidth > DrawWidth - buttonContainer.DrawWidth - LeftRightPadding ? buttonContainer.FadeOut(100, Easing.OutQuad) : buttonContainer.FadeIn(100, Easing.In);
 
                 transform.OnComplete(_ => transform = null);
             }
@@ -90,7 +88,7 @@ namespace kyoseki.Game.UI.Input
                 Origin = Anchor.Centre,
                 X = KyosekiTextBox.HEIGHT / 2,
                 Size = new Vector2(0.3f),
-                Colour = KyosekiColors.FOREGROUND
+                Colour = KyosekiColors.Foreground
             };
         }
     }

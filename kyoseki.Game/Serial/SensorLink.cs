@@ -9,6 +9,7 @@ namespace kyoseki.Game.Serial
         public readonly string BoneName;
 
         private int sensorId;
+
         public int SensorId
         {
             get => sensorId;
@@ -19,8 +20,7 @@ namespace kyoseki.Game.Serial
             }
         }
 
-        public SensorLinkInfo Info =>
-            new SensorLinkInfo { BoneName = BoneName, SensorId = SensorId };
+        public SensorLinkInfo Info => new SensorLinkInfo(BoneName, SensorId);
 
         /// <summary>
         /// The final orientation of this sensor, taking both the <see cref="Transform"/> and
@@ -33,11 +33,11 @@ namespace kyoseki.Game.Serial
         /// By default, the Y and Z axes are swapped.
         /// </summary>
         public Matrix4x4 Transform = new Matrix4x4(
-                1, 0, 0, 0,
-                0, 0, 1, 0,
-                0, 1, 0, 0,
-                0, 0, 0, 1
-            );
+            1, 0, 0, 0,
+            0, 0, 1, 0,
+            0, 1, 0, 0,
+            0, 0, 0, 1
+        );
 
         /// <summary>
         /// Represents the last raw rotation received.
@@ -65,7 +65,7 @@ namespace kyoseki.Game.Serial
             lastOrientation = quat;
             var relative = calibrationOrientation * quat;
 
-            // https://stackoverflow.com/questions/1274936/flipping-a-quaternion-from-right-to-left-handed-coordinates 
+            // https://stackoverflow.com/questions/1274936/flipping-a-quaternion-from-right-to-left-handed-coordinates
             bool result = Matrix4x4.Invert(Transform, out Matrix4x4 tInverted);
             if (!result)
                 throw new Exception("Failed to invert SensorLink transform matrix");
@@ -78,12 +78,18 @@ namespace kyoseki.Game.Serial
 
     public class SensorLinkInfo : IEquatable<SensorLinkInfo>
     {
-        public string BoneName { get; set; }
+        public readonly string BoneName;
 
-        public int SensorId { get; set; }
+        public readonly int SensorId;
+
+        public SensorLinkInfo(string boneName, int sensorId)
+        {
+            BoneName = boneName;
+            SensorId = sensorId;
+        }
 
         public bool Equals(SensorLinkInfo other) =>
-            BoneName == other.BoneName &&
-            SensorId == other.SensorId;
+            BoneName == other?.BoneName &&
+            SensorId == other?.SensorId;
     }
 }

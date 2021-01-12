@@ -10,7 +10,7 @@ namespace kyoseki.Game.Kinematics.Drawables
 {
     public class SensorView : Drawable
     {
-        private Bindable<Quaternion> orientation = new Bindable<Quaternion>(Quaternion.Identity);
+        private readonly Bindable<Quaternion> orientation = new Bindable<Quaternion>(Quaternion.Identity);
 
         private SensorLink link;
 
@@ -23,7 +23,10 @@ namespace kyoseki.Game.Kinematics.Drawables
                 {
                     link = null;
                     orientation.UnbindBindings();
+
+                    return;
                 }
+
                 link = value;
                 orientation.BindTarget = link.CalibratedOrientation;
             }

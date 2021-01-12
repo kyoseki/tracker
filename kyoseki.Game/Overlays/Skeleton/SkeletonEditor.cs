@@ -18,8 +18,6 @@ namespace kyoseki.Game.Overlays.Skeleton
 
         public readonly SkeletonLink Link = new SkeletonLink();
 
-        private DrawableSkeleton drawableSkeleton;
-
         private BasicTextBox portInput;
         private NumberTextBox receiverIdInput;
 
@@ -33,7 +31,7 @@ namespace kyoseki.Game.Overlays.Skeleton
         {
             Children = new Drawable[]
             {
-                drawableSkeleton = new DrawableSkeleton(Link.Skeleton)
+                new DrawableSkeleton(Link.Skeleton)
                 {
                     RelativeSizeAxes = Axes.Y,
                     Width = skeleton_width,

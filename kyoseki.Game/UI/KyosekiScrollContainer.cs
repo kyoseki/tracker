@@ -23,6 +23,7 @@ namespace kyoseki.Game.UI
 
         protected override ScrollbarContainer CreateScrollbar(Direction direction) =>
             new KyosekiScrollbar(direction);
+
         private class KyosekiScrollbar : ScrollbarContainer
         {
             private const float dim_size = 8;
@@ -36,7 +37,7 @@ namespace kyoseki.Game.UI
                 Child = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Colour = KyosekiColors.BUTTON_SELECTED
+                    Colour = KyosekiColors.ButtonSelected
                 };
             }
 

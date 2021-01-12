@@ -18,7 +18,7 @@ namespace kyoseki.Game.Serial
 
         public List<string> PortNames = new List<string>();
 
-        private List<ISerialPort> ports = new List<ISerialPort>();
+        private readonly List<ISerialPort> ports = new List<ISerialPort>();
 
         public Bindable<ConnectionState> State = new Bindable<ConnectionState>(ConnectionState.Resetting);
 
@@ -50,12 +50,15 @@ namespace kyoseki.Game.Serial
 
         private void lookForPorts()
         {
-            bool newPorts = !SerialPort.GetPortNames().All(p => PortNames.Contains(p));
-
-            if (newPorts)
+            lock (PortNames)
             {
-                Logger.Log("New serial ports detected", LoggingTarget.Network);
-                State.Value = ConnectionState.Resetting;
+                bool newPorts = !SerialPort.GetPortNames().All(p => PortNames.Contains(p));
+
+                if (newPorts)
+                {
+                    Logger.Log("New serial ports detected", LoggingTarget.Network);
+                    State.Value = ConnectionState.Resetting;
+                }
             }
         }
 
@@ -70,6 +73,7 @@ namespace kyoseki.Game.Serial
                 {
                     case ConnectionState.Ready:
                         var toQuery = ports.Where(p => p.State.Value == SerialPortState.Open);
+
                         foreach (var port in toQuery)
                         {
                             try
@@ -100,6 +104,7 @@ namespace kyoseki.Game.Serial
                         while (messageQueue.TryDequeue(out MessageInfo msg))
                         {
                             var targetPort = ports.Find(p => p.Name == msg.Port);
+
                             if (targetPort?.State?.Value == SerialPortState.Open)
                             {
                                 targetPort.WriteLine(msg.Content);
@@ -107,13 +112,17 @@ namespace kyoseki.Game.Serial
                             }
                             else
                             {
+                                var resendMsg = msg;
+
                                 scheduler.AddDelayed(() =>
                                 {
-                                    messageQueue.Enqueue(msg);
+                                    messageQueue.Enqueue(resendMsg);
                                 }, 1000);
                             }
                         }
+
                         break;
+
                     case ConnectionState.Resetting:
                         var newPorts = SerialPort.GetPortNames();
 
@@ -124,7 +133,7 @@ namespace kyoseki.Game.Serial
 
                         // Ports that were physically connected AND
                         // have never been connected before since the program started
-                        var toCreate = added.Where(p => !ports.Any(po => po.Name == p));
+                        var toCreate = added.Where(p => ports.All(po => po.Name != p));
 
                         lock (PortNames)
                         {
@@ -141,7 +150,7 @@ namespace kyoseki.Game.Serial
                                 NewLineRead = "\r\n",
                                 NewLineWrite = "\n",
                                 ReadTimeout = 1
-                        };
+                            };
 
                             ports.Add(s);
                         }

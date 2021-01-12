@@ -18,7 +18,7 @@ namespace kyoseki.Game.UI.Buttons
             set => spriteText.Colour = value;
         }
 
-        private SpriteText spriteText;
+        private readonly SpriteText spriteText;
 
         public TextButton()
         {
@@ -27,7 +27,7 @@ namespace kyoseki.Game.UI.Buttons
                 Truncate = true,
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
-                Colour = KyosekiColors.FOREGROUND
+                Colour = KyosekiColors.Foreground
             };
         }
     }

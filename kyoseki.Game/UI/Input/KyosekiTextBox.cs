@@ -17,7 +17,8 @@ namespace kyoseki.Game.UI.Input
 
         protected virtual float CaretWidth => 2;
 
-        private Colour4 backgroundFocused = KyosekiColors.TEXTBOX_FOCUSED;
+        private Colour4 backgroundFocused = KyosekiColors.TextBoxFocused;
+
         protected Colour4 BackgroundFocused
         {
             get => backgroundFocused;
@@ -29,7 +30,8 @@ namespace kyoseki.Game.UI.Input
             }
         }
 
-        private Colour4 backgroundUnfocused = KyosekiColors.TEXTBOX_UNFOCUSED;
+        private Colour4 backgroundUnfocused = KyosekiColors.TextBoxUnfocused;
+
         protected Colour4 BackgroundUnfocused
         {
             get => backgroundUnfocused;
@@ -41,15 +43,15 @@ namespace kyoseki.Game.UI.Input
             }
         }
 
-        protected Colour4 BackgroundCommit { get; set; } = KyosekiColors.TEXT_SELECTED;
+        protected Colour4 BackgroundCommit { get; set; } = KyosekiColors.TextSelected;
 
-        protected virtual Colour4 SelectionColour => KyosekiColors.TEXT_SELECTED;
+        protected virtual Colour4 SelectionColour => KyosekiColors.TextSelected;
 
         private readonly FontUsage font = KyosekiFont.GetFont();
 
         public new BindableBool ReadOnly = new BindableBool();
 
-        private Box background;
+        private readonly Box background;
 
         public KyosekiTextBox()
         {
@@ -82,7 +84,7 @@ namespace kyoseki.Game.UI.Input
             if (readOnly)
                 KillFocus();
 
-            var target = readOnly ? KyosekiColors.TEXTBOX_READONLY : KyosekiColors.TEXTBOX_UNFOCUSED;
+            var target = readOnly ? KyosekiColors.TextBoxReadOnly : KyosekiColors.TextBoxUnfocused;
             background.ClearTransforms();
             background.FadeColour(target, 100, Easing.In);
 
@@ -149,13 +151,13 @@ namespace kyoseki.Game.UI.Input
             for (int i = 0; i < shakes; i++)
             {
                 sequence
-                    .MoveToX(LeftRightPadding - shake, shake_duration, Easing.OutSine)
+                    .MoveToX(origin - shake, shake_duration, Easing.OutSine)
                     .Then()
-                    .MoveToX(LeftRightPadding + shake, shake_duration / 2, Easing.InOutSine)
+                    .MoveToX(origin + shake, shake_duration / 2f, Easing.InOutSine)
                     .Then();
             }
 
-            sequence.MoveToX(LeftRightPadding, shake_duration, Easing.InSine);
+            sequence.MoveToX(origin, shake_duration, Easing.InSine);
         }
     }
 }

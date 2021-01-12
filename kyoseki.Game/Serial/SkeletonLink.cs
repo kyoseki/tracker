@@ -6,7 +6,7 @@ namespace kyoseki.Game.Serial
 {
     public class SkeletonLink
     {
-        public readonly Skeleton Skeleton = Skeleton.DEFAULT_SKELETON;
+        public readonly Skeleton Skeleton = Skeleton.Default;
 
         private readonly List<SensorLink> sensors = new List<SensorLink>();
 
@@ -14,8 +14,7 @@ namespace kyoseki.Game.Serial
 
         public int ReceiverId { get; set; }
 
-        public SkeletonLinkInfo Info =>
-            new SkeletonLinkInfo { Port = Port, ReceiverId = ReceiverId };
+        public SkeletonLinkInfo Info => new SkeletonLinkInfo(Port, ReceiverId);
 
         public SkeletonLink()
         {
@@ -66,7 +65,6 @@ namespace kyoseki.Game.Serial
 
         public void Unregister(string boneName, int sensorId)
         {
-            var bone = Skeleton.GetBone(boneName);
             var link = Get(boneName);
 
             link.CalibratedOrientation.UnbindEvents();
@@ -75,26 +73,30 @@ namespace kyoseki.Game.Serial
 
         public bool Represents(string port, int receiverId) =>
             Port == port &&
-            ReceiverId == ReceiverId;
+            ReceiverId == receiverId;
 
         public void Update(ReceiverMessage msg)
         {
             var targetLink = Get(msg.SensorId, true);
-            if (targetLink == null)
-                return;
 
-            targetLink.Update(msg.Quaternion);
+            targetLink?.Update(msg.Quaternion);
         }
     }
 
     public class SkeletonLinkInfo : IEquatable<SkeletonLinkInfo>
     {
-        public string Port { get; set; }
+        public readonly string Port;
 
-        public int ReceiverId { get; set; }
+        public readonly int ReceiverId;
+
+        public SkeletonLinkInfo(string port, int receiverId)
+        {
+            Port = port;
+            ReceiverId = receiverId;
+        }
 
         public bool Equals(SkeletonLinkInfo other) =>
-            Port == other.Port &&
-            ReceiverId == other.ReceiverId;
+            Port == other?.Port &&
+            ReceiverId == other?.ReceiverId;
     }
 }

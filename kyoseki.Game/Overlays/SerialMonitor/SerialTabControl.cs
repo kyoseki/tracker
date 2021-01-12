@@ -24,9 +24,9 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
         private class SerialTabItem : TabItem<string>
         {
-            private Box background;
+            private readonly Box background;
 
-            private SpriteText text;
+            private readonly SpriteText text;
 
             public SerialTabItem(string value)
                 : base(value)
@@ -43,7 +43,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                     background = new Box
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Colour = KyosekiColors.BUTTON_BACKGROUND
+                        Colour = KyosekiColors.ButtonBackground
                     },
                     text = new SpriteText
                     {
@@ -53,21 +53,21 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                         Text = value,
                         Padding = new MarginPadding(5),
                         Truncate = true,
-                        Colour = KyosekiColors.FOREGROUND
+                        Colour = KyosekiColors.Foreground
                     }
                 };
             }
 
             protected override void OnActivated()
             {
-                text.FadeColour(KyosekiColors.FOREGROUND_SELECTED, fade_duration, Easing.In);
-                background.FadeColour(KyosekiColors.BUTTON_SELECTED, fade_duration, Easing.In);
+                text.FadeColour(KyosekiColors.ForegroundSelected, fade_duration, Easing.In);
+                background.FadeColour(KyosekiColors.ButtonSelected, fade_duration, Easing.In);
             }
 
             protected override void OnDeactivated()
             {
-                text.FadeColour(KyosekiColors.FOREGROUND, fade_duration, Easing.OutQuint);
-                background.FadeColour(KyosekiColors.BUTTON_BACKGROUND, fade_duration, Easing.OutQuint);
+                text.FadeColour(KyosekiColors.Foreground, fade_duration, Easing.OutQuint);
+                background.FadeColour(KyosekiColors.ButtonBackground, fade_duration, Easing.OutQuint);
             }
         }
     }

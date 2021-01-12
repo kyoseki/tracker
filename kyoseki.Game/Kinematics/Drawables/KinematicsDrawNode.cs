@@ -27,6 +27,7 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// <param name="origin">The origin point of these axes (where they intersect)</param>
         /// <param name="length">The length of each axis</param>
         /// <param name="rotation">A quaternion representing the rotation the axes should show</param>
+        /// <param name="vertexAction">Action to be performed on each vertex - used for textured sprites or batches</param>
         public void DrawAxes(Vector2 origin, float length, System.Numerics.Quaternion rotation, Action<TexturedVertex2D> vertexAction = null)
         {
             var x = new Vector3(1, 0, 0);
@@ -96,13 +97,15 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// <summary>
         /// Draws a bone - its root and end points, an axis diagram at the root, and a line connecting them
         /// </summary>
+        /// <param name="scale">Scale factor for each bone's length</param>
         /// <param name="drawQuad">Draw quad of this Drawable</param>
         /// <param name="bone">Which bone to draw</param>
+        /// <param name="vertexAction">Action to be performed on each vertex - used for textured sprites or batches</param>
         public void DrawBone(float scale, Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
         {
-            bone.Traverse(bone =>
+            bone.Traverse(b =>
             {
-                drawSingleBone(scale, drawQuad, bone, vertexAction);
+                drawSingleBone(scale, drawQuad, b, vertexAction);
             });
         }
     }

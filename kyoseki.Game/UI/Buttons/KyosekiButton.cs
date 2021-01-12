@@ -31,12 +31,12 @@ namespace kyoseki.Game.UI.Buttons
 
         public KyosekiButton()
         {
-            AddInternal(CreateContent().WithChildren(new Drawable[]
+            AddInternal(CreateContent().WithChildren(new[]
             {
                 Background = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Colour = KyosekiColors.BUTTON_BACKGROUND
+                    Colour = KyosekiColors.ButtonBackground
                 },
                 Content = new Container
                 {
@@ -67,7 +67,7 @@ namespace kyoseki.Game.UI.Buttons
 
         protected override bool OnClick(ClickEvent e)
         {
-            Background.FlashColour(KyosekiColors.BUTTON_SELECTED, 200);
+            Background.FlashColour(KyosekiColors.ButtonSelected, 200);
             return base.OnClick(e);
         }
     }

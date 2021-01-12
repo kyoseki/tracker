@@ -167,7 +167,7 @@ namespace kyoseki.Game.Kinematics
                     return;
                 }
 
-                Children = new Bone[]
+                Children = new[]
                 {
                     value
                 };
@@ -218,9 +218,11 @@ namespace kyoseki.Game.Kinematics
                     case MirrorAxes.X:
                         x *= -1;
                         break;
+
                     case MirrorAxes.Y:
                         y *= -1;
                         break;
+
                     case MirrorAxes.Z:
                         z *= -1;
                         break;

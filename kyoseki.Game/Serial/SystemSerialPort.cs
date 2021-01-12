@@ -8,14 +8,14 @@ namespace kyoseki.Game.Serial
 {
     public class SystemSerialPort : SerialPort, ISerialPort
     {
-        public string Name => base.PortName;
+        public string Name => PortName;
 
-        public int Baud => base.BaudRate;
+        public int Baud => BaudRate;
 
         public string NewLineRead
         {
-            get => base.NewLine;
-            set => base.NewLine = value;
+            get => NewLine;
+            set => NewLine = value;
         }
 
         public string NewLineWrite { get; set; }
@@ -72,17 +72,14 @@ namespace kyoseki.Game.Serial
             }
             catch (Exception e)
                 when (e is UnauthorizedAccessException || // Access to the port is denied (i.e. disconnected but not closed yet)
-                      e is InvalidOperationException)     // The port is already closed
+                      e is InvalidOperationException) // The port is already closed
             {
                 handleDisconnected();
                 throw;
             }
         }
 
-        public new void WriteLine(string text)
-        {
-            base.Write(text + (NewLineWrite ?? "\n"));
-        }
+        public new void WriteLine(string text) => Write(text + (NewLineWrite ?? "\n"));
 
         private void handleDisconnected()
         {

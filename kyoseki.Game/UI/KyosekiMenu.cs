@@ -12,7 +12,7 @@ namespace kyoseki.Game.UI
         public KyosekiMenu(Direction direction, bool topLevelMenu = false)
             : base(direction, topLevelMenu)
         {
-            BackgroundColour = KyosekiColors.BACKGROUND.Lighten(0.75f);
+            BackgroundColour = KyosekiColors.Background.Lighten(0.75f);
             MaskingContainer.CornerRadius = 4;
         }
 
@@ -57,7 +57,7 @@ namespace kyoseki.Game.UI
                 : base(item)
             {
                 BackgroundColour = Colour4.Transparent;
-                BackgroundColourHover = KyosekiColors.BUTTON_SELECTED.Opacity(0.5f);
+                BackgroundColourHover = KyosekiColors.ButtonSelected.Opacity(0.5f);
             }
 
             protected override Drawable CreateContent() => new MenuTextContainer();

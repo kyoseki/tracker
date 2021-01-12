@@ -24,11 +24,11 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
         public const int CONTENT_LINE_SPACING = 0;
 
-        private CircularContainer pillContainer;
-        private Box pill;
-        private SpriteText pillText;
+        private readonly CircularContainer pillContainer;
+        private readonly Box pill;
+        private readonly SpriteText pillText;
 
-        private TextFlowContainer textFlow;
+        private readonly TextFlowContainer textFlow;
 
         private MessageInfo item;
 
@@ -75,8 +75,8 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                             Origin = Anchor.Centre,
                             Padding = new MarginPadding
                             {
-                                Horizontal = pill_width / 2,
-                                Vertical = pill_height / 2
+                                Horizontal = pill_width / 2f,
+                                Vertical = pill_height / 2f
                             }
                         }
                     }
@@ -111,12 +111,14 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                         Colour = Colour4.Green,
                         Abbreviation = "TX"
                     };
+
                 case MessageDirection.Incoming:
                     return new MessageDrawInfo
                     {
                         Colour = Colour4.Blue,
                         Abbreviation = "RX"
                     };
+
                 default:
                     throw new ArgumentException("MessageDirection has no entry for provided value.");
             }

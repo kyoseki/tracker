@@ -29,14 +29,15 @@ namespace kyoseki.Game.Kinematics.Drawables
             var relativePos = (e.ScreenSpaceMouseDownPosition - ScreenSpaceDrawQuad.Centre) / SkeletonDrawScale;
             var distances = Skeleton.Bones.Select(b => Vector2Extensions.Distance(b.Root2D, relativePos));
             var close = Skeleton.Bones.Zip(distances, (bone, distance) => (bone, distance))
-                .Where(b => b.distance < MathF.Sqrt(2) * KinematicsDrawNode.BONE_NODE_SIZE)
-                .OrderBy(b => b.distance);
+                                .Where(b => b.distance < MathF.Sqrt(2) * KinematicsDrawNode.BONE_NODE_SIZE)
+                                .OrderBy(b => b.distance);
 
-            if (close.Count() > 0)
+            if (close.Any())
             {
                 BoneClicked?.Invoke(close.First().bone);
                 return true;
             }
+
             return base.OnClick(e);
         }
 

@@ -12,13 +12,13 @@ namespace kyoseki.Game.Overlays
 {
     public abstract class SlideInOverlay : FocusedOverlayContainer, IKeyBindingHandler<GlobalAction>
     {
-        protected virtual string Title { get; }
+        protected virtual string Title => string.Empty;
 
         protected override Container<Drawable> Content { get; }
 
         private const float title_height = 44;
 
-        public SlideInOverlay()
+        protected SlideInOverlay()
         {
             RelativeSizeAxes = Axes.Both;
             RelativePositionAxes = Axes.Y;
@@ -37,7 +37,7 @@ namespace kyoseki.Game.Overlays
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = KyosekiColors.BACKGROUND.Opacity(0.7f)
+                            Colour = KyosekiColors.Background.Opacity(0.7f)
                         },
                         new SpriteText
                         {
@@ -57,7 +57,7 @@ namespace kyoseki.Game.Overlays
                     Child = new Box
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Colour = KyosekiColors.BACKGROUND.Darken(0.5f).Opacity(0.7f)
+                        Colour = KyosekiColors.Background.Darken(0.5f).Opacity(0.7f)
                     }
                 },
                 new IconButton
@@ -65,10 +65,7 @@ namespace kyoseki.Game.Overlays
                     Icon = FontAwesome.Solid.Times,
                     IconSize = new Vector2(0.6f),
                     Size = new Vector2(18),
-                    Action = () =>
-                    {
-                        Hide();
-                    },
+                    Action = Hide,
                     Origin = Anchor.TopRight,
                     Anchor = Anchor.TopRight
                 }

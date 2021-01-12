@@ -1,4 +1,3 @@
-using System;
 using osu.Framework.Allocation;
 
 namespace kyoseki.Game.Serial

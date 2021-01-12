@@ -10,7 +10,7 @@ namespace kyoseki.Game.Tests.Visual.Kinematics
     {
         public TestSceneDrawableSkeleton()
         {
-            var skeleton = Skeleton.DEFAULT_SKELETON;
+            var skeleton = Skeleton.Default;
 
             Add(new DrawableSkeleton(skeleton)
             {

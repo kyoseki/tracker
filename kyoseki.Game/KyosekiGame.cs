@@ -28,6 +28,7 @@ namespace kyoseki.Game
                 overlayContainer = new Container { RelativeSizeAxes = Axes.Both }
             };
         }
+
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new SerialDependencies(base.CreateChildDependencies(parent));
 

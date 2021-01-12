@@ -31,10 +31,10 @@ namespace kyoseki.Game.UI.Buttons
             Size = new Vector2(0.75f),
             Anchor = Anchor.Centre,
             Origin = Anchor.Centre,
-            Colour = KyosekiColors.FOREGROUND
+            Colour = KyosekiColors.Foreground
         };
 
-        private SpriteIcon spriteIcon;
+        private readonly SpriteIcon spriteIcon;
 
         public IconButton()
         {

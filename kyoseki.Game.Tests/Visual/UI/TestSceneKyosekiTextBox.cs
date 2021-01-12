@@ -9,10 +9,9 @@ namespace kyoseki.Game.Tests.Visual.UI
 {
     public class TestSceneKyosekiTextBox : TestScene
     {
-        private KyosekiTextBox textBox;
-
         public TestSceneKyosekiTextBox()
         {
+            KyosekiTextBox textBox;
             FillFlowContainer textBoxes;
 
             Add(new TooltipContainer
@@ -43,7 +42,7 @@ namespace kyoseki.Game.Tests.Visual.UI
                 {
                     RelativeSizeAxes = Axes.X,
                     PlaceholderText = "I have buttons",
-                    Buttons = new ButtonInfo[]
+                    Buttons = new[]
                     {
                         new ButtonInfo(FontAwesome.Solid.Trash, "Delete"),
                         new ButtonInfo(FontAwesome.Solid.Undo, "Undo"),

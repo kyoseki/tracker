@@ -7,12 +7,12 @@ namespace kyoseki.Game.Tests.Visual.UI
 {
     public class TestSceneKyosekiScrollContainer : TestScene
     {
-        private KyosekiScrollContainer scroll;
-
         protected override double TimePerAction => 50;
 
         public TestSceneKyosekiScrollContainer()
         {
+            KyosekiScrollContainer scroll;
+
             const int item_height = 30;
 
             Add(scroll = new KyosekiScrollContainer

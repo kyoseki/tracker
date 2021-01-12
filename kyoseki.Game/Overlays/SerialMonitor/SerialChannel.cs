@@ -27,20 +27,18 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
         private readonly List<MessageInfo> messages = new List<MessageInfo>();
 
-        private ScrollToBottomButton continueAutoscroll;
-
-        private ButtonTextBox textBox;
+        private readonly ButtonTextBox textBox;
 
         public readonly Bindable<SerialPortState> PortState = new Bindable<SerialPortState>();
 
-        private ButtonInfo[] portOpenButtons => new ButtonInfo[]
+        private ButtonInfo[] portOpenButtons => new[]
         {
             new ButtonInfo(FontAwesome.Solid.ArrowRight, "Send Message", () => textBox.Commit()),
             new ButtonInfo(FontAwesome.Solid.Plug, "Release Port", () => port.Release()),
             new ButtonInfo(FontAwesome.Solid.Trash, "Clear Messages", clearMessages)
         };
 
-        private ButtonInfo[] portReconnectButtons => new ButtonInfo[]
+        private ButtonInfo[] portReconnectButtons => new[]
         {
             new ButtonInfo(FontAwesome.Solid.Undo, "Reconnect", () => port.Open())
         };
@@ -51,6 +49,8 @@ namespace kyoseki.Game.Overlays.SerialMonitor
         {
             PortName = port.Name;
             this.port = port;
+
+            ScrollToBottomButton continueAutoscroll;
 
             Child = new TooltipContainer
             {
@@ -120,16 +120,19 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                     textBox.PlaceholderText = "Enter message to device...";
                     textBox.ReadOnly.Value = false;
                     break;
+
                 case SerialPortState.AccessDenied:
                     textBox.Buttons = portReconnectButtons;
                     textBox.PlaceholderText = "Access to this device was denied";
                     textBox.ReadOnly.Value = true;
                     break;
+
                 case SerialPortState.Released:
                     textBox.Buttons = portReconnectButtons;
                     textBox.PlaceholderText = "Device was released to another program";
                     textBox.ReadOnly.Value = true;
                     break;
+
                 default:
                     textBox.Buttons = Array.Empty<ButtonInfo>();
                     textBox.PlaceholderText = "Device was disconnected";
@@ -192,7 +195,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             {
                 msg.ChannelYPosition = currentY;
 
-                var additionalLines = msg.Content.Split("\n").Count() - 1;
+                var additionalLines = msg.Content.Split("\n").Length - 1;
                 var additionalHeight = Math.Max(0, additionalLines * (Message.CONTENT_FONT_SIZE + Message.CONTENT_LINE_SPACING));
 
                 currentY += Message.HEIGHT + Message.MARGIN + additionalHeight;

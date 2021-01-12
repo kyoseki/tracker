@@ -7,10 +7,10 @@ namespace kyoseki.Game.Tests.Visual.UI
 {
     public class TestSceneKyosekiMenu : TestScene
     {
-        private KyosekiMenu menu;
-
         public TestSceneKyosekiMenu()
         {
+            KyosekiMenu menu;
+
             Add(menu = new KyosekiMenu(Direction.Vertical)
             {
                 Anchor = Anchor.Centre,

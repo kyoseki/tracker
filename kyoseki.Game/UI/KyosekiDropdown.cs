@@ -33,8 +33,8 @@ namespace kyoseki.Game.UI
                     Horizontal = 10
                 };
 
-                BackgroundColour = KyosekiColors.BUTTON_BACKGROUND;
-                BackgroundColourHover = KyosekiColors.BUTTON_SELECTED;
+                BackgroundColour = KyosekiColors.ButtonBackground;
+                BackgroundColourHover = KyosekiColors.ButtonSelected;
 
                 CornerRadius = CORNER_RADIUS;
 
@@ -67,11 +67,11 @@ namespace kyoseki.Game.UI
         {
             private const int corner_radius = 4;
 
-            private Container gap;
+            private readonly Container gap;
 
             public KyosekiDropdownMenu()
             {
-                BackgroundColour = KyosekiColors.BACKGROUND.Lighten(0.75f);
+                BackgroundColour = KyosekiColors.Background.Lighten(0.75f);
                 MaskingContainer.CornerRadius = corner_radius;
 
                 AddInternal(gap = new Container
@@ -84,7 +84,7 @@ namespace kyoseki.Game.UI
                     Masking = true,
                     Child = new Box
                     {
-                        Colour = KyosekiColors.BUTTON_BACKGROUND,
+                        Colour = KyosekiColors.ButtonBackground,
                         RelativeSizeAxes = Axes.Both
                     }
                 });
@@ -129,8 +129,8 @@ namespace kyoseki.Game.UI
                     : base(item)
                 {
                     BackgroundColour = Colour4.Transparent;
-                    BackgroundColourHover = KyosekiColors.BUTTON_SELECTED;
-                    BackgroundColourSelected = KyosekiColors.BUTTON_SELECTED.Opacity(0.9f);
+                    BackgroundColourHover = KyosekiColors.ButtonSelected;
+                    BackgroundColourSelected = KyosekiColors.ButtonSelected.Opacity(0.9f);
                 }
 
                 protected override Drawable CreateContent() => new MenuTextContainer();
