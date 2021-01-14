@@ -1,0 +1,131 @@
+using kyoseki.Game.Kinematics.Drawables;
+using kyoseki.Game.MathUtils;
+using kyoseki.Game.Serial;
+using kyoseki.Game.UI;
+using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
+using osu.Framework.Graphics.Sprites;
+using osuTK;
+
+namespace kyoseki.Game.Overlays.Skeleton
+{
+    public class SensorLinkView : CompositeDrawable
+    {
+        private const int height = 56;
+        private const int width = 320;
+
+        private const int orientation_height = height / 3 - 2;
+
+        private const int corner_radius = 7;
+
+        private readonly SpriteText xText;
+        private readonly SpriteText yText;
+        private readonly SpriteText zText;
+
+        public SensorLinkView(SensorLink link)
+        {
+            CornerRadius = corner_radius;
+            Masking = true;
+            Width = width;
+            Height = height;
+
+            InternalChildren = new Drawable[]
+            {
+                new Box
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Colour = KyosekiColors.Background.Lighten(0.5f)
+                },
+                new Container
+                {
+                    Size = new Vector2(height - 5),
+                    Padding = new MarginPadding(5),
+                    Anchor = Anchor.CentreLeft,
+                    Origin = Anchor.CentreLeft,
+                    Child = new SensorView
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        Link = link
+                    }
+                },
+                new Container
+                {
+                    Width = width - height,
+                    Height = height,
+                    Anchor = Anchor.CentreRight,
+                    Origin = Anchor.CentreRight,
+                    CornerRadius = corner_radius,
+                    Masking = true,
+                    Children = new Drawable[]
+                    {
+                        new Box
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Colour = KyosekiColors.ButtonBackground
+                        },
+                        new SpriteText
+                        {
+                            Font = KyosekiFont.Bold.With(size: 20),
+                            Anchor = Anchor.CentreLeft,
+                            Origin = Anchor.Centre,
+                            Padding = new MarginPadding { Left = 50 },
+                            Text = link.SensorId.ToString()
+                        },
+                        new SpriteText
+                        {
+                            Font = KyosekiFont.GetFont(size: 18),
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Width = 135,
+                            X = -10,
+                            Truncate = true,
+                            Text = link.BoneName
+                        },
+                        new Container
+                        {
+                            Width = 56,
+                            RelativeSizeAxes = Axes.Y,
+                            Anchor = Anchor.CentreRight,
+                            Origin = Anchor.CentreRight,
+                            Padding = new MarginPadding { Vertical = 5, Right = 5 },
+                            Children = new Drawable[]
+                            {
+                                xText = new SpriteText
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    Anchor = Anchor.TopCentre,
+                                    Origin = Anchor.TopCentre,
+                                    Font = KyosekiFont.GetFont(size: orientation_height)
+                                },
+                                yText = new SpriteText
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    Anchor = Anchor.Centre,
+                                    Origin = Anchor.Centre,
+                                    Font = KyosekiFont.GetFont(size: orientation_height)
+                                },
+                                zText = new SpriteText
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    Anchor = Anchor.BottomCentre,
+                                    Origin = Anchor.BottomCentre,
+                                    Font = KyosekiFont.GetFont(size: orientation_height)
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            link.CalibratedOrientation.ValueChanged += e =>
+            {
+                var euler = e.NewValue.ToEuler();
+
+                xText.Text = $"X: {(int)euler.x}°";
+                yText.Text = $"Y: {(int)euler.y}°";
+                zText.Text = $"Z: {(int)euler.z}°";
+            };
+        }
+    }
+}
