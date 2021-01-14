@@ -33,8 +33,7 @@ namespace kyoseki.Game.UI
                 Anchor = Anchor.CentreLeft,
                 Origin = Anchor.CentreLeft,
                 Margin = new MarginPadding { Horizontal = margin_horizontal, Vertical = margin_vertical },
-                Font = KyosekiFont.GetFont(size: 15),
-                X = -1
+                Font = KyosekiFont.GetFont(size: 15)
             };
         }
 
