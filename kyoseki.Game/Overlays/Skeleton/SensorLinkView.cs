@@ -19,12 +19,12 @@ namespace kyoseki.Game.Overlays.Skeleton
 
         private const int corner_radius = 7;
 
-        private readonly SpriteText xText;
-        private readonly SpriteText yText;
-        private readonly SpriteText zText;
-
         public SensorLinkView(SensorLink link)
         {
+            SpriteText xText;
+            SpriteText yText;
+            SpriteText zText;
+
             CornerRadius = corner_radius;
             Masking = true;
             Width = width;

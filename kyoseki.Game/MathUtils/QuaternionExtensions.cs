@@ -9,9 +9,9 @@ namespace kyoseki.Game.MathUtils
         // TODO: a better function may exist
         public static (float x, float y, float z) ToEuler(this Quaternion q, bool degrees = true)
         {
-            float sinr_cosp = 2 * (q.W * q.X + q.Y * q.Z);
-            float cosr_cosp = 1 - 2 * (q.X * q.X + q.Y * q.Y);
-            float roll = MathF.Atan2(sinr_cosp, cosr_cosp);
+            float sinrCosp = 2 * (q.W * q.X + q.Y * q.Z);
+            float cosrCosp = 1 - 2 * (q.X * q.X + q.Y * q.Y);
+            float roll = MathF.Atan2(sinrCosp, cosrCosp);
 
             float sinp = 2 * (q.W * q.Y - q.Z * q.X);
             float pitch;
@@ -20,9 +20,9 @@ namespace kyoseki.Game.MathUtils
             else
                 pitch = MathF.Asin(sinp);
 
-            float siny_cosp = 2 * (q.W * q.Z + q.X * q.Y);
-            float cosy_cosp = 1 - 2 * (q.Y * q.Y + q.Z + q.Z);
-            float yaw = MathF.Atan2(siny_cosp, cosy_cosp);
+            float sinyCosp = 2 * (q.W * q.Z + q.X * q.Y);
+            float cosyCosp = 1 - 2 * (q.Y * q.Y + q.Z + q.Z);
+            float yaw = MathF.Atan2(sinyCosp, cosyCosp);
 
             if (degrees)
             {
