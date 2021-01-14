@@ -1,5 +1,5 @@
-﻿using kyoseki.Game.Serial;
-using kyoseki.Game.Overlays.SerialMonitor;
+﻿using kyoseki.Game.Overlays.SerialMonitor;
+using kyoseki.Game.Serial;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Testing;

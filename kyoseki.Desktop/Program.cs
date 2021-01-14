@@ -1,6 +1,6 @@
-﻿using osu.Framework.Platform;
+﻿using kyoseki.Game;
 using osu.Framework;
-using kyoseki.Game;
+using osu.Framework.Platform;
 
 namespace kyoseki.Desktop
 {
