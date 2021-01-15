@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 
 namespace kyoseki.Game.Serial
@@ -13,6 +14,9 @@ namespace kyoseki.Game.Serial
         private ConnectionManager serialConnections { get; set; }
 
         private readonly List<SkeletonLink> links = new List<SkeletonLink>();
+
+        // TODO: do better
+        public readonly BindableList<int> ReceiverIds = new BindableList<int>();
 
         protected override void LoadComplete()
         {
@@ -54,6 +58,12 @@ namespace kyoseki.Game.Serial
                     float.TryParse(split[5], out float z))
                 {
                     Quaternion quat = new Quaternion(x, y, z, w);
+
+                    Schedule(() =>
+                    {
+                        if (!ReceiverIds.Contains(receiverId))
+                            ReceiverIds.Add(receiverId);
+                    });
 
                     var link = links.Find(l => l.Port == msg.Port && l.ReceiverId == receiverId);
                     link?.Update(new ReceiverMessage(sensorId, quat));
