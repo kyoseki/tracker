@@ -2,6 +2,7 @@ using kyoseki.Game.Kinematics.Drawables;
 using kyoseki.Game.MathUtils;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -13,18 +14,20 @@ namespace kyoseki.Game.Overlays.Skeleton
     public class SensorLinkView : CompositeDrawable
     {
         private const int height = 56;
-        private const int width = 320;
+        public const int WIDTH = 320;
         private const int corner_radius = 7;
 
         private const int orientation_text_size = height / 3 - 2;
 
-        private readonly SensorLink link;
+        protected readonly SensorLink Link;
 
         private readonly SpriteText boneName;
 
+        private readonly Bindable<System.Numerics.Quaternion> orientation = new Bindable<System.Numerics.Quaternion>();
+
         public SensorLinkView(SensorLink link)
         {
-            this.link = link;
+            Link = link;
 
             SpriteText xText;
             SpriteText yText;
@@ -32,7 +35,7 @@ namespace kyoseki.Game.Overlays.Skeleton
 
             CornerRadius = corner_radius;
             Masking = true;
-            Width = width;
+            Width = WIDTH;
             Height = height;
 
             InternalChildren = new Drawable[]
@@ -56,7 +59,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                 },
                 new Container
                 {
-                    Width = width - height,
+                    Width = WIDTH - height,
                     Height = height,
                     Anchor = Anchor.CentreRight,
                     Origin = Anchor.CentreRight,
@@ -84,6 +87,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                             Origin = Anchor.Centre,
                             Width = 135,
                             X = -10,
+                            Text = "Click to link",
                             Truncate = true
                         },
                         new Container
@@ -122,7 +126,9 @@ namespace kyoseki.Game.Overlays.Skeleton
                 }
             };
 
-            link.CalibratedOrientation.ValueChanged += e =>
+            orientation.BindTo(link.CalibratedOrientation);
+
+            orientation.ValueChanged += e =>
             {
                 var euler = e.NewValue.ToEuler();
 
@@ -137,8 +143,8 @@ namespace kyoseki.Game.Overlays.Skeleton
         {
             base.Update();
 
-            if (link.BoneName != boneName.Text)
-                boneName.Text = link.BoneName;
+            if (!string.IsNullOrEmpty(Link.BoneName) && Link.BoneName != boneName.Text)
+                boneName.Text = Link.BoneName;
         }
     }
 }

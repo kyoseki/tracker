@@ -10,9 +10,9 @@ namespace kyoseki.Game.Kinematics.Drawables
 {
     public class DrawableSkeleton : Drawable
     {
-        public readonly Skeleton Skeleton;
+        public Skeleton Skeleton { get; set; }
 
-        public float SkeletonDrawScale =>
+        public virtual float SkeletonDrawScale =>
             Math.Max(ScreenSpaceDrawQuad.Width, ScreenSpaceDrawQuad.Height) / 200;
 
         public Action<Bone> BoneClicked;
@@ -68,6 +68,8 @@ namespace kyoseki.Game.Kinematics.Drawables
             public override void Draw(Action<TexturedVertex2D> vertexAction)
             {
                 base.Draw(vertexAction);
+
+                skeleton = Source.Skeleton;
 
                 DrawBone(Source.SkeletonDrawScale, drawQuad, skeleton.Root, vertexBatch.AddAction);
             }

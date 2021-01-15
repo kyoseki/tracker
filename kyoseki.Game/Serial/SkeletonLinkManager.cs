@@ -38,14 +38,18 @@ namespace kyoseki.Game.Serial
         {
             lock (ports)
             {
-                var oldPort = GetPort(link.Port);
+                lock (link.Sensors)
+                {
+                    var oldPort = GetPort(link.Port);
 
-                oldPort?.Unregister(link);
+                    oldPort?.Unregister(link);
 
-                var newPort = GetPort(port);
+                    var newPort = GetPort(port);
 
-                newPort.Register(link);
-                link.Port = port;
+                    newPort.Register(link);
+                    link.Port = port;
+                    link.Sensors.RemoveAll(l => string.IsNullOrEmpty(l.BoneName));
+                }
             }
         }
 

@@ -8,7 +8,9 @@ namespace kyoseki.Game.Serial
     {
         public readonly Skeleton Skeleton = Skeleton.Default;
 
-        private readonly List<SensorLink> sensors = new List<SensorLink>();
+        public readonly List<SensorLink> Sensors = new List<SensorLink>();
+
+        public event Action SensorsUpdated;
 
         public string Port { get; set; }
 
@@ -18,20 +20,26 @@ namespace kyoseki.Game.Serial
 
         public SensorLink Get(string boneName, bool allowNulls = false)
         {
-            var existing = sensors.Find(s => s.BoneName == boneName);
-            if (existing == null && !allowNulls)
-                throw new InvalidOperationException($"A sensor was never linked to bone {boneName}.");
+            lock (Sensors)
+            {
+                var existing = Sensors.Find(s => s.BoneName == boneName);
+                if (existing == null && !allowNulls)
+                    throw new InvalidOperationException($"A sensor was never linked to bone {boneName}.");
 
-            return existing;
+                return existing;
+            }
         }
 
         public SensorLink Get(int id, bool allowNulls = false)
         {
-            var existing = sensors.Find(s => s.SensorId == id);
-            if (existing == null && !allowNulls)
-                throw new InvalidOperationException($"A sensor with ID {id} was never registered.");
+            lock (Sensors)
+            {
+                var existing = Sensors.Find(s => s.SensorId == id);
+                if (existing == null && !allowNulls)
+                    throw new InvalidOperationException($"A sensor with ID {id} was never registered.");
 
-            return existing;
+                return existing;
+            }
         }
 
         public bool Register(int sensorId, string boneName, bool allowNulls = false)
@@ -52,14 +60,22 @@ namespace kyoseki.Game.Serial
             return true;
         }
 
-        public void CalibrateAll() => sensors.ForEach(s => s.Calibrate());
+        public void CalibrateAll()
+        {
+            lock (Sensors)
+            {
+                Sensors.ForEach(s => s.Calibrate());
+            }
+        }
 
         public void Remove(int sensorId)
         {
             var link = Get(sensorId);
 
             link.CalibratedOrientation.UnbindEvents();
-            sensors.Remove(link);
+
+            lock (Sensors)
+                Sensors.Remove(link);
         }
 
         public void Update(ReceiverMessage msg)
@@ -68,16 +84,18 @@ namespace kyoseki.Game.Serial
 
             if (targetLink == null)
             {
-                sensors.Add(new SensorLink
+                lock (Sensors)
                 {
-                    SensorId = msg.SensorId
-                });
+                    Sensors.Add(new SensorLink
+                    {
+                        SensorId = msg.SensorId
+                    });
+
+                    SensorsUpdated?.Invoke();
+                }
 
                 return;
             }
-
-            if (string.IsNullOrEmpty(targetLink.BoneName))
-                return;
 
             targetLink.Update(msg.Quaternion);
         }

@@ -82,7 +82,7 @@ namespace kyoseki.Game.UI.Input
         protected virtual void UpdateState(bool readOnly)
         {
             if (readOnly)
-                KillFocus();
+                Schedule(KillFocus);
 
             var target = readOnly ? KyosekiColors.TextBoxReadOnly : KyosekiColors.TextBoxUnfocused;
             background.ClearTransforms();

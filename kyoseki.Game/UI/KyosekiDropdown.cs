@@ -17,6 +17,10 @@ namespace kyoseki.Game.UI
         {
             public const int CORNER_RADIUS = 4;
 
+            public const int VERTICAL_PADDING = 5;
+            public const int FONT_SIZE = 18;
+            public const int HEIGHT = VERTICAL_PADDING * 2 + FONT_SIZE;
+
             private readonly SpriteText label;
 
             protected override string Label
@@ -29,7 +33,7 @@ namespace kyoseki.Game.UI
             {
                 Foreground.Padding = new MarginPadding
                 {
-                    Vertical = 5,
+                    Vertical = VERTICAL_PADDING,
                     Horizontal = 10
                 };
 
@@ -40,7 +44,7 @@ namespace kyoseki.Game.UI
 
                 Depth = -1;
 
-                var font = KyosekiFont.Bold.With(size: 18);
+                var font = KyosekiFont.Bold.With(size: FONT_SIZE);
 
                 Children = new Drawable[]
                 {

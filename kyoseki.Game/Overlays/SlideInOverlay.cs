@@ -16,7 +16,7 @@ namespace kyoseki.Game.Overlays
 
         protected override Container<Drawable> Content { get; }
 
-        private const float title_height = 44;
+        public const float TITLE_HEIGHT = 44;
 
         protected SlideInOverlay()
         {
@@ -31,7 +31,7 @@ namespace kyoseki.Game.Overlays
                 new Container
                 {
                     RelativeSizeAxes = Axes.X,
-                    Height = title_height,
+                    Height = TITLE_HEIGHT,
                     Children = new Drawable[]
                     {
                         new Box
@@ -53,7 +53,7 @@ namespace kyoseki.Game.Overlays
                 Content = new Container
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Padding = new MarginPadding { Top = title_height },
+                    Padding = new MarginPadding { Top = TITLE_HEIGHT },
                     Child = new Box
                     {
                         RelativeSizeAxes = Axes.Both,
@@ -65,6 +65,7 @@ namespace kyoseki.Game.Overlays
                     Icon = FontAwesome.Solid.Times,
                     IconSize = new Vector2(0.6f),
                     Size = new Vector2(18),
+                    Depth = -int.MaxValue,
                     Action = Hide,
                     Origin = Anchor.TopRight,
                     Anchor = Anchor.TopRight
