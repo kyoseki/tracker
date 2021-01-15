@@ -11,8 +11,10 @@ namespace kyoseki.Game.Tests.Visual.Overlays
     {
         public TestSceneSensorLinkView()
         {
-            SensorLink link = new SensorLink("Test", 255)
+            SensorLink link = new SensorLink
             {
+                BoneName = "Test",
+                SensorId = 255,
                 Transform = Matrix4x4.Identity
             };
 

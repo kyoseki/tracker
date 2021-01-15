@@ -14,13 +14,18 @@ namespace kyoseki.Game.Overlays.Skeleton
     {
         private const int height = 56;
         private const int width = 320;
-
-        private const int orientation_height = height / 3 - 2;
-
         private const int corner_radius = 7;
+
+        private const int orientation_text_size = height / 3 - 2;
+
+        private readonly SensorLink link;
+
+        private readonly SpriteText boneName;
 
         public SensorLinkView(SensorLink link)
         {
+            this.link = link;
+
             SpriteText xText;
             SpriteText yText;
             SpriteText zText;
@@ -72,15 +77,14 @@ namespace kyoseki.Game.Overlays.Skeleton
                             Padding = new MarginPadding { Left = 50 },
                             Text = link.SensorId.ToString()
                         },
-                        new SpriteText
+                        boneName = new SpriteText
                         {
                             Font = KyosekiFont.GetFont(size: 18),
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
                             Width = 135,
                             X = -10,
-                            Truncate = true,
-                            Text = link.BoneName
+                            Truncate = true
                         },
                         new Container
                         {
@@ -96,21 +100,21 @@ namespace kyoseki.Game.Overlays.Skeleton
                                     RelativeSizeAxes = Axes.X,
                                     Anchor = Anchor.TopCentre,
                                     Origin = Anchor.TopCentre,
-                                    Font = KyosekiFont.GetFont(size: orientation_height)
+                                    Font = KyosekiFont.GetFont(size: orientation_text_size)
                                 },
                                 yText = new SpriteText
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     Anchor = Anchor.Centre,
                                     Origin = Anchor.Centre,
-                                    Font = KyosekiFont.GetFont(size: orientation_height)
+                                    Font = KyosekiFont.GetFont(size: orientation_text_size)
                                 },
                                 zText = new SpriteText
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     Anchor = Anchor.BottomCentre,
                                     Origin = Anchor.BottomCentre,
-                                    Font = KyosekiFont.GetFont(size: orientation_height)
+                                    Font = KyosekiFont.GetFont(size: orientation_text_size)
                                 }
                             }
                         }
@@ -126,6 +130,15 @@ namespace kyoseki.Game.Overlays.Skeleton
                 yText.Text = $"Y: {(int)euler.y}°";
                 zText.Text = $"Z: {(int)euler.z}°";
             };
+        }
+
+        // TODO: implement better if necessary
+        protected override void Update()
+        {
+            base.Update();
+
+            if (link.BoneName != boneName.Text)
+                boneName.Text = link.BoneName;
         }
     }
 }

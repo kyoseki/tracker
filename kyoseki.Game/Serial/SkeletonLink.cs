@@ -16,16 +16,6 @@ namespace kyoseki.Game.Serial
 
         public SkeletonLinkInfo Info => new SkeletonLinkInfo(Port, ReceiverId);
 
-        public SkeletonLink()
-        {
-        }
-
-        public SkeletonLink(string port, int receiverId)
-        {
-            Port = port;
-            ReceiverId = receiverId;
-        }
-
         public SensorLink Get(string boneName, bool allowNulls = false)
         {
             var existing = sensors.Find(s => s.BoneName == boneName);
@@ -44,42 +34,52 @@ namespace kyoseki.Game.Serial
             return existing;
         }
 
-        public SensorLink Register(string boneName, int sensorId)
+        public bool Register(int sensorId, string boneName, bool allowNulls = false)
         {
             var bone = Skeleton.GetBone(boneName);
-            var link = new SensorLink(boneName, sensorId);
+            var link = Get(sensorId, allowNulls);
+            if (link == null)
+                return false;
 
-            sensors.Add(link);
+            link.BoneName = boneName;
+
+            link.CalibratedOrientation.UnbindEvents();
             link.CalibratedOrientation.ValueChanged += e =>
             {
                 bone.WorldRotation = e.NewValue;
             };
 
-            return link;
+            return true;
         }
 
         public void CalibrateAll() => sensors.ForEach(s => s.Calibrate());
 
-        public void UpdateLink(string boneName, int sensorId) =>
-            Get(boneName).SensorId = sensorId;
-
-        public void Unregister(string boneName, int sensorId)
+        public void Remove(int sensorId)
         {
-            var link = Get(boneName);
+            var link = Get(sensorId);
 
             link.CalibratedOrientation.UnbindEvents();
             sensors.Remove(link);
         }
 
-        public bool Represents(string port, int receiverId) =>
-            Port == port &&
-            ReceiverId == receiverId;
-
         public void Update(ReceiverMessage msg)
         {
             var targetLink = Get(msg.SensorId, true);
 
-            targetLink?.Update(msg.Quaternion);
+            if (targetLink == null)
+            {
+                sensors.Add(new SensorLink
+                {
+                    SensorId = msg.SensorId
+                });
+
+                return;
+            }
+
+            if (string.IsNullOrEmpty(targetLink.BoneName))
+                return;
+
+            targetLink.Update(msg.Quaternion);
         }
     }
 

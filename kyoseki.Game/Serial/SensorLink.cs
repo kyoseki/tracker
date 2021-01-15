@@ -6,7 +6,7 @@ namespace kyoseki.Game.Serial
 {
     public class SensorLink
     {
-        public readonly string BoneName;
+        public string BoneName { get; set; }
 
         private int sensorId;
 
@@ -51,12 +51,6 @@ namespace kyoseki.Game.Serial
         /// relative to the one captured at calibration (i.e. the inverse of this orientation).
         /// </summary>
         private Quaternion calibrationOrientation = Quaternion.Identity;
-
-        public SensorLink(string boneName, int sensorId)
-        {
-            BoneName = boneName;
-            SensorId = sensorId;
-        }
 
         public void Calibrate() => calibrationOrientation = Quaternion.Inverse(lastOrientation);
 

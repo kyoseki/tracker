@@ -117,16 +117,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                 if (currentBone == null)
                     return;
 
-                var existing = Link.Get(currentBone.Name, true) ?? Link.Get(id, true);
-
-                if (existing == null)
-                {
-                    Link.Register(currentBone.Name, id);
-                }
-                else
-                {
-                    Link.UpdateLink(currentBone.Name, id);
-                }
+                Link.Register(id, currentBone.Name, true);
             };
         }
 
