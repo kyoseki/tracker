@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.OpenGL.Vertices;
@@ -88,10 +90,9 @@ namespace kyoseki.Game.Kinematics.Drawables
             var quadSize = new Vector2(BONE_NODE_SIZE) * scale;
 
             DrawPoint(Texture.WhitePixel, p1, quadSize, Colour4.Red, vertexAction);
-            if (!bone.HasChildren)
-                DrawPoint(Texture.WhitePixel, p2, quadSize, Colour4.Red, vertexAction);
+            DrawPoint(Texture.WhitePixel, p2, quadSize, Colour4.Red, vertexAction);
 
-            DrawAxes(p1, scale * 3, bone.WorldRotation);
+            DrawAxes(p1, scale * 3, bone.WorldRotationNumerics);
         }
 
         /// <summary>
@@ -103,10 +104,11 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// <param name="vertexAction">Action to be performed on each vertex - used for textured sprites or batches</param>
         public void DrawBone(float scale, Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
         {
-            bone.Traverse(b =>
-            {
-                drawSingleBone(scale, drawQuad, b, vertexAction);
-            });
+            var bones = new List<Bone>();
+            bone.Traverse(bones.Add);
+            bones = bones.OrderBy(b => -b.EndPoint.Z).ThenBy(b => bones.IndexOf(b)).ToList();
+
+            bones.ForEach(b => drawSingleBone(scale, drawQuad, b, vertexAction));
         }
     }
 }

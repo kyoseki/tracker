@@ -54,7 +54,7 @@ namespace kyoseki.Game.Kinematics
         {
             get
             {
-                var vec = Vector3.Transform(BaseOrientation, WorldRotation);
+                var vec = Vector3.Transform(BaseOrientation, WorldRotationNumerics);
                 vec.Y *= -1;
                 return vec;
             }
@@ -75,6 +75,28 @@ namespace kyoseki.Game.Kinematics
         /// Rotation of the parent in world space
         /// </summary>
         private Quaternion parentRotation => Parent?.WorldRotation ?? Quaternion.Identity;
+
+        /// <summary>
+        /// Inverts rotations on the Z axis for use in System.Numerics,
+        /// where the Z axis apparently runs in the opposite direction from expected.
+        /// </summary>
+        public Quaternion WorldRotationNumerics
+        {
+            get
+            {
+                var transform = new Matrix4x4(
+                    1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, -1, 0,
+                    0, 0, 0, 1
+                );
+
+                Matrix4x4.Invert(transform, out var transformInverted);
+
+                var transformedRotation = transform * Matrix4x4.CreateFromQuaternion(WorldRotation) * transformInverted;
+                return Quaternion.Normalize(Quaternion.CreateFromRotationMatrix(transformedRotation));
+            }
+        }
 
         /// <summary>
         /// Rotation of this bone in world space
