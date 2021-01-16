@@ -12,6 +12,7 @@ typedef struct receiverConfig {
 typedef struct transmitterConfig {
     int id;
     uint8_t mac[6];
+    int calibration[6];
 } transmitterConfig;
 
 typedef struct dataPacket {

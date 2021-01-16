@@ -8,6 +8,8 @@
 #include <MPU6050_6Axis_MotionApps20.h>
 #include <Wire.h>
 
+#include "calibrate.h"
+
 #ifdef USE_INTERRUPT
 #define INTERRUPT_PIN 14
 
@@ -40,6 +42,21 @@ void setup() {
     EEPROM.begin(sizeof(config));
     EEPROM.get(0, config);
 
+    Wire.begin();
+    Wire.setClock(400000);
+
+    Serial.println("Initializing MPU...");
+    mpu.initialize();
+
+    Serial.print("Testing MPU connection... ");
+    if (mpu.testConnection()) {
+        Serial.println("OK");
+    } else {
+        Serial.println("Failed!");
+    }
+
+    Calibration calib(&mpu);
+
     if (checkBoot()) {
         Serial.println("readout");
         Serial.print("id ");
@@ -63,6 +80,19 @@ void setup() {
                     Serial.println("Committing to EEPROM...");
                     EEPROM.put(0, config);
                     EEPROM.commit();
+                } else if (strcmp(command, "calibrate") == 0) {
+                    int *result = calib.Calibrate();
+                    memcpy(config.calibration, result, sizeof(result[0]) * 6);
+
+                    Serial.println("Writing offsets to EEPROM...");
+                    for (int i = 0; i < 6; i++) {
+                        Serial.print(result[i]);
+                        Serial.print(" ");
+                    }
+                    Serial.println();
+
+                    EEPROM.put(0, config);
+                    EEPROM.commit();
                 } else {
                     parseTransmitter(command, &config);
                 }
@@ -72,22 +102,9 @@ void setup() {
 
     data.id = config.id;
 
-    Wire.begin();
-    Wire.setClock(400000);
-
-    Serial.println("Initializing MPU...");
-    mpu.initialize();
-
     #ifdef USE_INTERRUPT
     pinMode(INTERRUPT_PIN, INPUT);
     #endif
-
-    Serial.print("Testing MPU connection... ");
-    if (mpu.testConnection()) {
-        Serial.println("OK");
-    } else {
-        Serial.println("Failed!");
-    }
 
     Serial.println("DMP programming will begin shortly...");
     delay(1000);
@@ -95,8 +112,7 @@ void setup() {
     uint8_t devStatus = mpu.dmpInitialize();
 
     if (devStatus == 0) {
-        mpu.CalibrateAccel(6);
-        mpu.CalibrateGyro(6);
+        calib.SetOffsets(config.calibration);
         mpu.PrintActiveOffsets();
 
         Serial.println("Enabling DMP...");
@@ -149,22 +165,17 @@ void loop() {
         fifoCount -= packetSize;
 
         mpu.dmpGetQuaternion(&q, fifoBuffer);
-        data.x = q.x;
-        data.y = q.y;
-        data.z = q.z;
-        data.w = q.w;
-
-        esp_now_send(NULL, (uint8_t*)&data, sizeof(data));
     }
     #else
     if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
         mpu.dmpGetQuaternion(&q, fifoBuffer);
-        data.x = q.x;
-        data.y = q.y;
-        data.z = q.z;
-        data.w = q.w;
-
-        esp_now_send(NULL, (uint8_t*)&data, sizeof(data));
     }
     #endif
+
+    data.x = encodeFloat(q.x);
+    data.y = encodeFloat(q.y);
+    data.z = encodeFloat(q.z);
+    data.w = encodeFloat(q.w);
+
+    esp_now_send(NULL, (uint8_t*)&data, sizeof(data));
 }
