@@ -7,21 +7,12 @@
 receiverConfig config;
 
 dataPacket data;
+bool packetAvailable = false;
 
 void dataCallback(uint8_t* mac, uint8_t *incomingData, uint8_t len) {
     memcpy(&data, incomingData, sizeof(data));
 
-    Serial.print(config.id);
-    Serial.print(" ");
-    Serial.print(data.id);
-    Serial.print(" ");
-    Serial.print(data.w);
-    Serial.print(" ");
-    Serial.print(data.x);
-    Serial.print(" ");
-    Serial.print(data.y);
-    Serial.print(" ");
-    Serial.println(data.z);
+    packetAvailable = true;
 }
 
 void setup() {
@@ -67,5 +58,19 @@ void setup() {
 }
 
 void loop() {
+    if (packetAvailable) {
+        Serial.print(config.id);
+        Serial.print(" ");
+        Serial.print(data.id);
+        Serial.print(" ");
+        Serial.print(data.w);
+        Serial.print(" ");
+        Serial.print(data.x);
+        Serial.print(" ");
+        Serial.print(data.y);
+        Serial.print(" ");
+        Serial.println(data.z);
 
+        packetAvailable = false;
+    }
 }
