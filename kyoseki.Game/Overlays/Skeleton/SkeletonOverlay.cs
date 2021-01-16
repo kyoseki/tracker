@@ -38,7 +38,7 @@ namespace kyoseki.Game.Overlays.Skeleton
 
         private Bone currentBone;
 
-        private FillFlowContainer sensorFlow;
+        private FillFlowContainer<SensorLinkViewButton> sensorFlow;
 
         protected override void LoadComplete()
         {
@@ -71,6 +71,11 @@ namespace kyoseki.Game.Overlays.Skeleton
 
                                 var link = Link.Get(bone.Name, true);
                                 mountDropdown.Current.Value = link?.MountOrientation ?? MountOrientation.ZUpYForward;
+
+                                if (link != null)
+                                    select(link.SensorId);
+                                else
+                                    select(null);
                             }
                         },
                         new TextButton
@@ -133,10 +138,11 @@ namespace kyoseki.Game.Overlays.Skeleton
                     {
                         RelativeSizeAxes = Axes.Both,
                         Padding = new MarginPadding { Top = SlideInOverlay.TITLE_HEIGHT },
-                        Child = sensorFlow = new FillFlowContainer
+                        Child = sensorFlow = new FillFlowContainer<SensorLinkViewButton>
                         {
                             RelativeSizeAxes = Axes.X,
-                            AutoSizeAxes = Axes.Y
+                            AutoSizeAxes = Axes.Y,
+                            Margin = new MarginPadding { Top = 10 }
                         }
                     },
                     new Container
@@ -212,12 +218,37 @@ namespace kyoseki.Game.Overlays.Skeleton
             }
         });
 
-        private void handleSensorClick(SensorLink link)
+        private SensorLinkViewButton selectedSensor;
+
+        private void select(SensorLinkViewButton sensor)
+        {
+            if (sensor == selectedSensor)
+                return;
+
+            if (selectedSensor != null)
+                selectedSensor.Selected = false;
+
+            if (sensor != null)
+                sensor.Selected = true;
+
+            selectedSensor = sensor;
+        }
+
+        private void select(int sensorId)
+        {
+            var sensor = sensorFlow.Children.First(s => s.Link.SensorId == sensorId);
+
+            select(sensor);
+        }
+
+        private void handleSensorClick(SensorLinkViewButton button)
         {
             if (currentBone == null)
                 return;
 
-            Link.Register(link.SensorId, currentBone.Name, true);
+            select(button);
+
+            Link.Register(button.Link.SensorId, currentBone.Name, true);
         }
 
         private void handlePortsUpdated(string[] added, string[] removed) => Schedule(() =>
@@ -234,16 +265,31 @@ namespace kyoseki.Game.Overlays.Skeleton
 
         private class SensorLinkViewButton : SensorLinkView
         {
-            public Action<SensorLink> Action;
+            public new SensorLink Link => base.Link;
+
+            public Action<SensorLinkViewButton> Action;
+
+            private bool selected;
+
+            public bool Selected
+            {
+                get => selected;
+                set
+                {
+                    selected = value;
+                    BorderThickness = selected ? 5 : 0;
+                }
+            }
 
             public SensorLinkViewButton(SensorLink link)
                 : base(link)
             {
+                BorderColour = KyosekiColors.ButtonSelected;
             }
 
             protected override bool OnClick(ClickEvent e)
             {
-                Action?.Invoke(Link);
+                Action?.Invoke(this);
 
                 return true;
             }

@@ -49,6 +49,14 @@ namespace kyoseki.Game.Serial
             if (link == null)
                 return false;
 
+            var boneLink = Get(boneName, true);
+
+            if (boneLink != null)
+            {
+                boneLink.CalibratedOrientation.UnbindEvents();
+                boneLink.BoneName = null;
+            }
+
             link.BoneName = boneName;
 
             link.CalibratedOrientation.UnbindEvents();

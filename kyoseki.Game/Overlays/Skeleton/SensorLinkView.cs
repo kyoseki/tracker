@@ -87,7 +87,6 @@ namespace kyoseki.Game.Overlays.Skeleton
                             Origin = Anchor.Centre,
                             Width = 135,
                             X = -10,
-                            Text = "Click to link",
                             Truncate = true
                         },
                         new Container
@@ -138,13 +137,22 @@ namespace kyoseki.Game.Overlays.Skeleton
             };
         }
 
+        private const string placeholder_text = "Click to link";
+
         // TODO: implement better if necessary
         protected override void Update()
         {
             base.Update();
 
-            if (!string.IsNullOrEmpty(Link.BoneName) && Link.BoneName != boneName.Text)
-                boneName.Text = Link.BoneName;
+            if (!string.IsNullOrEmpty(Link.BoneName))
+            {
+                if (Link.BoneName != boneName.Text)
+                    boneName.Text = Link.BoneName;
+            }
+            else if (boneName.Text != placeholder_text)
+            {
+                boneName.Text = placeholder_text;
+            }
         }
     }
 }
