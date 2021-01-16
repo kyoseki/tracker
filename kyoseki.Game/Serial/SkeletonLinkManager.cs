@@ -118,6 +118,9 @@ namespace kyoseki.Game.Serial
         {
             var split = msg.Content.Split(" ");
 
+            if (split.Length != 6)
+                return;
+
             if (int.TryParse(split[0], out int receiverId) &&
                 int.TryParse(split[1], out int sensorId) &&
                 float.TryParse(split[2], out float w) &&
