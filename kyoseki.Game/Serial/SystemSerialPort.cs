@@ -43,7 +43,7 @@ namespace kyoseki.Game.Serial
                 Logger.Log($"Access to port {Name} denied", LoggingTarget.Network);
                 State.Value = SerialPortState.AccessDenied;
             }
-            catch (FileNotFoundException)
+            catch (Exception e) when (e is FileNotFoundException || e is IOException)
             {
                 Logger.Log($"Port is {Name} is not connected", LoggingTarget.Network);
                 State.Value = SerialPortState.Disconnected;
