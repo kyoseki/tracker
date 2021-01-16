@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using kyoseki.Game.MathUtils;
 using osu.Framework.Bindables;
 
 namespace kyoseki.Game.Serial
@@ -59,14 +60,7 @@ namespace kyoseki.Game.Serial
             lastOrientation = quat;
             var relative = calibrationOrientation * quat;
 
-            // https://stackoverflow.com/questions/1274936/flipping-a-quaternion-from-right-to-left-handed-coordinates
-            bool result = Matrix4x4.Invert(Transform, out Matrix4x4 tInverted);
-            if (!result)
-                throw new Exception("Failed to invert SensorLink transform matrix");
-
-            Matrix4x4 mFinal = Transform * Matrix4x4.CreateFromQuaternion(relative) * tInverted;
-
-            CalibratedOrientation.Value = Quaternion.Normalize(Quaternion.CreateFromRotationMatrix(mFinal));
+            CalibratedOrientation.Value = relative.ApplyTransform(transform);
         }
     }
 

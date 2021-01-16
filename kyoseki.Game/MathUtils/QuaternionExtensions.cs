@@ -33,5 +33,17 @@ namespace kyoseki.Game.MathUtils
 
             return (roll, pitch, yaw);
         }
+
+        // https://stackoverflow.com/questions/1274936/flipping-a-quaternion-from-right-to-left-handed-coordinates
+        public static Quaternion ApplyTransform(this Quaternion quaternion, Matrix4x4 transform)
+        {
+            bool result = Matrix4x4.Invert(transform, out Matrix4x4 tInverted);
+            if (!result)
+                throw new Exception("Failed to invert transform matrix");
+
+            Matrix4x4 mFinal = transform * Matrix4x4.CreateFromQuaternion(quaternion) * tInverted;
+
+            return Quaternion.Normalize(Quaternion.CreateFromRotationMatrix(mFinal));
+        }
     }
 }

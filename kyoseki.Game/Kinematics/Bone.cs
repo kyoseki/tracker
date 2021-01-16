@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
+using kyoseki.Game.MathUtils;
 
 namespace kyoseki.Game.Kinematics
 {
@@ -91,10 +92,7 @@ namespace kyoseki.Game.Kinematics
                     0, 0, 0, 1
                 );
 
-                Matrix4x4.Invert(transform, out var transformInverted);
-
-                var transformedRotation = transform * Matrix4x4.CreateFromQuaternion(WorldRotation) * transformInverted;
-                return Quaternion.Normalize(Quaternion.CreateFromRotationMatrix(transformedRotation));
+                return WorldRotation.ApplyTransform(transform);
             }
         }
 
