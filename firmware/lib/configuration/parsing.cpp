@@ -88,6 +88,15 @@ int parseTransmitter(char* message, transmitterConfig* config) {
     return 1;
 }
 
+uint8_t encodeFloat(float value) {
+    uint8_t result = (uint8_t)abs(value * 100);
+    if (value < 0) {
+        result |= 0x80;
+    }
+
+    return result;
+}
+
 int parseIpAddress(char* input, uint8_t* output) {
     int segment = 0;
     char* split = strtok(input, ".");

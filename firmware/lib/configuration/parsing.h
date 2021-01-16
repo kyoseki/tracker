@@ -15,11 +15,11 @@ typedef struct transmitterConfig {
 } transmitterConfig;
 
 typedef struct dataPacket {
-    int id;
-    float x;
-    float y;
-    float z;
-    float w;
+    uint8_t id;
+    uint8_t x;
+    uint8_t y;
+    uint8_t z;
+    uint8_t w;
 } dataPacket;
 
 #ifdef ARDUINO
@@ -30,6 +30,8 @@ char* listen();
 int parseReceiver(char* message, receiverConfig* config);
 
 int parseTransmitter(char* message, transmitterConfig* config);
+
+uint8_t encodeFloat(float value);
 
 int parseIpAddress(char* input, uint8_t* output);
 

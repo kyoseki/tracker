@@ -35,6 +35,16 @@ void test_parse_receiver(void) {
     */
 }
 
+void test_encode_float(void) {
+    float input = -0.5;
+
+    uint8_t expected = 50 | 0x80;
+
+    uint8_t result = encodeFloat(input);
+
+    TEST_ASSERT_EQUAL(expected, result);
+}
+
 void test_parse_ip_address(void) {
     char input[32] = "192.168.1.1";
     uint8_t correct[4] = { 192, 168, 1, 1 };
@@ -109,6 +119,7 @@ void test_parse_mac_address(void) {
 
 int main() {
     UNITY_BEGIN();
+    RUN_TEST(test_encode_float);
     RUN_TEST(test_parse_ip_address);
     RUN_TEST(test_parse_mac_address);
     RUN_TEST(test_parse_receiver);

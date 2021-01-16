@@ -114,6 +114,16 @@ namespace kyoseki.Game.Serial
 
         public void Unregister(SkeletonLink link) => links.Remove(link);
 
+        private float parseInt(int n)
+        {
+            int sign = n >> 7;
+            int val = n & 0x7F;
+
+            int multiplier = sign == 1 ? -1 : 1;
+
+            return (val / 100f) * multiplier;
+        }
+
         public void Update(MessageInfo msg)
         {
             var split = msg.Content.Split(" ");
@@ -123,12 +133,12 @@ namespace kyoseki.Game.Serial
 
             if (int.TryParse(split[0], out int receiverId) &&
                 int.TryParse(split[1], out int sensorId) &&
-                float.TryParse(split[2], out float w) &&
-                float.TryParse(split[3], out float x) &&
-                float.TryParse(split[4], out float y) &&
-                float.TryParse(split[5], out float z))
+                int.TryParse(split[2], out int w) &&
+                int.TryParse(split[3], out int x) &&
+                int.TryParse(split[4], out int y) &&
+                int.TryParse(split[5], out int z))
             {
-                Quaternion quat = new Quaternion(x, y, z, w);
+                Quaternion quat = new Quaternion(parseInt(x), parseInt(y), parseInt(z), parseInt(w));
 
                 skeletonLinks.Schedule(() =>
                 {
