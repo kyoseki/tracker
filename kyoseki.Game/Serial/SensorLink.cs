@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using kyoseki.Game.MathUtils;
+using kyoseki.Game.Overlays.Skeleton;
 using osu.Framework.Bindables;
 
 namespace kyoseki.Game.Serial
@@ -24,21 +25,30 @@ namespace kyoseki.Game.Serial
         public SensorLinkInfo Info => new SensorLinkInfo(BoneName, SensorId);
 
         /// <summary>
-        /// The final orientation of this sensor, taking both the <see cref="Transform"/> and
+        /// The final orientation of this sensor, taking both the <see cref="transform"/> and
         /// <see cref="calibrationOrientation"/> into account.
         /// </summary>
         public Bindable<Quaternion> CalibratedOrientation = new Bindable<Quaternion>();
+
+        private const MountOrientation default_orientation = MountOrientation.ZUpYForward;
+
+        private MountOrientation mountOrientation = default_orientation;
 
         /// <summary>
         /// Additional transform to apply improper rotations to the final orientation.
         /// By default, the Y and Z axes are swapped.
         /// </summary>
-        public Matrix4x4 Transform = new Matrix4x4(
-            1, 0, 0, 0,
-            0, 0, 1, 0,
-            0, 1, 0, 0,
-            0, 0, 0, 1
-        );
+        private Matrix4x4 transform = SensorMountOrientations.Get(default_orientation);
+
+        public MountOrientation MountOrientation
+        {
+            get => mountOrientation;
+            set
+            {
+                mountOrientation = value;
+                transform = SensorMountOrientations.Get(value);
+            }
+        }
 
         /// <summary>
         /// Represents the last raw rotation received.

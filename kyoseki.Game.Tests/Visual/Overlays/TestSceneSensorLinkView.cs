@@ -15,7 +15,7 @@ namespace kyoseki.Game.Tests.Visual.Overlays
             {
                 BoneName = "Test",
                 SensorId = 255,
-                Transform = Matrix4x4.Identity
+                MountOrientation = MountOrientation.YUpZForward
             };
 
             Add(new SensorLinkView(link)

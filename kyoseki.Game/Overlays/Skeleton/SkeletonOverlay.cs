@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using kyoseki.Game.Kinematics;
 using kyoseki.Game.Kinematics.Drawables;
 using kyoseki.Game.Serial;
@@ -31,6 +32,7 @@ namespace kyoseki.Game.Overlays.Skeleton
 
         private KyosekiDropdown<string> portDropdown;
         private KyosekiDropdown<int> receiverDropdown;
+        private KyosekiDropdown<MountOrientation> mountDropdown;
 
         private SpriteText boneText;
 
@@ -66,6 +68,9 @@ namespace kyoseki.Game.Overlays.Skeleton
                             {
                                 currentBone = bone;
                                 boneText.Text = bone.Name;
+
+                                var link = Link.Get(bone.Name, true);
+                                mountDropdown.Current.Value = link?.MountOrientation ?? MountOrientation.ZUpYForward;
                             }
                         },
                         new TextButton
@@ -99,27 +104,16 @@ namespace kyoseki.Game.Overlays.Skeleton
                             Width = 150,
                             Y = KyosekiDropdown<string>.KyosekiDropdownHeader.HEIGHT + 2,
                             Depth = 1
-                        }
-                    }
-                },
-                new Container
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Padding = new MarginPadding { Left = 500 },
-                    Children = new Drawable[]
-                    {
-                        new FillFlowContainer
+                        },
+                        mountDropdown = new KyosekiDropdown<MountOrientation>
                         {
-                            AutoSizeAxes = Axes.Both,
-                            Anchor = Anchor.TopLeft,
-                            Origin = Anchor.TopLeft,
-                            Direction = FillDirection.Vertical,
-                            Children = new Drawable[]
-                            {
-                            }
+                            Width = 150,
+                            X = 250,
+                            Depth = 2,
+                            Items = Enum.GetValues(typeof(MountOrientation)).Cast<MountOrientation>()
                         }
                     }
-                },
+                }
             });
 
             AddInternal(new Container
@@ -182,6 +176,17 @@ namespace kyoseki.Game.Overlays.Skeleton
                 Link.ReceiverId = e.NewValue;
 
                 handleSensorUpdate();
+            };
+
+            mountDropdown.Current.ValueChanged += e =>
+            {
+                if (currentBone == null)
+                    return;
+
+                var link = Link.Get(currentBone.Name, true);
+
+                if (link != null)
+                    link.MountOrientation = e.NewValue;
             };
 
             serialConnections.PortsUpdated += handlePortsUpdated;
