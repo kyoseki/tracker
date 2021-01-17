@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using kyoseki.Game.Kinematics;
 using kyoseki.Game.Kinematics.Drawables;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI;
@@ -26,6 +25,8 @@ namespace kyoseki.Game.Overlays.Skeleton
         private const int skeleton_padding = 56;
         private const int skeleton_size = 348;
 
+        private const int sidebar_width = SensorLinkView.WIDTH + 20;
+
         protected override string Title => "Skeleton Editor";
 
         public readonly SkeletonLink Link = new SkeletonLink();
@@ -34,11 +35,13 @@ namespace kyoseki.Game.Overlays.Skeleton
         private KyosekiDropdown<int> receiverDropdown;
         private KyosekiDropdown<MountOrientation> mountDropdown;
 
-        private SpriteText boneText;
-
-        private Bone currentBone;
-
         private FillFlowContainer<SensorLinkViewButton> sensorFlow;
+
+        private Container sensorPopout;
+        private SpriteText selectedSensorText;
+        private TextButton linkButton;
+
+        private bool linking;
 
         protected override void LoadComplete()
         {
@@ -54,28 +57,17 @@ namespace kyoseki.Game.Overlays.Skeleton
                     Size = new Vector2(2 * skeleton_padding + skeleton_size),
                     Children = new Drawable[]
                     {
-                        boneText = new SpriteText
-                        {
-                            Anchor = Anchor.TopCentre,
-                            Origin = Anchor.TopCentre,
-                            Text = "Select a bone",
-                            Font = KyosekiFont.Bold.With(size: 24)
-                        },
                         new EditorDrawableSkeleton(Link.Skeleton)
                         {
                             RelativeSizeAxes = Axes.Both,
                             BoneClicked = bone =>
                             {
-                                currentBone = bone;
-                                boneText.Text = bone.Name;
+                                if (!linking)
+                                    return;
 
-                                var link = Link.Get(bone.Name, true);
-                                mountDropdown.Current.Value = link?.MountOrientation ?? MountOrientation.ZUpYForward;
+                                linkButton.Text = bone.Name;
 
-                                if (link != null)
-                                    select(link.SensorId);
-                                else
-                                    select(null);
+                                Link.Register(selectedSensor.Link.SensorId, bone.Name, true);
                             }
                         },
                         new TextButton
@@ -110,12 +102,91 @@ namespace kyoseki.Game.Overlays.Skeleton
                             Y = KyosekiDropdown<string>.KyosekiDropdownHeader.HEIGHT + 2,
                             Depth = 1
                         },
-                        mountDropdown = new KyosekiDropdown<MountOrientation>
+                    }
+                },
+                sensorPopout = new Container
+                {
+                    RelativeSizeAxes = Axes.Y,
+                    RelativePositionAxes = Axes.Y,
+                    Width = sidebar_width,
+                    X = -sidebar_width,
+                    Height = 0.4f,
+                    Anchor = Anchor.BottomRight,
+                    Origin = Anchor.BottomRight,
+                    Y = 1,
+                    Children = new Drawable[]
+                    {
+                        new Container
                         {
-                            Width = 150,
-                            X = 250,
-                            Depth = 2,
-                            Items = Enum.GetValues(typeof(MountOrientation)).Cast<MountOrientation>()
+                            RelativeSizeAxes = Axes.X,
+                            Height = SlideInOverlay.TITLE_HEIGHT,
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = KyosekiColors.Background.Darken(0.6f)
+                                },
+                                selectedSensorText = new SpriteText
+                                {
+                                    Font = KyosekiFont.Bold.With(size: 24),
+                                    Anchor = Anchor.CentreLeft,
+                                    Origin = Anchor.CentreLeft,
+                                    Padding = new MarginPadding { Left = 15 }
+                                }
+                            }
+                        },
+                        new Container
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Padding = new MarginPadding { Top = SlideInOverlay.TITLE_HEIGHT },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = KyosekiColors.Background.Darken(0.3f)
+                                },
+                                new KyosekiScrollContainer
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Child = new FillFlowContainer
+                                    {
+                                        RelativeSizeAxes = Axes.X,
+                                        AutoSizeAxes = Axes.Y,
+                                        Direction = FillDirection.Vertical,
+                                        Margin = new MarginPadding(5),
+                                        Spacing = new Vector2(5),
+                                        Children = new Drawable[]
+                                        {
+                                            mountDropdown = new KyosekiDropdown<MountOrientation>
+                                            {
+                                                Width = 150,
+                                                Items = Enum.GetValues(typeof(MountOrientation)).Cast<MountOrientation>()
+                                            },
+                                            linkButton = new TextButton
+                                            {
+                                                Size = new Vector2(250, 20),
+                                                CornerRadius = 5,
+                                                Masking = true,
+                                                Action = () =>
+                                                {
+                                                    if (!linking)
+                                                    {
+                                                        linkButton.Text = "Click a bone to link";
+                                                        linking = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        linkButton.Text = "Click to link";
+                                                        linking = false;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -126,7 +197,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                 RelativeSizeAxes = Axes.Y,
                 Anchor = Anchor.TopRight,
                 Origin = Anchor.TopRight,
-                Width = SensorLinkView.WIDTH + 20,
+                Width = sidebar_width,
                 Children = new Drawable[]
                 {
                     new Box
@@ -186,13 +257,7 @@ namespace kyoseki.Game.Overlays.Skeleton
 
             mountDropdown.Current.ValueChanged += e =>
             {
-                if (currentBone == null)
-                    return;
-
-                var link = Link.Get(currentBone.Name, true);
-
-                if (link != null)
-                    link.MountOrientation = e.NewValue;
+                selectedSensor.Link.MountOrientation = e.NewValue;
             };
 
             serialConnections.PortsUpdated += handlePortsUpdated;
@@ -212,7 +277,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                     {
                         Anchor = Anchor.TopCentre,
                         Origin = Anchor.TopCentre,
-                        Action = handleSensorClick
+                        Action = select
                     });
                 }
             }
@@ -223,32 +288,32 @@ namespace kyoseki.Game.Overlays.Skeleton
         private void select(SensorLinkViewButton sensor)
         {
             if (sensor == selectedSensor)
+            {
+                select(null);
+
                 return;
+            }
 
             if (selectedSensor != null)
                 selectedSensor.Selected = false;
 
             if (sensor != null)
+            {
                 sensor.Selected = true;
 
-            selectedSensor = sensor;
-        }
+                selectedSensor = sensor;
 
-        private void select(int sensorId)
-        {
-            var sensor = sensorFlow.Children.First(s => s.Link.SensorId == sensorId);
+                selectedSensorText.Text = $"Sensor ID {sensor.Link.SensorId}";
+                sensorPopout.MoveToY(0, 150, Easing.OutExpo);
+                linkButton.Text = string.IsNullOrEmpty(sensor.Link.BoneName) ? "Click to link" : sensor.Link.BoneName;
+                mountDropdown.Current.Value = sensor.Link.MountOrientation;
+            }
+            else
+            {
+                selectedSensor = null;
 
-            select(sensor);
-        }
-
-        private void handleSensorClick(SensorLinkViewButton button)
-        {
-            if (currentBone == null)
-                return;
-
-            select(button);
-
-            Link.Register(button.Link.SensorId, currentBone.Name, true);
+                sensorPopout.MoveToY(1, 150, Easing.In);
+            }
         }
 
         private void handlePortsUpdated(string[] added, string[] removed) => Schedule(() =>
