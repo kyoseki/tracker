@@ -68,7 +68,7 @@ namespace kyoseki.Game.Tests.NonVisual.Kinematics
 
         private Bone createBone(string name)
         {
-            return new Bone
+            return new()
             {
                 Name = name
             };
