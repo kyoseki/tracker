@@ -45,32 +45,14 @@ namespace kyoseki.Game.Overlays.Skeleton
         public SensorPopout()
             : base(false)
         {
+            Masking = true;
+
             InternalChildren = new Drawable[]
             {
                 new Box
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = KyosekiColors.Background.Darken(0.3f)
-                },
-                new Container
-                {
-                    RelativeSizeAxes = Axes.X,
-                    Height = SlideInOverlay.TITLE_HEIGHT,
-                    Children = new Drawable[]
-                    {
-                        new Box
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Colour = KyosekiColors.Background.Darken(0.6f)
-                        },
-                        selectedSensorText = new SpriteText
-                        {
-                            Font = KyosekiFont.Bold.With(size: 24),
-                            Anchor = Anchor.CentreLeft,
-                            Origin = Anchor.CentreLeft,
-                            Padding = new MarginPadding { Left = 15 }
-                        }
-                    }
                 },
                 new KyosekiScrollContainer
                 {
@@ -97,6 +79,26 @@ namespace kyoseki.Game.Overlays.Skeleton
                                 Masking = true,
                                 Action = toggleLinking
                             }
+                        }
+                    }
+                },
+                new Container
+                {
+                    RelativeSizeAxes = Axes.X,
+                    Height = SlideInOverlay.TITLE_HEIGHT,
+                    Children = new Drawable[]
+                    {
+                        new Box
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Colour = KyosekiColors.Background.Darken(0.6f)
+                        },
+                        selectedSensorText = new SpriteText
+                        {
+                            Font = KyosekiFont.Bold.With(size: 24),
+                            Anchor = Anchor.CentreLeft,
+                            Origin = Anchor.CentreLeft,
+                            Padding = new MarginPadding { Left = 15 }
                         }
                     }
                 }
