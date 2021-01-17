@@ -45,8 +45,6 @@ namespace kyoseki.Game.Overlays.Skeleton
         public SensorPopout()
             : base(false)
         {
-            Masking = true;
-
             InternalChildren = new Drawable[]
             {
                 new Box
@@ -54,33 +52,37 @@ namespace kyoseki.Game.Overlays.Skeleton
                     RelativeSizeAxes = Axes.Both,
                     Colour = KyosekiColors.Background.Darken(0.3f)
                 },
-                new KyosekiScrollContainer
+                new Container
                 {
                     Padding = new MarginPadding { Top = SlideInOverlay.TITLE_HEIGHT },
                     RelativeSizeAxes = Axes.Both,
-                    Child = new FillFlowContainer
+                    Child = new KyosekiScrollContainer
                     {
-                        RelativeSizeAxes = Axes.X,
-                        AutoSizeAxes = Axes.Y,
-                        Direction = FillDirection.Vertical,
-                        Margin = new MarginPadding(5),
-                        Spacing = new Vector2(5),
-                        Children = new Drawable[]
+                        RelativeSizeAxes = Axes.Both,
+                        Child = new FillFlowContainer
                         {
-                            mountDropdown = new KyosekiDropdown<MountOrientation>
+                            RelativeSizeAxes = Axes.X,
+                            AutoSizeAxes = Axes.Y,
+                            Direction = FillDirection.Vertical,
+                            Margin = new MarginPadding(5),
+                            Spacing = new Vector2(5),
+                            Children = new Drawable[]
                             {
-                                Width = 150,
-                                Items = Enum.GetValues(typeof(MountOrientation)).Cast<MountOrientation>()
-                            },
-                            linkButton = new TextButton
-                            {
-                                Size = new Vector2(250, 20),
-                                CornerRadius = 5,
-                                Masking = true,
-                                Action = toggleLinking
+                                mountDropdown = new KyosekiDropdown<MountOrientation>
+                                {
+                                    Width = 150,
+                                    Items = Enum.GetValues(typeof(MountOrientation)).Cast<MountOrientation>()
+                                },
+                                linkButton = new TextButton
+                                {
+                                    Size = new Vector2(250, 20),
+                                    CornerRadius = 5,
+                                    Masking = true,
+                                    Action = toggleLinking
+                                }
                             }
                         }
-                    }
+                    },
                 },
                 new Container
                 {
