@@ -18,13 +18,16 @@ namespace kyoseki.Game.Overlays
 
         public const float TITLE_HEIGHT = 44;
 
-        protected SlideInOverlay()
+        protected SlideInOverlay(bool baseLayout = true)
         {
             RelativeSizeAxes = Axes.Both;
             RelativePositionAxes = Axes.Y;
 
             Anchor = Anchor.BottomCentre;
             Origin = Anchor.BottomCentre;
+
+            if (!baseLayout)
+                return;
 
             InternalChildren = new Drawable[]
             {
