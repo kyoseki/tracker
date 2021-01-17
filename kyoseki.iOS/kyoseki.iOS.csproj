@@ -150,11 +150,11 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup Label="Package References">
-    <PackageReference Include="ppy.osu.Framework.iOS" Version="2020.1201.0" />
+    <PackageReference Include="ppy.osu.Framework.iOS" Version="2021.115.1" />
   </ItemGroup>
   <ItemGroup Label="Transitive Dependencies">
-    <PackageReference Include="ppy.osu.Framework" Version="2020.1201.0" />
-    <PackageReference Include="ppy.osu.Framework.NativeLibs" Version="2019.1104.0" ExcludeAssets="all" />
+    <PackageReference Include="ppy.osu.Framework" Version="2021.115.1" />
+    <PackageReference Include="ppy.osu.Framework.NativeLibs" Version="2020.903.0" ExcludeAssets="all" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

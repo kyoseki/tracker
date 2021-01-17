@@ -10,7 +10,7 @@ namespace kyoseki.Game.Input.Bindings
         {
         }
 
-        public override IEnumerable<KeyBinding> DefaultKeyBindings => new[]
+        public override IEnumerable<IKeyBinding> DefaultKeyBindings => new[]
         {
             new KeyBinding(new[] { InputKey.Escape }, GlobalAction.Back)
         };
