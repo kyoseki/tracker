@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using kyoseki.Game.Kinematics.Drawables;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI;
@@ -28,12 +29,16 @@ namespace kyoseki.Game.Overlays.Skeleton
 
         protected override string Title => "Skeleton Editor";
 
-        public readonly SkeletonLink Link = new SkeletonLink();
+        public SkeletonLink Link;
 
         private KyosekiDropdown<string> portDropdown;
         private KyosekiDropdown<int> receiverDropdown;
 
         private FillFlowContainer<SensorLinkViewButton> sensorFlow;
+
+        private TextButton calibrateAllButton;
+
+        private EditorDrawableSkeleton drawableSkeleton;
 
         private SensorPopout sensorPopout;
 
@@ -51,7 +56,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                     Size = new Vector2(2 * skeleton_padding + skeleton_size),
                     Children = new Drawable[]
                     {
-                        new EditorDrawableSkeleton(Link.Skeleton)
+                        drawableSkeleton = new EditorDrawableSkeleton
                         {
                             RelativeSizeAxes = Axes.Both,
                             BoneClicked = bone =>
@@ -59,20 +64,19 @@ namespace kyoseki.Game.Overlays.Skeleton
                                 if (!sensorPopout.Linking)
                                     return;
 
-                                Link.Register(selectedSensor.Link.SensorId, bone.Name, true);
+                                Link?.Register(selectedSensor.Link.SensorId, bone.Name, true);
 
                                 sensorPopout.UpdateState(true);
                             }
                         },
-                        new TextButton
+                        calibrateAllButton = new TextButton
                         {
                             Size = new Vector2(182, 25),
                             Text = "Calibrate All",
                             CornerRadius = 12.5f,
                             Masking = true,
                             Anchor = Anchor.BottomCentre,
-                            Origin = Anchor.BottomCentre,
-                            Action = Link.CalibrateAll
+                            Origin = Anchor.BottomCentre
                         }
                     }
                 },
@@ -181,7 +185,22 @@ namespace kyoseki.Game.Overlays.Skeleton
 
             serialConnections.PortsUpdated += handlePortsUpdated;
 
-            Link.SensorsUpdated += handleSensorUpdate;
+            SetLink(skeletonLinks.SkeletonLinks.FirstOrDefault() ?? new SkeletonLink());
+        }
+
+        public void SetLink(SkeletonLink link)
+        {
+            if (Link != null)
+                Link.SensorsUpdated -= handleSensorUpdate;
+
+            Link = link;
+
+            if (!string.IsNullOrEmpty(link.Port))
+                portDropdown.Current.Value = link.Port;
+
+            link.SensorsUpdated += handleSensorUpdate;
+            drawableSkeleton.Skeleton = link.Skeleton;
+            calibrateAllButton.Action = link.CalibrateAll;
         }
 
         private void handleSensorUpdate() => Schedule(() =>
@@ -286,11 +305,6 @@ namespace kyoseki.Game.Overlays.Skeleton
         private class EditorDrawableSkeleton : DrawableSkeleton
         {
             public override float SkeletonDrawScale => 4 * ScreenSpaceDrawQuad.Height / skeleton_size;
-
-            public EditorDrawableSkeleton(kyoseki.Game.Kinematics.Skeleton skeleton)
-                : base(skeleton)
-            {
-            }
         }
     }
 }

@@ -10,17 +10,12 @@ namespace kyoseki.Game.Kinematics.Drawables
 {
     public class DrawableSkeleton : Drawable
     {
-        public Skeleton Skeleton { get; set; }
+        public Skeleton Skeleton { get; set; } = Skeleton.Default;
 
         public virtual float SkeletonDrawScale =>
             Math.Max(ScreenSpaceDrawQuad.Width, ScreenSpaceDrawQuad.Height) / 200;
 
         public Action<Bone> BoneClicked;
-
-        public DrawableSkeleton(Skeleton skeleton)
-        {
-            Skeleton = skeleton;
-        }
 
         protected override DrawNode CreateDrawNode() => new SkeletonDrawNode(this);
 

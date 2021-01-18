@@ -22,7 +22,7 @@ namespace kyoseki.Game.Serial
             }
         }
 
-        public SensorLinkInfo Info => new SensorLinkInfo(BoneName, SensorId);
+        public SensorLinkInfo Info => new SensorLinkInfo(BoneName, SensorId, MountOrientation);
 
         /// <summary>
         /// The final orientation of this sensor, taking both the <see cref="transform"/> and
@@ -80,14 +80,18 @@ namespace kyoseki.Game.Serial
 
         public readonly int SensorId;
 
-        public SensorLinkInfo(string boneName, int sensorId)
+        public readonly MountOrientation MountOrientation;
+
+        public SensorLinkInfo(string boneName, int sensorId, MountOrientation mountOrientation)
         {
             BoneName = boneName;
             SensorId = sensorId;
+            MountOrientation = mountOrientation;
         }
 
         public bool Equals(SensorLinkInfo other) =>
             BoneName == other?.BoneName &&
-            SensorId == other?.SensorId;
+            SensorId == other?.SensorId &&
+            MountOrientation == other.MountOrientation;
     }
 }

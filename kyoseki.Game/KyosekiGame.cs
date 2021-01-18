@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using kyoseki.Game.Configuration;
 using kyoseki.Game.Overlays.SerialMonitor;
 using kyoseki.Game.Overlays.Skeleton;
 using kyoseki.Game.Serial;
@@ -35,6 +36,8 @@ namespace kyoseki.Game
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
+            dependencies.CacheAs(new KyosekiConfigManager(Host.Storage));
 
             AddInternal(dependencies.Get<ConnectionManager>());
             AddInternal(dependencies.Get<SkeletonLinkManager>());

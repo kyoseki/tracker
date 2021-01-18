@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using kyoseki.Game.Kinematics;
 
 namespace kyoseki.Game.Serial
@@ -16,7 +17,34 @@ namespace kyoseki.Game.Serial
 
         public int ReceiverId { get; set; }
 
-        public SkeletonLinkInfo Info => new SkeletonLinkInfo(Port, ReceiverId);
+        public SkeletonLinkInfo Info
+        {
+            get
+            {
+                lock (Sensors)
+                    return new SkeletonLinkInfo(Port, ReceiverId, Sensors.Select(s => s.Info).ToArray());
+            }
+            set
+            {
+                Port = value.Port;
+                ReceiverId = value.ReceiverId;
+
+                lock (Sensors)
+                {
+                    foreach (var sensorInfo in value.Sensors)
+                    {
+                        Sensors.Add(new SensorLink
+                        {
+                            BoneName = sensorInfo.BoneName,
+                            SensorId = sensorInfo.SensorId,
+                            MountOrientation = sensorInfo.MountOrientation
+                        });
+
+                        Register(sensorInfo.SensorId, sensorInfo.BoneName);
+                    }
+                }
+            }
+        }
 
         public SensorLink Get(string boneName, bool allowNulls = false)
         {
@@ -115,14 +143,18 @@ namespace kyoseki.Game.Serial
 
         public readonly int ReceiverId;
 
-        public SkeletonLinkInfo(string port, int receiverId)
+        public readonly SensorLinkInfo[] Sensors;
+
+        public SkeletonLinkInfo(string port, int receiverId, SensorLinkInfo[] sensors)
         {
             Port = port;
             ReceiverId = receiverId;
+            Sensors = sensors;
         }
 
         public bool Equals(SkeletonLinkInfo other) =>
             Port == other?.Port &&
-            ReceiverId == other?.ReceiverId;
+            ReceiverId == other?.ReceiverId &&
+            Sensors.SequenceEqual(other.Sensors);
     }
 }

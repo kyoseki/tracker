@@ -12,8 +12,9 @@ namespace kyoseki.Game.Tests.Visual.Kinematics
         {
             var skeleton = Skeleton.Default;
 
-            Add(new DrawableSkeleton(skeleton)
+            Add(new DrawableSkeleton
             {
+                Skeleton = skeleton,
                 RelativeSizeAxes = Axes.Both,
                 Origin = Anchor.TopLeft,
                 Anchor = Anchor.TopLeft

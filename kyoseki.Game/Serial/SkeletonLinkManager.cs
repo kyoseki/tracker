@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using kyoseki.Game.Configuration;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.IEnumerableExtensions;
@@ -15,12 +16,30 @@ namespace kyoseki.Game.Serial
         [Resolved]
         private ConnectionManager serialConnections { get; set; }
 
+        [Resolved(CanBeNull = true)]
+        private KyosekiConfigManager config { get; set; }
+
         private readonly List<SkeletonSerialProcessor> ports = new List<SkeletonSerialProcessor>();
 
         // TODO: do better
         public readonly BindableList<int> ReceiverIds = new BindableList<int>();
 
         public new ScheduledDelegate Schedule(Action action) => base.Schedule(action);
+
+        public IEnumerable<SkeletonLink> SkeletonLinks
+        {
+            get
+            {
+                var result = new List<SkeletonLink>();
+
+                foreach (var port in ports)
+                {
+                    result.AddRange(port.Links);
+                }
+
+                return result;
+            }
+        }
 
         protected override void LoadComplete()
         {
@@ -30,6 +49,19 @@ namespace kyoseki.Game.Serial
             serialConnections.MessageReceived += handleMessage;
 
             serialConnections.PortNames.ForEach(p => registerPort(p));
+
+            if (config == null)
+                return;
+
+            var savedPorts = config.Get<SkeletonSerialProcessorInfo[]>(KyosekiSetting.Skeletons);
+
+            Load(savedPorts);
+
+            Scheduler.AddDelayed(() =>
+            {
+                config.Set(KyosekiSetting.Skeletons, ports.Select(p => p.Info).Where(p => p.Links.Length > 0).ToArray());
+                config.Save();
+            }, 10000, true);
         }
 
         public SkeletonSerialProcessor GetPort(string port) => ports.Find(p => p.Port == port);
@@ -49,6 +81,25 @@ namespace kyoseki.Game.Serial
                     newPort.Register(link);
                     link.Port = port;
                     link.Sensors.RemoveAll(l => string.IsNullOrEmpty(l.BoneName));
+                }
+            }
+        }
+
+        public void Load(IEnumerable<SkeletonSerialProcessorInfo> infos)
+        {
+            foreach (var info in infos)
+            {
+                var port = GetPort(info.Port);
+
+                if (port != null)
+                {
+                    port.Info = info;
+                }
+                else
+                {
+                    var newPort = registerPort(info.Port);
+
+                    newPort.Info = info;
                 }
             }
         }
@@ -92,9 +143,24 @@ namespace kyoseki.Game.Serial
 
         public readonly BindableList<int> ReceiverIds = new BindableList<int>();
 
-        private readonly List<SkeletonLink> links = new List<SkeletonLink>();
+        public readonly List<SkeletonLink> Links = new List<SkeletonLink>();
 
         private readonly SkeletonLinkManager skeletonLinks;
+
+        public SkeletonSerialProcessorInfo Info
+        {
+            get => new SkeletonSerialProcessorInfo(Port, Links.Select(l => l.Info).ToArray());
+            set
+            {
+                if (value.Port != Port)
+                    return;
+
+                Links.AddRange(value.Links.Select(l => new SkeletonLink
+                {
+                    Info = l
+                }));
+            }
+        }
 
         public SkeletonSerialProcessor(SkeletonLinkManager skeletonLinks, string port)
         {
@@ -104,15 +170,15 @@ namespace kyoseki.Game.Serial
 
         public void Register(SkeletonLink link)
         {
-            if (links.Any(l => l.Info == link.Info))
+            if (Links.Any(l => l.Info == link.Info))
             {
                 throw new InvalidOperationException("A link for this exact skeleton has already been registered.");
             }
 
-            links.Add(link);
+            Links.Add(link);
         }
 
-        public void Unregister(SkeletonLink link) => links.Remove(link);
+        public void Unregister(SkeletonLink link) => Links.Remove(link);
 
         private float parseInt(int n)
         {
@@ -146,9 +212,26 @@ namespace kyoseki.Game.Serial
                         ReceiverIds.Add(receiverId);
                 });
 
-                var link = links.Find(l => l.Port == Port && l.ReceiverId == receiverId);
+                var link = Links.Find(l => l.Port == Port && l.ReceiverId == receiverId);
                 link?.Update(new ReceiverMessage(sensorId, quat));
             }
         }
+    }
+
+    public class SkeletonSerialProcessorInfo : IEquatable<SkeletonSerialProcessorInfo>
+    {
+        public readonly string Port;
+
+        public readonly SkeletonLinkInfo[] Links;
+
+        public SkeletonSerialProcessorInfo(string port, SkeletonLinkInfo[] links)
+        {
+            Port = port;
+            Links = links;
+        }
+
+        public bool Equals(SkeletonSerialProcessorInfo other) =>
+            Port == other?.Port &&
+            Links.SequenceEqual(other?.Links);
     }
 }
