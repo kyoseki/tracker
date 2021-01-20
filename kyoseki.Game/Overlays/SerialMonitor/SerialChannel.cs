@@ -19,6 +19,8 @@ namespace kyoseki.Game.Overlays.SerialMonitor
     {
         private readonly ChannelScrollContainer scroll;
 
+        private const int scroll_to_bottom_size = 40;
+
         private readonly DrawablePool<Message> messagePool = new DrawablePool<Message>(150);
 
         private readonly ISerialPort port;
@@ -50,7 +52,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             PortName = port.Name;
             this.port = port;
 
-            ScrollToBottomButton continueAutoscroll;
+            IconButton continueAutoscroll;
 
             Child = new TooltipContainer
             {
@@ -69,16 +71,21 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                                 ScrollbarVisible = true,
                                 RelativeSizeAxes = Axes.Both,
                             },
-                            continueAutoscroll = new ScrollToBottomButton
+                            continueAutoscroll = new IconButton
                             {
                                 Anchor = Anchor.BottomRight,
                                 Origin = Anchor.BottomRight,
-                                Alpha = 0,
+                                Icon = FontAwesome.Solid.ChevronDown,
+                                IconSize = new Vector2(0.6f),
+                                Size = new Vector2(scroll_to_bottom_size),
+                                CornerRadius = scroll_to_bottom_size / 2f,
+                                Masking = true,
                                 Action = () =>
                                 {
                                     scroll.ResetScroll();
                                     scroll.ScrollToEnd();
-                                }
+                                },
+                                Alpha = 0
                             }
                         }
                     },
@@ -213,25 +220,6 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                 scroll.ScrollToEnd();
             }
         });
-
-        private class ScrollToBottomButton : IconButton
-        {
-            protected override Container CreateContent() =>
-                new CircularContainer
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Masking = true
-                };
-
-            public ScrollToBottomButton()
-            {
-                Icon = FontAwesome.Solid.ChevronDown;
-                IconSize = new Vector2(0.6f);
-                Size = new Vector2(40);
-            }
-        }
 
         private class ChannelScrollContainer : KyosekiScrollContainer<Message>
         {
