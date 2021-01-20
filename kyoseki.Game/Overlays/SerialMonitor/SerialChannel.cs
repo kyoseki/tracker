@@ -239,9 +239,9 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
             protected override void Update()
             {
-                UserScrolling.Value |= Scrollbar.IsDragged;
-
                 base.Update();
+
+                UserScrolling.Value |= Scrollbar.IsDragged;
             }
 
             public void ResetScroll() => UserScrolling.Value = false;
