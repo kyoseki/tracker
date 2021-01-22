@@ -20,6 +20,8 @@ namespace kyoseki.Game.UI.Buttons
             set => Background.Colour = value;
         }
 
+        public ColourInfo FlashColour { get; set; } = KyosekiColors.ButtonSelected;
+
         protected virtual Container CreateContent() =>
             new Container
             {
@@ -67,7 +69,7 @@ namespace kyoseki.Game.UI.Buttons
 
         protected override bool OnClick(ClickEvent e)
         {
-            Background.FlashColour(KyosekiColors.ButtonSelected, 200);
+            Background.FlashColour(FlashColour, 200);
             return base.OnClick(e);
         }
     }

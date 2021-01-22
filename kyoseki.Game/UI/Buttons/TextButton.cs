@@ -18,6 +18,12 @@ namespace kyoseki.Game.UI.Buttons
             set => spriteText.Colour = value;
         }
 
+        public FontUsage Font
+        {
+            get => spriteText.Font;
+            set => spriteText.Font = value;
+        }
+
         private readonly SpriteText spriteText;
 
         public TextButton()
