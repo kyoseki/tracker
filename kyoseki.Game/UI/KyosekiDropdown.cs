@@ -17,9 +17,9 @@ namespace kyoseki.Game.UI
         {
             public const int CORNER_RADIUS = 4;
 
-            public const int VERTICAL_PADDING = 5;
-            public const int FONT_SIZE = 18;
-            public const int HEIGHT = VERTICAL_PADDING * 2 + FONT_SIZE;
+            private const int vertical_padding = 5;
+            private const int font_size = 18;
+            public const int HEIGHT = vertical_padding * 2 + font_size;
 
             private readonly SpriteText label;
 
@@ -33,7 +33,7 @@ namespace kyoseki.Game.UI
             {
                 Foreground.Padding = new MarginPadding
                 {
-                    Vertical = VERTICAL_PADDING,
+                    Vertical = vertical_padding,
                     Horizontal = 10
                 };
 
@@ -44,7 +44,7 @@ namespace kyoseki.Game.UI
 
                 Depth = -1;
 
-                var font = KyosekiFont.Bold.With(size: FONT_SIZE);
+                var font = KyosekiFont.Bold.With(size: font_size);
 
                 Children = new Drawable[]
                 {
@@ -67,7 +67,7 @@ namespace kyoseki.Game.UI
             }
         }
 
-        public class KyosekiDropdownMenu : DropdownMenu
+        private class KyosekiDropdownMenu : DropdownMenu
         {
             private const int corner_radius = 4;
 

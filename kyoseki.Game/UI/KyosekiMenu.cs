@@ -51,7 +51,7 @@ namespace kyoseki.Game.UI
 
         protected override ScrollContainer<Drawable> CreateScrollContainer(Direction direction) => new KyosekiScrollContainer(direction);
 
-        public class DrawableKyosekiMenuItem : DrawableMenuItem
+        private class DrawableKyosekiMenuItem : DrawableMenuItem
         {
             public DrawableKyosekiMenuItem(MenuItem item)
                 : base(item)

@@ -21,9 +21,6 @@ namespace kyoseki.Game.Serial
 
         private readonly List<SkeletonSerialProcessor> ports = new List<SkeletonSerialProcessor>();
 
-        // TODO: do better
-        public readonly BindableList<int> ReceiverIds = new BindableList<int>();
-
         public new ScheduledDelegate Schedule(Action action) => base.Schedule(action);
 
         public IEnumerable<SkeletonLink> SkeletonLinks
@@ -187,7 +184,7 @@ namespace kyoseki.Game.Serial
 
             int multiplier = sign == 1 ? -1 : 1;
 
-            return (val / 100f) * multiplier;
+            return val / 100f * multiplier;
         }
 
         public void Update(MessageInfo msg)

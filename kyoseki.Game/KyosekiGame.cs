@@ -71,7 +71,7 @@ namespace kyoseki.Game
                         Logger.Log($"Loading {component}...", level: LogLevel.Debug);
 
                         Task task = null;
-                        var del = new ScheduledDelegate(() => task = LoadComponentAsync(component, loadCompleteAction), 0, -1);
+                        var del = new ScheduledDelegate(() => task = LoadComponentAsync(component, loadCompleteAction));
                         Scheduler.Add(del);
 
                         while (!IsDisposed && !del.Completed)

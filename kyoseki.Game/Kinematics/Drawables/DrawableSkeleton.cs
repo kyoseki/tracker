@@ -12,7 +12,7 @@ namespace kyoseki.Game.Kinematics.Drawables
     {
         public Skeleton Skeleton { get; set; } = Skeleton.Default;
 
-        public virtual float SkeletonDrawScale =>
+        protected virtual float SkeletonDrawScale =>
             Math.Max(ScreenSpaceDrawQuad.Width, ScreenSpaceDrawQuad.Height) / 200;
 
         public Action<Bone> BoneClicked;
@@ -45,7 +45,7 @@ namespace kyoseki.Game.Kinematics.Drawables
 
             private QuadBatch<TexturedVertex2D> vertexBatch;
 
-            public SkeletonDrawNode(DrawableSkeleton source)
+            public SkeletonDrawNode(IDrawable source)
                 : base(source)
             {
             }

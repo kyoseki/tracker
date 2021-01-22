@@ -54,11 +54,11 @@ namespace kyoseki.Game.Serial
             {
                 bool newPorts = !SerialPort.GetPortNames().All(p => PortNames.Contains(p));
 
-                if (newPorts)
-                {
-                    Logger.Log("New serial ports detected", LoggingTarget.Network);
-                    State.Value = ConnectionState.Resetting;
-                }
+                if (!newPorts)
+                    return;
+
+                Logger.Log("New serial ports detected", LoggingTarget.Network);
+                State.Value = ConnectionState.Resetting;
             }
         }
 

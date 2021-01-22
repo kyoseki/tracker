@@ -10,7 +10,7 @@ namespace kyoseki.Game.UI
         public static FontUsage Mono => GetFont(Typeface.JetbrainsMono);
 
         public static FontUsage GetFont(Typeface typeface = Typeface.Manrope, float size = 16, FontWeight weight = FontWeight.Regular, bool italics = false, bool fixedWidth = false) =>
-            new FontUsage(GetFamilyString(typeface), size, GetWeightString(typeface, weight), getItalics(italics), fixedWidth);
+            new FontUsage(GetFamilyString(typeface), size, getWeightString(typeface, weight), getItalics(italics), fixedWidth);
 
         private static bool getItalics(in bool italicsRequested)
         {
@@ -27,10 +27,10 @@ namespace kyoseki.Game.UI
             if (!success)
                 throw new ArgumentException($"Family string {familyString} is invalid");
 
-            return GetWeightString(typeface, weight);
+            return getWeightString(typeface, weight);
         }
 
-        public static string GetWeightString(Typeface typeface, FontWeight weight)
+        private static string getWeightString(Typeface typeface, FontWeight weight)
         {
             if (weight == FontWeight.Regular)
                 return string.Empty;

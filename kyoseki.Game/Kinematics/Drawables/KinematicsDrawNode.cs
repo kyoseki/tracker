@@ -16,7 +16,7 @@ namespace kyoseki.Game.Kinematics.Drawables
     /// </summary>
     public class KinematicsDrawNode : DrawNode
     {
-        public KinematicsDrawNode(IDrawable source)
+        protected KinematicsDrawNode(IDrawable source)
             : base(source)
         {
         }
@@ -30,7 +30,7 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// <param name="length">The length of each axis</param>
         /// <param name="rotation">A quaternion representing the rotation the axes should show</param>
         /// <param name="vertexAction">Action to be performed on each vertex - used for textured sprites or batches</param>
-        public void DrawAxes(Vector2 origin, float length, System.Numerics.Quaternion rotation, Action<TexturedVertex2D> vertexAction = null)
+        protected void DrawAxes(Vector2 origin, float length, System.Numerics.Quaternion rotation, Action<TexturedVertex2D> vertexAction = null)
         {
             var x = new Vector3(1, 0, 0);
             var y = new Vector3(0, 1, 0);
@@ -49,7 +49,7 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// <summary>
         /// Draws a line
         /// </summary>
-        public void DrawLine(Texture texture, Vector2 p1, Vector2 p2, float width, ColourInfo colour, Action<TexturedVertex2D> vertexAction = null)
+        protected void DrawLine(Texture texture, Vector2 p1, Vector2 p2, float width, ColourInfo colour, Action<TexturedVertex2D> vertexAction = null)
         {
             var angle = MathF.Atan2(p2.Y - p1.Y, p2.X - p1.X);
 
@@ -68,7 +68,7 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// Draws a square with a given size,
         /// centered at a given point
         /// </summary>
-        public void DrawPoint(Texture texture, Vector2 p, Vector2 size, ColourInfo colour, Action<TexturedVertex2D> vertexAction = null)
+        protected void DrawPoint(Texture texture, Vector2 p, Vector2 size, ColourInfo colour, Action<TexturedVertex2D> vertexAction = null)
         {
             var pQuad = p - size / 2;
 
@@ -102,7 +102,7 @@ namespace kyoseki.Game.Kinematics.Drawables
         /// <param name="drawQuad">Draw quad of this Drawable</param>
         /// <param name="bone">Which bone to draw</param>
         /// <param name="vertexAction">Action to be performed on each vertex - used for textured sprites or batches</param>
-        public void DrawBone(float scale, Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
+        protected void DrawBone(float scale, Quad drawQuad, Bone bone, Action<TexturedVertex2D> vertexAction = null)
         {
             var bones = new List<Bone>();
             bone.Traverse(bones.Add);

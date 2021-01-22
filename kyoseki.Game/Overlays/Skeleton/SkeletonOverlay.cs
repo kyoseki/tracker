@@ -131,7 +131,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                     new KyosekiScrollContainer
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Padding = new MarginPadding { Top = SlideInOverlay.TITLE_HEIGHT },
+                        Padding = new MarginPadding { Top = TITLE_HEIGHT },
                         Child = sensorFlow = new FillFlowContainer<SensorLinkViewButton>
                         {
                             RelativeSizeAxes = Axes.X,
@@ -142,7 +142,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                     new Container
                     {
                         RelativeSizeAxes = Axes.X,
-                        Height = SlideInOverlay.TITLE_HEIGHT,
+                        Height = TITLE_HEIGHT,
                         Children = new Drawable[]
                         {
                             new Box
@@ -154,7 +154,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                             {
                                 Anchor = Anchor.CentreLeft,
                                 Origin = Anchor.CentreLeft,
-                                Font = KyosekiFont.Bold.With(size: SlideInOverlay.TITLE_HEIGHT * 0.6f),
+                                Font = KyosekiFont.Bold.With(size: TITLE_HEIGHT * 0.6f),
                                 Text = "Sensors",
                                 Padding = new MarginPadding { Left = 15 }
                             }
@@ -304,7 +304,7 @@ namespace kyoseki.Game.Overlays.Skeleton
 
         private class EditorDrawableSkeleton : DrawableSkeleton
         {
-            public override float SkeletonDrawScale => 4 * ScreenSpaceDrawQuad.Height / skeleton_size;
+            protected override float SkeletonDrawScale => 4 * ScreenSpaceDrawQuad.Height / skeleton_size;
         }
     }
 }

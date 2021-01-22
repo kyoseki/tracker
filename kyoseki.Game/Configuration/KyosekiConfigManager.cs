@@ -43,31 +43,31 @@ namespace kyoseki.Game.Configuration
 
                     var output = JsonConvert.DeserializeObject<Dictionary<KyosekiSetting, object>>(config);
 
-                    foreach (var obj in output)
+                    foreach (var (key, value) in output)
                     {
-                        switch (obj.Key)
+                        switch (key)
                         {
                             case KyosekiSetting.Skeletons:
-                                var skeletons = JsonConvert.DeserializeObject<SkeletonSerialProcessorInfo[]>(obj.Value.ToString());
+                                var skeletons = JsonConvert.DeserializeObject<SkeletonSerialProcessorInfo[]>(value.ToString());
 
                                 Set(KyosekiSetting.Skeletons, skeletons);
                                 break;
 
                             default:
-                                if (ConfigStore.TryGetValue(obj.Key, out IBindable b))
+                                if (ConfigStore.TryGetValue(key, out IBindable b))
                                 {
                                     try
                                     {
-                                        b.Parse(obj.Value);
+                                        b.Parse(value);
                                     }
                                     catch (Exception e)
                                     {
-                                        Logger.Log($"Failed to parse config key {obj.Key}: {e}", LoggingTarget.Runtime, LogLevel.Important);
+                                        Logger.Log($"Failed to parse config key {key}: {e}", LoggingTarget.Runtime, LogLevel.Important);
                                     }
                                 }
                                 else if (AddMissingEntries)
                                 {
-                                    Set(obj.Key, obj.Value);
+                                    Set(key, value);
                                 }
 
                                 break;

@@ -29,7 +29,7 @@ namespace kyoseki.Game.UI.Buttons
                 Margin = new MarginPadding(2)
             };
 
-        public KyosekiButton()
+        protected KyosekiButton()
         {
             AddInternal(CreateContent().WithChildren(new[]
             {

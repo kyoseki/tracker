@@ -20,7 +20,7 @@ namespace kyoseki.Game.Serial
 
         public string NewLineWrite { get; set; }
 
-        public Bindable<SerialPortState> State { get; private set; } = new Bindable<SerialPortState>(SerialPortState.Closed);
+        public Bindable<SerialPortState> State { get; } = new Bindable<SerialPortState>(SerialPortState.Closed);
 
         public SystemSerialPort(string name, int baud)
             : base(name, baud)

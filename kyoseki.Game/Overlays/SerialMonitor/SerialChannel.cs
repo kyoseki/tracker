@@ -162,7 +162,8 @@ namespace kyoseki.Game.Overlays.SerialMonitor
         {
             base.Update();
 
-            if (messages.Count == 0) return;
+            if (messages.Count == 0)
+                return;
 
             updateYPositions();
 

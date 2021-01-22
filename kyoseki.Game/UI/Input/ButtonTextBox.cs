@@ -50,7 +50,7 @@ namespace kyoseki.Game.UI.Input
             {
                 Anchor = Anchor.CentreRight,
                 Origin = Anchor.CentreRight,
-                Size = new Vector2(KyosekiTextBox.HEIGHT * (buttons.Length - buttonCount), KyosekiTextBox.HEIGHT),
+                Size = new Vector2(HEIGHT * (buttons.Length - buttonCount), HEIGHT),
                 Icon = info.Icon,
                 BackgroundColour = KyosekiColors.ButtonBackground.Lighten((buttons.Length - buttonCount) * 0.25f),
                 Action = info.Action,
@@ -62,12 +62,12 @@ namespace kyoseki.Game.UI.Input
         {
             base.Update();
 
-            if (transform == null)
-            {
-                transform = TextFlow.DrawWidth > DrawWidth - buttonContainer.DrawWidth - LeftRightPadding ? buttonContainer.FadeOut(100, Easing.OutQuad) : buttonContainer.FadeIn(100, Easing.In);
+            if (transform != null)
+                return;
 
-                transform.OnComplete(_ => transform = null);
-            }
+            transform = TextFlow.DrawWidth > DrawWidth - buttonContainer.DrawWidth - LeftRightPadding ? buttonContainer.FadeOut(100, Easing.OutQuad) : buttonContainer.FadeIn(100, Easing.In);
+
+            transform.OnComplete(_ => transform = null);
         }
 
         private class SideButton : IconButton, IHasTooltip
@@ -86,7 +86,7 @@ namespace kyoseki.Game.UI.Input
                 RelativeSizeAxes = Axes.Both,
                 Anchor = Anchor.CentreLeft,
                 Origin = Anchor.Centre,
-                X = KyosekiTextBox.HEIGHT / 2,
+                X = HEIGHT / 2,
                 Size = new Vector2(0.3f),
                 Colour = KyosekiColors.Foreground
             };
