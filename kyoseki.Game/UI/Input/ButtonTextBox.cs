@@ -74,12 +74,11 @@ namespace kyoseki.Game.UI.Input
         {
             public string TooltipText { get; set; }
 
-            protected override Container CreateContent() =>
-                new CircularContainer
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Masking = true
-                };
+            public SideButton()
+            {
+                Masking = true;
+                CornerRadius = HEIGHT / 2f;
+            }
 
             protected override SpriteIcon CreateIcon() => new SpriteIcon
             {
