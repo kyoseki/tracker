@@ -24,7 +24,6 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
         public const int CONTENT_LINE_SPACING = 0;
 
-        private readonly CircularContainer pillContainer;
         private readonly Box pill;
         private readonly SpriteText pillText;
 
@@ -39,11 +38,10 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             {
                 item = value;
 
-                var drawInfo = getDrawInfo(item.Direction);
+                var (colour, abbreviation) = getDrawInfo(item.Direction);
 
-                pillContainer.FadeIn(200, Easing.InQuint);
-                pill.Colour = drawInfo.Colour;
-                pillText.Text = drawInfo.Abbreviation;
+                pill.Colour = colour;
+                pillText.Text = abbreviation;
 
                 textFlow.Clear();
                 textFlow.AddText(item.Content, t => t.Font = KyosekiFont.Mono.With(size: CONTENT_FONT_SIZE));
@@ -57,9 +55,8 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
             InternalChildren = new Drawable[]
             {
-                pillContainer = new CircularContainer
+                new CircularContainer
                 {
-                    Alpha = 0,
                     Size = new Vector2(pill_width, pill_height),
                     Masking = true,
                     Children = new Drawable[]
@@ -72,12 +69,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                         {
                             Font = KyosekiFont.Bold.With(size: pill_font_size),
                             Anchor = Anchor.Centre,
-                            Origin = Anchor.Centre,
-                            Padding = new MarginPadding
-                            {
-                                Horizontal = pill_width / 2f,
-                                Vertical = pill_height / 2f
-                            }
+                            Origin = Anchor.Centre
                         }
                     }
                 },
@@ -101,34 +93,19 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             };
         }
 
-        private MessageDrawInfo getDrawInfo(MessageDirection direction)
+        private (ColourInfo, string) getDrawInfo(MessageDirection direction)
         {
             switch (direction)
             {
                 case MessageDirection.Outgoing:
-                    return new MessageDrawInfo
-                    {
-                        Colour = Colour4.Green,
-                        Abbreviation = "TX"
-                    };
+                    return (Colour4.Green, "TX");
 
                 case MessageDirection.Incoming:
-                    return new MessageDrawInfo
-                    {
-                        Colour = Colour4.Blue,
-                        Abbreviation = "RX"
-                    };
+                    return (Colour4.Blue, "RX");
 
                 default:
                     throw new ArgumentException("MessageDirection has no entry for provided value.");
             }
-        }
-
-        private class MessageDrawInfo
-        {
-            public ColourInfo Colour { get; set; }
-
-            public string Abbreviation { get; set; }
         }
     }
 
