@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using kyoseki.Game.Serial;
-using kyoseki.Game.UI;
 using kyoseki.Game.UI.Buttons;
 using kyoseki.Game.UI.Input;
+using kyoseki.Game.UI.Pooling;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
-using osu.Framework.Graphics.Pooling;
 using osu.Framework.Graphics.Sprites;
 using osuTK;
 
@@ -21,13 +18,9 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
         private const int scroll_to_bottom_size = 40;
 
-        private readonly DrawablePool<Message> messagePool = new DrawablePool<Message>(150);
-
         private readonly ISerialPort port;
 
-        public readonly string PortName;
-
-        private readonly List<MessageInfo> messages = new List<MessageInfo>();
+        public string PortName { get; set; }
 
         private readonly ButtonTextBox textBox;
 
@@ -36,22 +29,26 @@ namespace kyoseki.Game.Overlays.SerialMonitor
         private ButtonInfo[] portOpenButtons => new[]
         {
             new ButtonInfo(FontAwesome.Solid.ArrowRight, "Send Message", () => textBox.Commit()),
-            new ButtonInfo(FontAwesome.Solid.Plug, "Release Port", () => port.Release()),
+            new ButtonInfo(FontAwesome.Solid.Plug, "Release Port", () => port?.Release()),
             new ButtonInfo(FontAwesome.Solid.Trash, "Clear Messages", clearMessages)
         };
 
         private ButtonInfo[] portReconnectButtons => new[]
         {
-            new ButtonInfo(FontAwesome.Solid.Undo, "Reconnect", () => port.Open())
+            new ButtonInfo(FontAwesome.Solid.Undo, "Reconnect", () => port?.Open())
         };
 
         public Action<string, string> SendMessage;
 
         public SerialChannel(ISerialPort port)
+            : this()
         {
-            PortName = port.Name;
             this.port = port;
+            PortName = port.Name;
+        }
 
+        public SerialChannel()
+        {
             IconButton continueAutoscroll;
 
             Child = new TooltipContainer
@@ -59,7 +56,6 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                 RelativeSizeAxes = Axes.Both,
                 Children = new Drawable[]
                 {
-                    messagePool,
                     new Container
                     {
                         RelativeSizeAxes = Axes.Both,
@@ -69,7 +65,7 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                             scroll = new ChannelScrollContainer
                             {
                                 ScrollbarVisible = true,
-                                RelativeSizeAxes = Axes.Both,
+                                RelativeSizeAxes = Axes.Both
                             },
                             continueAutoscroll = new IconButton
                             {
@@ -109,7 +105,11 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             };
 
             PortState.ValueChanged += e => updateState(e.NewValue);
-            updateState(port.State.Value);
+
+            if (port != null)
+            {
+                updateState(port.State.Value);
+            }
 
             textBox.OnCommit += (_, __) =>
             {
@@ -148,73 +148,12 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             }
         });
 
-        private void clearMessages()
-        {
-            foreach (var msg in scroll.Children)
-            {
-                msg.FadeOut(100, Easing.OutQuad).Expire();
-            }
-
-            messages.Clear();
-        }
-
-        protected override void Update()
-        {
-            base.Update();
-
-            if (messages.Count == 0)
-                return;
-
-            updateYPositions();
-
-            var topBound = scroll.Current - 100;
-            var bottomBound = scroll.Current + DrawHeight + 100;
-
-            var toDisplay = messages.Where(m => m.ChannelYPosition >= topBound && m.ChannelYPosition <= bottomBound).ToList();
-
-            foreach (var msg in scroll.Children)
-            {
-                if (toDisplay.Remove(msg.Item))
-                {
-                    continue;
-                }
-
-                if (msg.Y + msg.DrawHeight < topBound - 100 || msg.Y > bottomBound + 100)
-                {
-                    msg.Expire();
-                }
-            }
-
-            foreach (var item in toDisplay)
-            {
-                var msg = messagePool.Get(p => p.Item = item);
-
-                msg.Y = item.ChannelYPosition;
-                msg.Show();
-                scroll.Add(msg);
-            }
-        }
-
-        private void updateYPositions()
-        {
-            float currentY = 0;
-
-            foreach (MessageInfo msg in messages)
-            {
-                msg.ChannelYPosition = currentY;
-
-                var additionalLines = msg.Content.Split("\n").Length - 1;
-                var additionalHeight = Math.Max(0, additionalLines * (Message.CONTENT_FONT_SIZE + Message.CONTENT_LINE_SPACING));
-
-                currentY += Message.HEIGHT + Message.MARGIN + additionalHeight;
-            }
-
-            scroll.ScrollContent.Height = currentY;
-        }
+        private void clearMessages() =>
+            scroll.Clear();
 
         public void AddMessage(MessageInfo msg) => Schedule(() =>
         {
-            messages.Add(msg);
+            scroll.Add(new ChannelItem(msg));
 
             if (!scroll.UserScrolling.Value)
             {
@@ -222,14 +161,46 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             }
         });
 
-        private class ChannelScrollContainer : KyosekiScrollContainer<Message>
+        private class ChannelItem : PoolableScrollItem
         {
-            public BindableBool UserScrolling { get; private set; } = new BindableBool(false);
+            private const int margin = 5;
 
-            public ChannelScrollContainer()
+            public readonly MessageInfo Info;
+
+            public override float Height =>
+                Math.Max(Math.Max(1, Info.Content.Split("\n").Length) * (Message.CONTENT_FONT_SIZE + Message.CONTENT_LINE_SPACING), Message.HEIGHT) + margin;
+
+            public ChannelItem(MessageInfo info)
             {
-                ScrollContent.AutoSizeAxes = Axes.None;
+                Info = info;
             }
+
+            public override DrawablePoolableScrollItem CreateDrawable() =>
+                new DrawableChannelItem { Item = this };
+        }
+
+        private class DrawableChannelItem : DrawablePoolableScrollItem
+        {
+            private readonly Message message;
+
+            private ChannelItem item => (ChannelItem)Item;
+
+            public DrawableChannelItem()
+            {
+                RelativeSizeAxes = Axes.X;
+
+                AddInternal(message = new Message());
+            }
+
+            protected override void UpdateItem()
+            {
+                message.Item = item.Info;
+            }
+        }
+
+        private class ChannelScrollContainer : PoolingScrollContainer<DrawableChannelItem>
+        {
+            public BindableBool UserScrolling { get; } = new BindableBool();
 
             protected override void OnUserScroll(float value, bool animated = true, double? distanceDecay = null)
             {
