@@ -195,12 +195,13 @@ namespace kyoseki.Game.Overlays.Skeleton
 
             Link = link;
 
-            if (!string.IsNullOrEmpty(link.Port))
-                portDropdown.Current.Value = link.Port;
+            portDropdown.Current.Value = string.IsNullOrEmpty(link.Port) ? portDropdown.Items.ElementAt(0) : link.Port;
 
             link.SensorsUpdated += handleSensorUpdate;
             drawableSkeleton.Skeleton = link.Skeleton;
             calibrateAllButton.Action = link.CalibrateAll;
+
+            handleSensorUpdate();
         }
 
         private void handleSensorUpdate() => Schedule(() =>

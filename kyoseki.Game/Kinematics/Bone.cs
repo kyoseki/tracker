@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using kyoseki.Game.MathUtils;
+using osu.Framework.Bindables;
 
 namespace kyoseki.Game.Kinematics
 {
@@ -95,6 +96,8 @@ namespace kyoseki.Game.Kinematics
                 return WorldRotation.ApplyTransform(transform);
             }
         }
+
+        public readonly Bindable<Quaternion> BindableWorldRotation = new Bindable<Quaternion>(Quaternion.Identity);
 
         /// <summary>
         /// Rotation of this bone in world space
@@ -192,6 +195,14 @@ namespace kyoseki.Game.Kinematics
                     value
                 };
             }
+        }
+
+        public Bone()
+        {
+            BindableWorldRotation.ValueChanged += e =>
+            {
+                WorldRotation = e.NewValue;
+            };
         }
 
         /// <summary>

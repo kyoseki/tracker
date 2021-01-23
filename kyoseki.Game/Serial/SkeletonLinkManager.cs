@@ -21,6 +21,8 @@ namespace kyoseki.Game.Serial
 
         private readonly List<SkeletonSerialProcessor> ports = new List<SkeletonSerialProcessor>();
 
+        public event Action<SkeletonLink> LinkCreated;
+
         public new ScheduledDelegate Schedule(Action action) => base.Schedule(action);
 
         public IEnumerable<SkeletonLink> SkeletonLinks
@@ -78,6 +80,9 @@ namespace kyoseki.Game.Serial
                     newPort.Register(link);
                     link.Port = port;
                     link.Sensors.RemoveAll(l => string.IsNullOrEmpty(l.BoneName));
+
+                    if (oldPort == null)
+                        LinkCreated?.Invoke(link);
                 }
             }
         }
@@ -209,8 +214,12 @@ namespace kyoseki.Game.Serial
                         ReceiverIds.Add(receiverId);
                 });
 
-                var link = Links.Find(l => l.Port == Port && l.ReceiverId == receiverId);
-                link?.Update(new ReceiverMessage(sensorId, quat));
+                var links = Links.Where(l => l.Port == Port && l.ReceiverId == receiverId);
+
+                foreach (var link in links)
+                {
+                    link.Update(new ReceiverMessage(sensorId, quat));
+                }
             }
         }
     }

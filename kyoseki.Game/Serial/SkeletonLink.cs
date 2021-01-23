@@ -72,6 +72,9 @@ namespace kyoseki.Game.Serial
 
         public bool Register(int sensorId, string boneName, bool allowNulls = false)
         {
+            if (string.IsNullOrEmpty(boneName))
+                return false;
+
             var bone = Skeleton.GetBone(boneName);
             var link = Get(sensorId, allowNulls);
             if (link == null)
@@ -81,17 +84,15 @@ namespace kyoseki.Game.Serial
 
             if (boneLink != null)
             {
-                boneLink.CalibratedOrientation.UnbindEvents();
                 boneLink.BoneName = null;
             }
 
+            var oldBone = Skeleton.GetBone(link.BoneName);
+            oldBone?.BindableWorldRotation.UnbindBindings();
+
             link.BoneName = boneName;
 
-            link.CalibratedOrientation.UnbindEvents();
-            link.CalibratedOrientation.ValueChanged += e =>
-            {
-                bone.WorldRotation = e.NewValue;
-            };
+            bone.BindableWorldRotation.BindTo(link.CalibratedOrientation);
 
             return true;
         }
@@ -108,7 +109,8 @@ namespace kyoseki.Game.Serial
         {
             var link = Get(sensorId);
 
-            link.CalibratedOrientation.UnbindEvents();
+            var bone = Skeleton.GetBone(link.BoneName);
+            bone?.BindableWorldRotation.UnbindBindings();
 
             lock (Sensors)
                 Sensors.Remove(link);

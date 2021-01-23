@@ -2,7 +2,6 @@ using kyoseki.Game.Kinematics.Drawables;
 using kyoseki.Game.MathUtils;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -22,8 +21,6 @@ namespace kyoseki.Game.Overlays.Skeleton
         protected readonly SensorLink Link;
 
         private readonly SpriteText boneName;
-
-        private readonly Bindable<System.Numerics.Quaternion> orientation = new Bindable<System.Numerics.Quaternion>();
 
         public SensorLinkView(SensorLink link)
         {
@@ -125,9 +122,7 @@ namespace kyoseki.Game.Overlays.Skeleton
                 }
             };
 
-            orientation.BindTo(link.CalibratedOrientation);
-
-            orientation.ValueChanged += e =>
+            link.CalibratedOrientation.ValueChanged += e =>
             {
                 var euler = e.NewValue.ToEuler();
 

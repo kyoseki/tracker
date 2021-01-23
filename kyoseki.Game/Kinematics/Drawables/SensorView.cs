@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Numerics;
 using kyoseki.Game.Serial;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.OpenGL.Vertices;
 using osu.Framework.Graphics.Primitives;
@@ -10,27 +8,7 @@ namespace kyoseki.Game.Kinematics.Drawables
 {
     public class SensorView : Drawable
     {
-        private readonly Bindable<Quaternion> orientation = new Bindable<Quaternion>(Quaternion.Identity);
-
-        private SensorLink link;
-
-        public SensorLink Link
-        {
-            get => link;
-            set
-            {
-                if (value == null)
-                {
-                    link = null;
-                    orientation.UnbindBindings();
-
-                    return;
-                }
-
-                link = value;
-                orientation.BindTarget = link.CalibratedOrientation;
-            }
-        }
+        public SensorLink Link { get; set; }
 
         protected override DrawNode CreateDrawNode() => new SensorViewDrawNode(this);
 
@@ -56,7 +34,8 @@ namespace kyoseki.Game.Kinematics.Drawables
             {
                 base.Draw(vertexAction);
 
-                DrawAxes(screenSpaceDrawQuad.Centre, Math.Min(screenSpaceDrawQuad.Width, screenSpaceDrawQuad.Height) / 2, Source.orientation.Value);
+                if (Source.Link != null)
+                    DrawAxes(screenSpaceDrawQuad.Centre, Math.Min(screenSpaceDrawQuad.Width, screenSpaceDrawQuad.Height) / 2, Source.Link.CalibratedOrientation.Value);
             }
         }
     }

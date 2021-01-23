@@ -51,6 +51,12 @@ namespace kyoseki.Game.Overlays.SerialMonitor
             tabControl.Current.ValueChanged += handleTabChanged;
         }
 
+        public void Open(string port)
+        {
+            tabControl.Current.Value = port;
+            Show();
+        }
+
         private void handleTabChanged(ValueChangedEvent<string> e)
         {
             var tab = loadedChannels.Find(c => c.PortName == e.NewValue);
