@@ -26,8 +26,13 @@ namespace kyoseki.Game.UI.Pooling
         public void Add(PoolableScrollItem item) =>
             items.Add(item);
 
-        public new void Clear() =>
+        public new void Clear()
+        {
             items.Clear();
+
+            foreach (var child in Children)
+                child.FadeOut(100, Easing.OutQuint).Expire();
+        }
 
         private const int render_distance = 500;
 
@@ -74,6 +79,7 @@ namespace kyoseki.Game.UI.Pooling
                 var drawable = itemPool.Get(i => i.Item = item);
 
                 drawable.Y = item.ScrollYPosition;
+                drawable.Alpha = 1;
 
                 Add(drawable);
             }
