@@ -18,7 +18,6 @@ namespace kyoseki.Game.Overlays.SerialMonitor
         private const int pill_height = pill_font_size + 5;
 
         public const int HEIGHT = pill_height;
-        public const int MARGIN = 5;
 
         public const int CONTENT_FONT_SIZE = 12;
 
@@ -44,7 +43,18 @@ namespace kyoseki.Game.Overlays.SerialMonitor
                 pillText.Text = abbreviation;
 
                 textFlow.Clear();
-                textFlow.AddText(item.Content, t => t.Font = KyosekiFont.Mono.With(size: CONTENT_FONT_SIZE));
+                var lines = item.Content.Split("\n");
+
+                foreach (var line in lines)
+                {
+                    textFlow.AddText(new SpriteText
+                    {
+                        Truncate = true,
+                        Text = line,
+                        RelativeSizeAxes = Axes.X,
+                        Font = KyosekiFont.Mono.With(size: CONTENT_FONT_SIZE)
+                    });
+                }
             }
         }
 
