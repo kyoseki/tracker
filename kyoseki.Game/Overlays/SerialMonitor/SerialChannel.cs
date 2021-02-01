@@ -40,15 +40,16 @@ namespace kyoseki.Game.Overlays.SerialMonitor
 
         public Action<string, string> SendMessage;
 
-        public SerialChannel(ISerialPort port)
-            : this()
+        public SerialChannel()
+            : this(null)
         {
-            this.port = port;
-            PortName = port.Name;
         }
 
-        public SerialChannel()
+        public SerialChannel(ISerialPort port)
         {
+            this.port = port;
+            PortName = port?.Name;
+
             IconButton continueAutoscroll;
 
             Child = new TooltipContainer
