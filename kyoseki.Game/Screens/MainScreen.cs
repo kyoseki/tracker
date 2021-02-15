@@ -1,3 +1,4 @@
+using System.Linq;
 using kyoseki.Game.Overlays.SerialMonitor;
 using kyoseki.Game.Overlays.Skeleton;
 using kyoseki.Game.Screens.Main;
@@ -13,7 +14,7 @@ namespace kyoseki.Game.Screens
 {
     public class MainScreen : Screen
     {
-        private FillFlowContainer skeletonFlow;
+        private FillFlowContainer<SkeletonCard> skeletonFlow;
 
         private SkeletonLinkManager skeletonLinks;
         private SerialMonitorOverlay serial;
@@ -33,11 +34,11 @@ namespace kyoseki.Game.Screens
                     RelativeSizeAxes = Axes.Both,
                     Colour = KyosekiColors.Background.Darken(0.9f)
                 },
-                new KyosekiScrollContainer<FillFlowContainer>(Direction.Horizontal)
+                new KyosekiScrollContainer(Direction.Horizontal)
                 {
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding { Top = Toolbar.HEIGHT, Horizontal = 15 },
-                    Child = skeletonFlow = new FillFlowContainer
+                    Child = skeletonFlow = new FillFlowContainer<SkeletonCard>
                     {
                         AutoSizeAxes = Axes.X,
                         RelativeSizeAxes = Axes.Y
@@ -58,6 +59,7 @@ namespace kyoseki.Game.Screens
             };
 
             skeletonLinks.LinkCreated += handleLinkCreated;
+            skeletonLinks.LinkRemoved += handleLinkRemoved;
 
             foreach (var link in skeletonLinks.SkeletonLinks)
             {
@@ -77,15 +79,27 @@ namespace kyoseki.Game.Screens
                 {
                     skeletons.SetLink(l);
                     skeletons.Show();
-                }
+                },
+                RemoveSkeleton = skeletonLinks.Unregister
             });
         });
+
+        private void handleLinkRemoved(SkeletonLink link)
+        {
+            var card = skeletonFlow.Children.FirstOrDefault(c => c.SkeletonLink.Info.Equals(link.Info));
+
+            Schedule(() =>
+            {
+                card?.FadeOut(200, Easing.InQuint).Expire();
+            });
+        }
 
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);
 
             skeletonLinks.LinkCreated -= handleLinkCreated;
+            skeletonLinks.LinkRemoved -= handleLinkRemoved;
         }
     }
 }

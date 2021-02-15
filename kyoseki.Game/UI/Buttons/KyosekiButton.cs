@@ -14,6 +14,8 @@ namespace kyoseki.Game.UI.Buttons
 
         protected override Container<Drawable> Content { get; }
 
+        public bool ConsumeHover = true;
+
         public ColourInfo BackgroundColour
         {
             get => Background.Colour;
@@ -58,7 +60,7 @@ namespace kyoseki.Game.UI.Buttons
         protected override bool OnHover(HoverEvent e)
         {
             Hover.FadeIn(200, Easing.In);
-            return true;
+            return ConsumeHover;
         }
 
         protected override void OnHoverLost(HoverLostEvent e)

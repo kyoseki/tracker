@@ -23,6 +23,8 @@ namespace kyoseki.Game.Serial
 
         public event Action<SkeletonLink> LinkCreated;
 
+        public event Action<SkeletonLink> LinkRemoved;
+
         public new ScheduledDelegate Schedule(Action action) => base.Schedule(action);
 
         public IEnumerable<SkeletonLink> SkeletonLinks
@@ -31,9 +33,12 @@ namespace kyoseki.Game.Serial
             {
                 var result = new List<SkeletonLink>();
 
-                foreach (var port in ports)
+                lock (ports)
                 {
-                    result.AddRange(port.Links);
+                    foreach (var port in ports)
+                    {
+                        result.AddRange(port.Links);
+                    }
                 }
 
                 return result;
@@ -58,33 +63,50 @@ namespace kyoseki.Game.Serial
 
             Scheduler.AddDelayed(() =>
             {
-                config.Set(KyosekiSetting.Skeletons, ports.Select(p => p.Info).Where(p => p.Links.Length > 0).ToArray());
-                config.Save();
+                lock (ports)
+                {
+                    config.Set(KyosekiSetting.Skeletons, ports.Select(p => p.Info).Where(p => p.Links.Length > 0).ToArray());
+                    config.Save();
+                }
             }, 10000, true);
         }
 
-        public SkeletonSerialProcessor GetPort(string port) => ports.Find(p => p.Port == port);
+        public SkeletonSerialProcessor GetPort(string port)
+        {
+            lock (ports)
+                return ports.Find(p => p.Port == port);
+        }
 
         public void Register(SkeletonLink link, string port)
         {
-            lock (ports)
+            lock (link.Sensors)
             {
-                lock (link.Sensors)
-                {
-                    var oldPort = GetPort(link.Port);
+                var oldPort = GetPort(link.Port);
 
-                    oldPort?.Unregister(link);
+                oldPort?.Unregister(link);
 
-                    var newPort = GetPort(port);
+                var newPort = GetPort(port);
 
-                    newPort.Register(link);
-                    link.Port = port;
-                    link.Sensors.RemoveAll(l => string.IsNullOrEmpty(l.BoneName));
+                newPort.Register(link);
+                link.Port = port;
+                link.Sensors.RemoveAll(l => string.IsNullOrEmpty(l.BoneName));
 
-                    if (oldPort == null)
-                        LinkCreated?.Invoke(link);
-                }
+                if (oldPort == null)
+                    LinkCreated?.Invoke(link);
             }
+        }
+
+        public void Unregister(SkeletonLink link)
+        {
+            var port = GetPort(link.Port);
+
+            if (port == null) return;
+
+            port.Unregister(link);
+
+            LinkRemoved?.Invoke(link);
+
+            link.Port = null;
         }
 
         public void Load(IEnumerable<SkeletonSerialProcessorInfo> infos)

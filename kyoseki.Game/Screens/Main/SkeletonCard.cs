@@ -24,6 +24,7 @@ namespace kyoseki.Game.Screens.Main
 
         public Action<string> OpenPort;
         public Action<SkeletonLink> OpenSkeleton;
+        public Action<SkeletonLink> RemoveSkeleton;
 
         public SkeletonLink SkeletonLink
         {
@@ -38,7 +39,8 @@ namespace kyoseki.Game.Screens.Main
 
         private readonly DrawableSkeleton drawableSkeleton;
         private readonly SpriteText idText;
-        private readonly ComPortButton button;
+        private readonly ComPortButton portButton;
+        private readonly IconButton removeButton;
 
         public SkeletonCard()
         {
@@ -69,12 +71,26 @@ namespace kyoseki.Game.Screens.Main
                     Origin = Anchor.CentreLeft,
                     Padding = new MarginPadding { Left = padding_side, Bottom = padding_bottom }
                 },
-                button = new ComPortButton
+                portButton = new ComPortButton
                 {
                     Anchor = Anchor.BottomRight,
                     Origin = Anchor.CentreRight,
                     Margin = new MarginPadding { Right = padding_side, Bottom = padding_bottom },
                     Action = () => OpenPort?.Invoke(SkeletonLink.Port)
+                },
+                removeButton = new IconButton
+                {
+                    Anchor = Anchor.TopRight,
+                    Origin = Anchor.TopRight,
+                    Icon = FontAwesome.Solid.Times,
+                    IconColour = KyosekiColors.Background.Lighten(3),
+                    Size = new Vector2(25),
+                    IconSize = new Vector2(0.5f),
+                    CornerRadius = 8,
+                    Masking = true,
+                    Alpha = 0,
+                    ConsumeHover = false,
+                    Action = () => RemoveSkeleton?.Invoke(SkeletonLink)
                 }
             };
         }
@@ -84,6 +100,20 @@ namespace kyoseki.Game.Screens.Main
             OpenSkeleton?.Invoke(SkeletonLink);
 
             return base.OnClick(e);
+        }
+
+        protected override bool OnHover(HoverEvent e)
+        {
+            removeButton.FadeIn(200, Easing.OutQuint);
+
+            return base.OnHover(e);
+        }
+
+        protected override void OnHoverLost(HoverLostEvent e)
+        {
+            removeButton.FadeOut(150, Easing.In);
+
+            base.OnHoverLost(e);
         }
 
         private int? receiverId;
@@ -102,7 +132,7 @@ namespace kyoseki.Game.Screens.Main
             if (port != SkeletonLink.Port)
             {
                 port = SkeletonLink.Port;
-                button.Text = port;
+                portButton.Text = port;
             }
         }
 
