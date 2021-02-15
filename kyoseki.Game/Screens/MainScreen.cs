@@ -52,7 +52,7 @@ namespace kyoseki.Game.Screens
                     OpenSerial = serial.Show,
                     AddSkeleton = () =>
                     {
-                        skeletons.SetLink(new SkeletonLink());
+                        skeletons.SetLink(new SkeletonLink(), true);
                         skeletons.Show();
                     }
                 }

@@ -188,10 +188,13 @@ namespace kyoseki.Game.Overlays.Skeleton
             SetLink(skeletonLinks.SkeletonLinks.FirstOrDefault() ?? new SkeletonLink());
         }
 
-        public void SetLink(SkeletonLink link)
+        public void SetLink(SkeletonLink link, bool register = false)
         {
             if (Link != null)
                 Link.SensorsUpdated -= handleSensorUpdate;
+
+            if (register)
+                skeletonLinks.Register(link, serialConnections.PortNames.First());
 
             Link = link;
 
