@@ -1,6 +1,6 @@
 ﻿using System;
 using kyoseki.Game.UI;
-using kyoseki.Game.UI.Buttons;
+using kyoseki.UI.Components.Buttons;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -145,6 +145,8 @@ namespace kyoseki.Game.Screens.Main
                         }
                     }
                 };
+
+                DisableBackgroundTheming = true;
             }
         }
     }

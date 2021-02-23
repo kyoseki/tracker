@@ -2,7 +2,7 @@
 using kyoseki.Game.Kinematics.Drawables;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI;
-using kyoseki.Game.UI.Buttons;
+using kyoseki.UI.Components.Buttons;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
@@ -147,6 +147,8 @@ namespace kyoseki.Game.Screens.Main
                 CornerRadius = button_height / 2f;
                 BackgroundColour = Colour4.FromHex("46496A");
                 Font = KyosekiFont.Bold.With(size: 24);
+
+                DisableBackgroundTheming = true;
             }
         }
 

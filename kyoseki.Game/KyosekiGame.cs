@@ -5,6 +5,7 @@ using kyoseki.Game.Overlays.SerialMonitor;
 using kyoseki.Game.Overlays.Skeleton;
 using kyoseki.Game.Screens;
 using kyoseki.Game.Serial;
+using kyoseki.UI.Components.Theming;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -24,11 +25,19 @@ namespace kyoseki.Game
         [BackgroundDependencyLoader]
         private void load()
         {
-            Children = new Drawable[]
+            ThemeContainer themeContainer;
+
+            Child = themeContainer = new ThemeContainer(new UI.KyosekiTheme())
             {
-                screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
-                overlayContainer = new Container { RelativeSizeAxes = Axes.Both }
+                RelativeSizeAxes = Axes.Both,
+                Children = new Drawable[]
+                {
+                    screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
+                    overlayContainer = new Container { RelativeSizeAxes = Axes.Both }
+                }
             };
+
+            dependencies.Cache(themeContainer);
         }
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>

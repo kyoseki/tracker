@@ -1,8 +1,8 @@
 ﻿using System;
 using kyoseki.Game.Serial;
-using kyoseki.Game.UI.Buttons;
-using kyoseki.Game.UI.Input;
-using kyoseki.Game.UI.Pooling;
+using kyoseki.UI.Components.Buttons;
+using kyoseki.UI.Components.Input;
+using kyoseki.UI.Components.Pooling;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;

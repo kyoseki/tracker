@@ -4,9 +4,9 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\kyoseki.Resources\kyoseki.Resources.csproj" />
+    <ProjectReference Include="..\kyoseki.UI\kyoseki.UI\kyoseki.UI.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ppy.osu.Framework" Version="2021.204.0" />
     <PackageReference Include="System.IO.Ports" Version="6.0.0-preview.1.21102.12" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using kyoseki.Game.Input.Bindings;
 using kyoseki.Game.UI;
-using kyoseki.Game.UI.Buttons;
+using kyoseki.UI.Components.Buttons;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;

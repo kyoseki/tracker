@@ -1,0 +1,3 @@
+[submodule "kyoseki.UI"]
+	path = kyoseki.UI
+	url = https://github.com/kyoseki/kyoseki.UI

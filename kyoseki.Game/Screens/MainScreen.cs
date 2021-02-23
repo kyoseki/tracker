@@ -4,6 +4,7 @@ using kyoseki.Game.Overlays.Skeleton;
 using kyoseki.Game.Screens.Main;
 using kyoseki.Game.Serial;
 using kyoseki.Game.UI;
+using kyoseki.UI.Components;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
