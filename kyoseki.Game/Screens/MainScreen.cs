@@ -3,12 +3,10 @@ using kyoseki.Game.Overlays.SerialMonitor;
 using kyoseki.Game.Overlays.Skeleton;
 using kyoseki.Game.Screens.Main;
 using kyoseki.Game.Serial;
-using kyoseki.Game.UI;
 using kyoseki.UI.Components;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
 using osu.Framework.Screens;
 
 namespace kyoseki.Game.Screens
@@ -30,10 +28,9 @@ namespace kyoseki.Game.Screens
 
             InternalChildren = new Drawable[]
             {
-                new Box
+                new Background
                 {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = KyosekiColors.Background.Darken(0.9f)
+                    RelativeSizeAxes = Axes.Both
                 },
                 new KyosekiScrollContainer(Direction.Horizontal)
                 {

@@ -1,17 +1,19 @@
 ﻿using System;
-using kyoseki.Game.UI;
 using kyoseki.UI.Components.Buttons;
+using kyoseki.UI.Components.Theming;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osuTK;
+using KyosekiTheme = kyoseki.Game.UI.KyosekiTheme;
 
 namespace kyoseki.Game.Screens.Main
 {
-    public class Toolbar : CompositeDrawable
+    public class Toolbar : CompositeDrawable, IHasNestedThemeComponents
     {
         public const int HEIGHT = 45;
 
@@ -21,8 +23,36 @@ namespace kyoseki.Game.Screens.Main
 
         public Action OpenSerial;
 
-        [BackgroundDependencyLoader]
-        private void load(TextureStore textures)
+        [Themeable(nameof(UITheme.BackgroundColour), Lightness = 0.4f)]
+        protected ColourInfo BackgroundColour
+        {
+            get => background.Colour;
+            set => background.Colour = value;
+        }
+
+        [Themeable(nameof(UITheme.ForegroundColour))]
+        protected ColourInfo ForegroundColour
+        {
+            get => title.Colour;
+            set => title.Colour = value;
+        }
+
+        [Themeable(nameof(UITheme.DefaultFont))]
+        protected FontUsage Font
+        {
+            get => title.Font;
+            set => title.Font = value.With(weight: "Bold", size: 30);
+        }
+
+        private Box background;
+
+        private SpriteText title;
+
+        private ToolbarButton addButton;
+        private ToolbarButton serialButton;
+
+        [BackgroundDependencyLoader(true)]
+        private void load(ThemeContainer themeContainer, TextureStore textures)
         {
             Height = HEIGHT;
 
@@ -30,10 +60,9 @@ namespace kyoseki.Game.Screens.Main
 
             InternalChildren = new Drawable[]
             {
-                new Box
+                background = new Box
                 {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = KyosekiColors.ButtonBackground
+                    RelativeSizeAxes = Axes.Both
                 },
                 new FillFlowContainer
                 {
@@ -51,18 +80,16 @@ namespace kyoseki.Game.Screens.Main
                             Scale = new Vector2(logo_scale),
                             Texture = logo
                         },
-                        new SpriteText
+                        title = new SpriteText
                         {
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
-                            Text = "Skeletons",
-                            Font = KyosekiFont.Bold.With(size: 30)
+                            Text = "Skeletons"
                         },
-                        new ToolbarButton
+                        addButton = new ToolbarButton
                         {
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
-                            BackgroundColour = KyosekiColors.ButtonBackground.Lighten(0.5f),
                             CornerRadius = 15,
                             Masking = true,
                             Size = new Vector2(80, 30),
@@ -73,11 +100,10 @@ namespace kyoseki.Game.Screens.Main
                         }
                     }
                 },
-                new ToolbarButton
+                serialButton = new ToolbarButton
                 {
                     Anchor = Anchor.CentreRight,
                     Origin = Anchor.CentreRight,
-                    BackgroundColour = KyosekiColors.ButtonBackground.Darken(0.5f),
                     RelativeSizeAxes = Axes.Y,
                     Width = 100,
                     Icon = FontAwesome.Solid.Terminal,
@@ -86,6 +112,17 @@ namespace kyoseki.Game.Screens.Main
                     Action = OpenSerial
                 }
             };
+
+            if (themeContainer != null)
+                themeContainer.Register(this);
+            else
+                this.ApplyTheme(new KyosekiTheme());
+        }
+
+        public void ApplyThemeToChildren(UITheme theme, bool fade)
+        {
+            addButton.ApplyTheme(theme, fade);
+            serialButton.ApplyTheme(theme, fade);
         }
 
         private class ToolbarButton : KyosekiButton
@@ -109,10 +146,33 @@ namespace kyoseki.Game.Screens.Main
                 get => fontSize;
                 set
                 {
-                    spriteIcon.Size = new Vector2(value - 5);
-                    spriteText.Font = KyosekiFont.GetFont(size: value);
-
                     fontSize = value;
+
+                    updateFont();
+                }
+            }
+
+            private FontUsage font;
+
+            [Themeable(nameof(UITheme.DefaultFont))]
+            protected FontUsage Font
+            {
+                get => font;
+                set
+                {
+                    font = value;
+                    updateFont();
+                }
+            }
+
+            [Themeable(nameof(UITheme.ForegroundColour))]
+            protected ColourInfo ForegroundColour
+            {
+                get => spriteIcon.Colour;
+                set
+                {
+                    spriteIcon.Colour = value;
+                    spriteText.Colour = value;
                 }
             }
 
@@ -133,20 +193,22 @@ namespace kyoseki.Game.Screens.Main
                         spriteIcon = new SpriteIcon
                         {
                             Anchor = Anchor.Centre,
-                            Origin = Anchor.Centre,
-                            Colour = KyosekiColors.Foreground
+                            Origin = Anchor.Centre
                         },
                         spriteText = new SpriteText
                         {
                             Truncate = true,
                             Anchor = Anchor.Centre,
-                            Origin = Anchor.Centre,
-                            Colour = KyosekiColors.Foreground
+                            Origin = Anchor.Centre
                         }
                     }
                 };
+            }
 
-                DisableBackgroundTheming = true;
+            private void updateFont()
+            {
+                spriteText.Font = Font.With(size: fontSize);
+                spriteIcon.Size = new Vector2(fontSize - 5);
             }
         }
     }
