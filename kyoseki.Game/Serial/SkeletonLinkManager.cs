@@ -65,7 +65,7 @@ namespace kyoseki.Game.Serial
             {
                 lock (ports)
                 {
-                    config.Set(KyosekiSetting.Skeletons, ports.Select(p => p.Info).Where(p => p.Links.Length > 0).ToArray());
+                    config.SetValue(KyosekiSetting.Skeletons, ports.Select(p => p.Info).Where(p => p.Links.Length > 0).ToArray());
                     config.Save();
                 }
             }, 10000, true);

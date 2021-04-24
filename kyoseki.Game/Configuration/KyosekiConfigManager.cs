@@ -27,7 +27,7 @@ namespace kyoseki.Game.Configuration
 
         protected override void InitialiseDefaults()
         {
-            Set(KyosekiSetting.Skeletons, Array.Empty<SkeletonSerialProcessorInfo>());
+            SetDefault(KyosekiSetting.Skeletons, Array.Empty<SkeletonSerialProcessorInfo>());
         }
 
         protected override void PerformLoad()
@@ -43,6 +43,8 @@ namespace kyoseki.Game.Configuration
 
                     var output = JsonConvert.DeserializeObject<Dictionary<KyosekiSetting, object>>(config);
 
+                    if (output == null) return;
+
                     foreach (var (key, value) in output)
                     {
                         switch (key)
@@ -50,7 +52,7 @@ namespace kyoseki.Game.Configuration
                             case KyosekiSetting.Skeletons:
                                 var skeletons = JsonConvert.DeserializeObject<SkeletonSerialProcessorInfo[]>(value.ToString());
 
-                                Set(KyosekiSetting.Skeletons, skeletons);
+                                SetValue(KyosekiSetting.Skeletons, skeletons);
                                 break;
 
                             default:
@@ -58,7 +60,7 @@ namespace kyoseki.Game.Configuration
                                 {
                                     try
                                     {
-                                        b.Parse(value);
+                                        (b as IParseable)?.Parse(value);
                                     }
                                     catch (Exception e)
                                     {
@@ -67,7 +69,7 @@ namespace kyoseki.Game.Configuration
                                 }
                                 else if (AddMissingEntries)
                                 {
-                                    Set(key, value);
+                                    SetValue(key, value);
                                 }
 
                                 break;

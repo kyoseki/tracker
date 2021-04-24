@@ -8,6 +8,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
+using osu.Framework.Localisation;
 using osuTK;
 using KyosekiTheme = kyoseki.Game.UI.KyosekiTheme;
 
@@ -133,7 +134,7 @@ namespace kyoseki.Game.Screens.Main
                 set => spriteIcon.Icon = value;
             }
 
-            public string Text
+            public LocalisableString Text
             {
                 get => spriteText.Text;
                 set => spriteText.Text = value;
